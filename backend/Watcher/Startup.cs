@@ -1,4 +1,4 @@
-﻿using DataAccumulator.Shared.Models;
+﻿using ServiceBus.Shared.Interfaces;
 
 namespace Watcher
 {
@@ -30,7 +30,10 @@ namespace Watcher
 
     using Newtonsoft.Json;
 
+    using RabbitMQ.Client;
+
     using ServiceBus.Shared.Queue;
+    using DataAccumulator.Shared.Models;
 
     using Watcher.Common.Options;
     using Watcher.Common.Validators;
@@ -80,17 +83,29 @@ namespace Watcher
                     o.Security_Key = securitySection["Security_Key"];
                 });
 
-            var serviceBusSection = Configuration.GetSection("ServiceBus");
-            services.Configure<AzureQueueSettings>(o =>
+            var useRabbitMQ = true;
+            if (useRabbitMQ)
+            {
+                //var connectionFactory = new ConnectionFactory();
+                //Configuration.GetSection("RabbitMqConnection").Bind(connectionFactory);
+            }
+
+            {
+                //var serviceBusSection = Configuration.GetSection("ServiceBus");
+
+                var serviceBusSection = Configuration.GetSection("RabbitMq");
+
+                services.Configure<QueueSettings>(o =>
                 {
-                    o.ConnectionString = serviceBusSection["ConnectionString"];
+                    //o.ConnectionString = serviceBusSection["ConnectionString"];
                     o.DataQueueName = serviceBusSection["DataQueueName"];
                     o.ErrorQueueName = serviceBusSection["ErrorQueueName"];
                     o.SettingsQueueName = serviceBusSection["SettingsQueueName"];
-                    o.NotifyQueueName = serviceBusSection["NotifyQueueName"];
+                    o.NotificationQueueName = serviceBusSection["NotificationQueueName"];
                     o.AnomalyReportQueueName = serviceBusSection["AnomalyReportQueueName"];
                 });
-            
+            }
+
             services.ConfigureSwagger(Configuration);
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -122,10 +137,14 @@ namespace Watcher
             services.AddTransient<IThemeService, ThemeService>();
             services.AddTransient<ICollectorAppsService, CollectorAppsService>();
 
-            services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
-            services.AddTransient<IAzureQueueSender, AzureQueueSender>();
-            services.AddSingleton<IServiceBusProvider, ServiceBusProvider>();
-            
+            //services.AddTransient<IAzureQueueSender, AzureQueueSender>();
+            //services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
+            //services.AddSingleton<IServiceBusProvider, ServiceBusProvider>();
+
+            services.AddTransient<IRabbitMqSender, RabbitMqSender>();
+            services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
+            services.AddSingleton<IServiceBusProvider, RabbitMqProvider>();
+
             // repo initialization localhost while development env, azure in prod
             ConfigureCosmosDb(services, Configuration);
 
@@ -190,8 +209,6 @@ namespace Watcher
 
             services.AddAuthorization(o =>
                 {
-                    // TODO: create Policy
-
                     o.AddPolicy("SomePolicy", b =>
                         {
                             b.RequireAuthenticatedUser();
@@ -321,19 +338,13 @@ namespace Watcher
             services.AddAutoMapper(cfg =>
                 {
                     cfg.AddProfile<SamplesProfile>();
-
                     cfg.AddProfile<UsersProfile>();
                     cfg.AddProfile<DashboardsProfile>();
                     cfg.AddProfile<OrganizationProfile>();
                     cfg.AddProfile<UserOrganizationProfile>();
-
                     cfg.AddProfile<NotificationSettingsProfile>();
-
-
                     cfg.AddProfile<ChatProfile>();
-
                     cfg.AddProfile<MessageProfile>();
-
                     cfg.AddProfile<FeedbackProfile>();
                     cfg.AddProfile<InstanceAnomalyReportProfile>();
                     cfg.AddProfile<RoleProfile>();
@@ -343,13 +354,11 @@ namespace Watcher
                     cfg.AddProfile<CollectedDataProfile>();
                     cfg.AddProfile<CollectorActionLogProfile>();
                     cfg.AddProfile<ThemeProfile>();
-
                 }); // Scoped Lifetime!
             // https://lostechies.com/jimmybogard/2016/07/20/integrating-automapper-with-asp-net-core-di/
 
             return services;
         }
-
 
         public virtual void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
         {

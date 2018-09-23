@@ -20,7 +20,7 @@
     {
         private readonly ILogger<ServiceBusProvider> _logger;
         private readonly IInstanceSettingsService<InstanceSettingsDto> _instanceSettingsService;
-        private readonly IOptions<AzureQueueSettings> _queueOptions;
+        private readonly IOptions<QueueSettings> _queueOptions;
         private readonly IAzureQueueSender _azureQueueSender;
         private readonly IAzureQueueReceiver _azureQueueReceiver;
 
@@ -32,7 +32,7 @@
 
         public ServiceBusProvider(ILoggerFactory loggerFactory,
                                   IInstanceSettingsService<InstanceSettingsDto> instanceSettingsService,
-                                  IOptions<AzureQueueSettings> queueOptions,
+                                  IOptions<QueueSettings> queueOptions,
                                   IAzureQueueSender azureQueueSender,
                                   IAzureQueueReceiver azureQueueReceiver)
         {
@@ -44,7 +44,7 @@
             _instanceDataQueueClient = new QueueClient(_queueOptions.Value.ConnectionString, _queueOptions.Value.DataQueueName);
             _instanceErrorQueueClient = new QueueClient(_queueOptions.Value.ConnectionString, _queueOptions.Value.ErrorQueueName);
             _instanceSettingsQueueClient = new QueueClient(_queueOptions.Value.ConnectionString, _queueOptions.Value.SettingsQueueName);
-            _instanceNotifyQueueClient = new QueueClient(_queueOptions.Value.ConnectionString, _queueOptions.Value.NotifyQueueName);
+            _instanceNotifyQueueClient = new QueueClient(_queueOptions.Value.ConnectionString, _queueOptions.Value.NotificationQueueName);
             _instanceAnomalyReportQueueClient = new QueueClient(_queueOptions.Value.ConnectionString, _queueOptions.Value.AnomalyReportQueueName);
 
             _azureQueueReceiver.Receive<InstanceSettingsMessage>(

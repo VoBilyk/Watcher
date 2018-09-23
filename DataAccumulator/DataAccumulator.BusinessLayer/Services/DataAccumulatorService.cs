@@ -81,7 +81,11 @@ namespace DataAccumulator.BusinessLayer.Services
             var mappedEntity = GetFakeData(Guid.NewGuid(), Guid.Parse("7FE193DE-B3DC-4DF5-8646-A81EDBE047E2"));
             await _repository.AddEntity(mappedEntity);
             
-            await _serviceBusProvider.SendDataMessage(mappedEntity.ClientId, mappedEntity.Id);
+            await _serviceBusProvider.SendDataMessage(new InstanceCollectedDataMessage
+                {
+                    InstanceId = mappedEntity.ClientId,
+                    CollectedDataId = mappedEntity.Id
+                });
 
             return null;
         }

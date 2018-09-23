@@ -25,7 +25,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Quartz.Spi;
-
+using ServiceBus.Shared.Interfaces;
 using ServiceBus.Shared.Queue;
 
 namespace DataAccumulator
@@ -51,14 +51,15 @@ namespace DataAccumulator
                         .AllowCredentials());
             });
 
-            var serviceBusSection = Configuration.GetSection("ServiceBus");
-            services.Configure<AzureQueueSettings>(o =>
+            //var serviceBusSection = Configuration.GetSection("ServiceBus");
+            var serviceBusSection = Configuration.GetSection("RabbitMq");
+            services.Configure<QueueSettings>(o =>
                 {
-                    o.ConnectionString = serviceBusSection["ConnectionString"];
+                    //o.ConnectionString = serviceBusSection["ConnectionString"];
                     o.DataQueueName = serviceBusSection["DataQueueName"];
                     o.ErrorQueueName = serviceBusSection["ErrorQueueName"];
                     o.SettingsQueueName = serviceBusSection["SettingsQueueName"];
-                    o.NotifyQueueName = serviceBusSection["NotifyQueueName"];
+                    o.NotificationQueueName = serviceBusSection["NotificationQueueName"];
                     o.AnomalyReportQueueName = serviceBusSection["AnomalyReportQueueName"];
                 });
 
@@ -78,8 +79,8 @@ namespace DataAccumulator
 
             services.AddTransient<IThresholdsValidatorCore<CollectedDataDto>, ThresholdsValidatorCore>();
 
-            services.AddTransient<IAzureMLProvider, AzureMLProvider>();
-            services.AddTransient<IAnomalyDetector, AnomalyDetector>();
+            //services.AddTransient<IAzureMLProvider, AzureMLProvider>();
+            //services.AddTransient<IAnomalyDetector, AnomalyDetector>();
 
             services.AddTransient<ILogService, LogService>();
             services.AddTransient<ILogRepository, LogRepository>();
@@ -99,9 +100,13 @@ namespace DataAccumulator
             services.AddTransient<CollectedDataAggregatingByWeekJob>();
             services.AddTransient<CollectedDataAggregatingByMonthJob>();
 
-            services.AddTransient<IAzureQueueSender, AzureQueueSender>();
-            services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
-            services.AddSingleton<IServiceBusProvider, ServiceBusProvider>();
+            //services.AddTransient<IAzureQueueSender, AzureQueueSender>();
+            //services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
+            //services.AddSingleton<IServiceBusProvider, ServiceBusProvider>();
+
+            services.AddTransient<IRabbitMqSender, RabbitMqSender>();
+            services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
+            services.AddSingleton<IServiceBusProvider, RabbitMqProvider>();
 
             var mapper = MapperConfiguration().CreateMapper();
             services.AddTransient(_ => mapper);

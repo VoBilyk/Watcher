@@ -5,10 +5,6 @@
 
     public interface IServiceBusProvider
     {
-        //ConcurrentBag<Guid> SubscribedInstancesGuidIds { get; }
-        //void RegisterOnMessageHandlerAndReceiveMessages();
-        //Task SendMessageToServiceBus(string message);
-        //Task CloseClient();'
         Task SendInstanceSettingsAsync(InstanceSettingsMessage message);
     }
 }

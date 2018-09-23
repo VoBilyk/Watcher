@@ -34,11 +34,11 @@ namespace DataAccumulator.WebAPI.Controllers
                 var collectedDataDtos = await _dataAggregatorService.GetEntitiesAsync();
                 return Ok(collectedDataDtos);
             }
-            catch (BadRequestException e)
+            catch (BadRequestException)
             {
                 return BadRequest();
             }
-            catch (NotFoundException e)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
@@ -59,7 +59,7 @@ namespace DataAccumulator.WebAPI.Controllers
                 var collectedDataDto = await _dataAggregatorService.GetEntityAsync(id);
                 return Ok(collectedDataDto);
             }
-            catch (NotFoundException e)
+            catch (NotFoundException)
             {
                 return NotFound();
             }

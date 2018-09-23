@@ -1,21 +1,21 @@
 ﻿namespace ServiceBus.Shared.Queue
 {
-    public class AzureQueueSettings
+    public class QueueSettings
     {
-        public AzureQueueSettings() { }
+        public QueueSettings() { }
 
-        public AzureQueueSettings(string connectionString, 
-                                  string dataQueueName, 
-                                  string errorQueueName,
-                                  string settingsQueueName, 
-                                  string notifyQueueName, 
-                                  string anomalyReportQueueName)
+        public QueueSettings(string connectionString, 
+                             string dataQueueName, 
+                             string errorQueueName,
+                             string settingsQueueName, 
+                             string notificationQueueName, 
+                             string anomalyReportQueueName)
         {
             ConnectionString = connectionString;
             DataQueueName = dataQueueName;
             ErrorQueueName = errorQueueName;
             SettingsQueueName = settingsQueueName;
-            NotifyQueueName = notifyQueueName;
+            NotificationQueueName = notificationQueueName;
             AnomalyReportQueueName = anomalyReportQueueName;
         }
 
@@ -27,7 +27,7 @@
 
         public string SettingsQueueName { get; set; }
 
-        public string NotifyQueueName { get; set; }
+        public string NotificationQueueName { get; set; }
 
         public string AnomalyReportQueueName { get; set; }
     }

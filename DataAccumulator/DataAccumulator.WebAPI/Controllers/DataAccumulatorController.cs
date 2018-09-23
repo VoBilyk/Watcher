@@ -37,11 +37,11 @@ namespace DataAccumulator.WebAPI.Controllers
                 var collectedDataDtos = await _dataAccumulatorService.GetEntitiesAsync();
                 return Ok(collectedDataDtos);
             }
-            catch (BadRequestException e)
+            catch (BadRequestException)
             {
                 return BadRequest();
             }
-            catch (NotFoundException e)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
@@ -56,7 +56,7 @@ namespace DataAccumulator.WebAPI.Controllers
                 var collectedDataDto = await _dataAccumulatorService.GetEntityAsync(id);
                 return Ok(collectedDataDto);
             }
-            catch (NotFoundException e)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
@@ -96,7 +96,7 @@ namespace DataAccumulator.WebAPI.Controllers
                 await _dataAccumulatorService.UpdateEntityAsync(collectedDataDto);
                 return NoContent();
             }
-            catch (NotFoundException e)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace DataAccumulator.WebAPI.Controllers
                 await _dataAccumulatorService.DeleteEntityAsync(id);
                 return NoContent();
             }
-            catch (NotFoundException e)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
