@@ -1,0 +1,97 @@
+.dashboard-wrap
+  margin: 20px
+  // padding-left: 20px
+  // padding-top: 5px
+
+.add-button
+  color: #3b5998
+
+/deep/ .ui-tabmenuitem
+  #lastTab
+    /deep/ .ui-menuitem-text
+      color: #007ad9
+    /deep/ .ui-menuitem-icon
+      margin-left: 11px
+  #lastTab a:active
+    color: red !important
+/deep/ .ui-tabmenuitem.ui-state-active
+  #lastTab
+    /deep/ .ui-menuitem-icon
+      color: white
+
+nav
+  ul
+    li:last-child
+      color: red !important
+
+.title
+  padding-bottom: 10px
+  font-size: 22px
+  font-weight: normal
+
+.dashboard-options
+  text-align: right
+  margin-bottom: 15px
+
+.workspace
+  padding: 10px 0
+
+.center
+  text-align: center
+
+.field-top
+  margin: 3px 0
+
+.field
+  margin: 9px 0 3px
+
+.options-btn
+  color: #9d9d9d
+  background-color: #F8FAFC
+  border: 1px solid #F8FAFC
+  font-size: 20px
+  cursor: pointer
+  &:hover
+    color: black
+
+.gear:hover, .gear:enabled:focus, .gear:enabled:hover
+  color: #474747
+  background-color: #F8FAFC
+  border: 1px solid #F8FAFC
+
+.img-example
+  width: 93%
+  height: 650px
+  opacity: 0.6
+
+.img-example-wr
+  text-align: center
+  opacity: 0.6
+
+.width-left-part
+  width: 192px
+
+.spinner
+    margin-top: 220px
+    left: 55%
+    position: fixed
+
+hr
+  margin: 1px
+  height: 1px
+  background: #c8c8c8
+  border: 0
+// hr
+//   border: 0
+//   height: 0
+//   border-top: 1px solid rgba(0, 0, 0, 0.1)
+//   border-bottom: 1px solid rgba(255, 255, 255, 0.3)
+
+.tutorial
+  margin: 100px auto
+  width: max-content
+  .tutorial-item
+    font-size: 30px
+    white-space: nowrap
+    margin: 15px
+    color: gray

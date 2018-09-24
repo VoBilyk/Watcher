@@ -1,0 +1,140 @@
+<p-dialog [header]="dialogTitle"
+          [(visible)]="visible"
+          [modal]="true"
+          [minWidth]="1150"
+          [minHeight]="620"
+          [minY]="100"
+          [resizable]="true"
+          [draggable]="false"
+          [maximizable]="true"
+          [blockScroll]="true"
+          (onAfterToggle)="closeDialog()">
+
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-3 ui-g-nopad">
+      <div class="chart-panel-menu">
+        <div class="chart-panel-menu-title field-top">Data:</div>
+        <p class="field">Select chart type: </p>
+        <p-dropdown [options]="dropdownTypes"
+                    [autoWidth]="false"
+                    [(ngModel)]="dashboardChart.type"
+                    placeholder="Select a type"
+                    [group]="true"
+                    (onChange)="selectChartType()">
+        </p-dropdown>
+        <p class="field">Show total:
+          <p-checkbox [ngModel]="dashboardChart?.showCommon"
+                      (ngModelChange)="dashboardChart.showCommon=$event"
+                      (onChange)="resetBuilderForm()"
+                      binary="true">
+          </p-checkbox>
+        </p><!--type [disabled]="!dashboardChart.dataSources.length<1"-->
+        <p class="field">Select source: </p>
+        <p-multiSelect *ngIf="dashboardChart.showCommon && dashboardChart.type !== type.Pie
+                              && dashboardChart.type != type.AdvancedPie && dashboardChart.type != type.PieGrid"
+                       class="custom-multiselect"
+                       [filter]="false"
+                       [showHeader]="false"
+                       [options]="dropdownSources"
+                       [(ngModel)]="dashboardChart.dataSources"
+                       maxSelectedLabels="1"
+                       (onChange)="multiSelect($event)">
+        </p-multiSelect>
+
+        <p-dropdown *ngIf="!dashboardChart.showCommon || dashboardChart.type == type.Pie
+                          || dashboardChart.type == type.AdvancedPie || dashboardChart.type == type.PieGrid"
+                    [autoWidth]="false"
+                    [options]="dropdownGroupSources"
+                    placeholder="Select a type"
+                    (onChange)="dropDownSelect($event)"
+                    [group]="true">
+        </p-dropdown>
+
+        <p class="field">Number of heavy processes:</p>
+        <div class="chart-menu-spiner">
+          <p-spinner size="17"
+                     [(ngModel)]="dashboardChart.mostLoaded"
+                     (onChange)="processData()"
+                     [disabled]="spinnerDisabled"
+                     [step]="1"
+                     [min]="1"
+                     [max]="100"></p-spinner>
+        </div>
+        <p class="field">Threshold: {{dashboardChart.threshold}}</p>
+        <div class="field">
+          <p-slider class="chart-menu-slider"
+                    [(ngModel)]="dashboardChart.threshold"
+                    [disabled]="dashboardChart.showCommon">
+          </p-slider>
+        </div>
+        <p class="field">Show data for (5-60 min): {{dashboardChart.historyTime}}</p>
+        <div class="field">
+          <p-slider class="chart-menu-slider"
+                    [(ngModel)]="dashboardChart.historyTime"
+                    [disabled]="!isTimeAvailable"
+                    [min]="5"
+                    [max]="60">
+          </p-slider>
+        </div>
+        <div class="chart-panel-menu-title field">Stylization:</div>
+        <p class="field">Title: </p>
+        <input type="text"
+               [(ngModel)]="dashboardChart.title"
+               pInputText/>
+        <p class="field">Legend title: </p>
+        <input type="text"
+               [(ngModel)]="dashboardChart.legendTitle"
+               [disabled]="!dashboardChart.showLegend"
+               pInputText/>
+        <p class="field">Color schemes:</p>
+        <p-dropdown [options]="colorSchemes"
+                    [autoWidth]="false"
+                    optionLabel="name"
+                    [(ngModel)]="dashboardChart.colorScheme"
+                    placeholder="Select a scheme"
+                    (onChange)="processData()">
+        </p-dropdown>
+        <p class="field">Y axis label (optional): </p>
+        <input type="text"
+               [disabled]="!dashboardChart.showYAxis"
+               [(ngModel)]="dashboardChart.yAxisLabel"
+               pInputText/>
+        <p class="field">X axis label (optional): </p>
+        <input type="text"
+               [disabled]="!dashboardChart.showXAxis"
+               [(ngModel)]="dashboardChart.xAxisLabel"
+               pInputText/>
+      </div>
+    </div>
+    <div class="ui-g-9">
+      <div class="visualization-wrapper">
+        <p class="field-top text-center">Preview</p>
+        <div class="view-chart" *ngIf="showPreview && dashboardChart.data && dashboardChart.data.length > 0">
+          <div class="chart-title">{{dashboardChart.title}}</div>
+          <app-chart class="chart"
+                     [chart]="dashboardChart"
+                     [data]="dashboardChart.data"
+                     [showDownload]="false">
+          </app-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="text-center btn-panel">
+      <button type="button"
+              class="ui-button-raised ui-button-success btn-inline-flex ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+              [disabled]="!isValid || isSaving"
+              (click)="onEditChart()">
+              <p-progressSpinner class="btn-spinner" *ngIf="isSaving" strokeWidth="5"></p-progressSpinner>
+						  <span class="ui-button-text" *ngIf="!isSaving">Save</span>
+      </button>
+      <button type="button"
+              class="ui-button-warning btn-inline-flex ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+              (click)="closeDialog()">
+              <span class="ui-button-text">Cancel</span>
+      </button>
+    </div>
+  </p-footer>
+
+</p-dialog>

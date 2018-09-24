@@ -1,7 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20180909232926_ExtendedThemeEntity.cs" />
+    <Compile Remove="Data\Migrations\20180910135905_RemovedThemeFromUser.cs" />
+    <Compile Remove="Data\Migrations\20180912000450_ExtendedThemeEntity.cs" />
+    <Compile Remove="Data\Migrations\20180912055450_UpdatedInstanceSettings.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="Bogus" Version="22.3.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Watcher.Common\Watcher.Common.csproj" />
+  </ItemGroup>
 
 </Project>

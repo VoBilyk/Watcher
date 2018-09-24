@@ -1,0 +1,53 @@
+<div *ngIf="currentUser" class="header">
+
+  <div class="logo-wr">
+      <a routerLink="/user" class="logo">WATCHER | {{currentUser?.lastPickedOrganization.name}}</a>
+  </div>
+
+  <div class="ui-toolbar-group-right">
+
+    <p-tieredMenu #admin [model]="adminItems" [popup]="true"></p-tieredMenu>
+    <button #btn type="button" *ngIf="isAdmin()" pButton icon="fa fa-fw fa-user" (click)="admin.toggle($event)"></button>
+
+    <div class="toolbar-item">
+      <button type="button" pButton icon="fa fa-fw fa-bell-o" (click)="notificationBlock.toggle($event)"></button>
+      <span *ngIf="notificationCounter" class="topbar-badge">{{ notificationCounter }}</span>
+    </div>
+    <p-overlayPanel #notificationBlock class="notifications-block">
+      <app-notification-block (counterChanged)="changeCounter($event)"></app-notification-block>
+    </p-overlayPanel>
+
+    <div class="toolbar-item">
+      <button #btn type="button" pButton icon="fa fa-fw fa-bullhorn" (click)="onFeedback()"></button>
+    </div>
+
+    <p-tieredMenu #cog [model]="cogItems" [popup]="true"></p-tieredMenu>
+    <button #btn type="button" pButton icon="fa fa-fw fa-cog" (click)="cog.toggle($event)"></button>
+
+    <p-tieredMenu #org [model]="orgItems" [popup]="true"></p-tieredMenu>
+    <button #btn type="button" pButton icon="fa fa-sitemap" (click)="org.toggle($event)"></button>
+    <app-add-new-organization [(display)]="displayAddNewOrganization" (displayChange)="onDisplayChange($event)"></app-add-new-organization>
+    <app-spinner-popup [display]="isChangingOrganization" [header]="popupMessage"></app-spinner-popup>
+
+    <button pButton class="user-info-btn" label="{{currentUser?.displayName}}" (click)="op1.toggle($event)">
+      <img src="{{currentUser?.photoURL}}" class="user-photo" alt="" />
+    </button>
+
+    <p-overlayPanel #op1 styleClass="user-overlay">
+      <div class="user-info-wrp">
+        <div class="text-center user-photo-wrp">
+          <img src="{{currentUser?.photoURL}}" class="user-photo" alt="User photo" (click)="openUserProfile(op1)"/>
+        </div>
+        <div class="user-overlay-info">
+          <div class="user-name">{{ currentUser?.displayName }}</div>
+          <p class="user-email">{{ currentUser?.email }}</p>
+          <p class="user-organization"><a routerLink="/user/settings/organization-profile" class="colorCompanyName">{{currentUser?.lastPickedOrganization?.name}}</a></p>
+        </div>
+      </div>
+      <div class="overlay-buttons">
+        <a class="overlay-btn edit-btn" (click)="openUserProfile(op1);"><i class="fa fa-edit icon-btn"></i>Edit</a>
+        <a class="overlay-btn logout-btn" (click)="logout()"><i class="fa fa-fw fa-sign-out icon-btn"></i>Logout</a>
+      </div>
+    </p-overlayPanel>
+  </div>
+</div>

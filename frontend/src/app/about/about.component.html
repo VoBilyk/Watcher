@@ -1,0 +1,98 @@
+<header id="header">
+  <div class="container">
+    <h1>
+      <a routerLink="/" fragment="home">Watcher</a>
+      <i class="fas fa-bars" id="mobile" (click)="show()"></i>
+    </h1>
+    <nav id="nav">
+      <ul id="desktop">
+        <li>
+          <a routerLink="/" fragment="home">Home</a>
+        </li>
+        <li>
+          <a routerLink="/" fragment="why-watcher">Why watcher</a>
+        </li>
+        <li>
+          <a routerLink="/" fragment="advantages">Advantages</a>
+        </li>
+        <li>
+          <a routerLink="/" fragment="contacts">Contact us</a>
+        </li>
+        <li>
+          <a>About</a>
+        </li>
+        <li id="btnAutorization">
+          <app-authorization></app-authorization>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="content-wrp">
+  <section class="main-section">
+    <p class="part-proj">A platform for monitoring the consumption of resources and other system information on virtual
+      machines for analysis
+      and emergency feedback.</p>
+    <h1 class="page-title">About us</h1>
+    <div class="description">
+      <p>We are a friendly team of developers.</p>
+      <p>This is a group project of the Binary Studio Academy 2018.</p>
+
+    </div>
+  </section>
+  <div class="section-wrp">
+    <div class="row-photo">
+        <h1 class="page-title coaches">Сoaches</h1>
+        <h1 class="page-title consultant">.NET consultant</h1>
+        <h1 class="page-title owner">Product owner</h1>
+        <div class="small-photo alik" ></div>
+        <div class="small-photo maxim" ></div>
+        <div class="small-photo nikita" ></div>
+        <div class="small-photo filatov" ></div>
+    </div>
+  </div>
+  <div class="section-wrp">
+    <h1 class="page-title">Students</h1>
+    <div class="row-photo">
+        <div class="small-photo vova" ></div>
+        <div class="small-photo lesha" ></div>
+        <div class="small-photo sasha" ></div>
+        <div class="small-photo bohdan" ></div>
+    </div>
+    <div class="row-photo">
+        <div class="small-photo pasha" ></div>
+        <div class="small-photo rostik" ></div>
+        <div class="small-photo kostya" ></div>
+        <div class="small-photo tanya" ></div>
+    </div>
+  </div>
+</div>
+<footer class="footer-distributed ">
+  <div class="footer-wrapper">
+    <div class="footer-right ">
+      <a href="https://www.facebook.com/bsa.watcher.1">
+        <i class="fa fa-facebook "></i>
+      </a>
+      <a href="https://twitter.com/BsaWatcher">
+        <i class="fa fa-twitter "></i>
+      </a>
+      <a href="https://www.linkedin.com/in/bsa-watcher-7b510016b/">
+        <i class="fa fa-linkedin "></i>
+      </a>
+      <a href="https://github.com/BinaryStudioAcademy/bsa-2018-watcher">
+        <i class="fa fa-github "></i>
+      </a>
+    </div>
+
+    <div class="footer-left ">
+      <p class="footer-links ">
+        <a routerLink="/" fragment="home">Home</a> ·
+        <a routerLink="/" fragment="why-watcher">Why watcher</a> ·
+        <a routerLink="/" fragment="advantages">Advantages</a> ·
+        <a routerLink="/" fragment="contacts">Contact us</a> ·
+        <a routerLink="/about">About</a>
+      </p>
+      <p>Watcher © 2018</p>
+    </div>
+  </div>
+</footer>

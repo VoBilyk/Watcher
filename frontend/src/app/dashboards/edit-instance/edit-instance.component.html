@@ -1,0 +1,75 @@
+<div class="working-area">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-lg-6 space">
+      <div class="title">{{instanceTitle}}</div>
+      <hr>
+    </div>
+  </div>
+  <form [formGroup]="instanceForm" (ngSubmit)="onSubmit()">
+    <div class="label">Title:</div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12 ui-md-6 ui-lg-4">
+        <input pInputText type="text" formControlName="title" pInputText placeholder="Title">
+      </div>
+    </div>
+
+    <div class="invalid" *ngIf="instanceForm.get('title').errors && (instanceForm.get('title').touched ||instanceForm.get('title').dirty)">
+      <label>Title is required.</label>
+    </div>
+
+    <div class="label label-main">Platform:</div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12 ui-md-6 ui-lg-6">
+        <p-dropdown [options]="platformsDropdown" [formGroup]="instanceForm" formControlName="platform"></p-dropdown>
+      </div>
+    </div>
+
+    <div class="label label-main">IP address:</div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12 ui-md-6 ui-lg-4">
+        <input pInputText type="text" formControlName="address" pInputText placeholder="Address">
+      </div>
+    </div>
+
+    <div class="label label-main">Aggregation:</div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12 ui-md-6 ui-lg-4 aggregation-checks">
+        <p-checkbox formControlName="aggregationHour" label="Hourly" inputId="hour" binary="true"></p-checkbox>
+        <p-checkbox formControlName="aggregationDay" label="Daily" inputId="day" binary="true"></p-checkbox>
+        <p-checkbox formControlName="aggregationWeek" label="Weekly" inputId="week" binary="true"></p-checkbox>
+        <p-checkbox formControlName="aggregationMonth" label="Monthly" inputId="month" binary="true"></p-checkbox>
+      </div>
+    </div>
+
+    <div class="label label-main">Receive notifications on:</div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12 ui-md-6 ui-lg-4">
+          <div class="secondary-label">Max cpu percent: {{instanceForm.controls.cpuMax.value}}</div>
+          <p-slider formControlName="cpuMax" [min]="0" [max]="100"></p-slider>
+
+          <div class="secondary-label">Max ram percent: {{instanceForm.controls.ramMax.value}}</div>
+          <p-slider formControlName="ramMax" [min]="0" [max]="100"></p-slider>
+
+          <div class="secondary-label">Max disk percent: {{instanceForm.controls.diskMax.value}}</div>
+          <p-slider formControlName="diskMax" [min]="0" [max]="100"></p-slider>
+      </div>
+    </div>
+
+    <div *ngIf="id" class="label label-main">Identifier:</div>
+    <div *ngIf="id" class="ui-g ui-fluid">
+      <div class="ui-g-12 ui-md-6 ui-lg-4">
+        <div class="ui-inputgroup identifier">
+          <input pInputText type="text" readonly formControlName="guid" pInputText placeholder="Identifier">
+          <button pButton type="button" label="Copy" class="ui-button-info" (click)="copyToClipboard(this.instance.guidId)"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-panel">
+      <button type="submit" [disabled]="isSaving" class="btn-inline-flex ui-button-raised ui-button-success ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+        <p-progressSpinner class="btn-spinner" *ngIf="isSaving" strokeWidth="5"></p-progressSpinner>
+        <span class="ui-button-text" *ngIf="!isSaving">Save</span>
+      </button>
+    </div>
+  </form>
+</div>

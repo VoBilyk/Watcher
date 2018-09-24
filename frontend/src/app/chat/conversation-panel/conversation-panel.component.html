@@ -1,0 +1,41 @@
+<app-conversation-settings-popup [onDisplay]="onDisplaySettings"></app-conversation-settings-popup>
+
+<div class="conversation-panel ui-shadow">
+  <p-accordion (onClose)="window.isCollapsed = true" (onOpen)="extend()" expandIcon="" collapseIcon="">
+    <p-accordionTab [selected]="!window.isCollapsed">
+      <p-header class="vertical-center">
+        <div class="panel-name">
+          <span *ngIf="window.unreadMessages" class="message-counter">{{window.unreadMessages}}</span>
+          <div class="text-overflow">{{window.chat.name}}</div>
+        </div>
+        <div class="vertical-center">
+          <i class="icon fa fa-cog" (click)="openSettings($event)" pTooltip="Settings" tooltipPosition="top"></i>
+          <i class="icon fa fa-close" (click)="closePanel($event)" pTooltip="Close" tooltipPosition="top"></i>
+        </div>
+      </p-header>
+
+      <div class="conversation-panel-content ui-fluid">
+        <div #scrollMe [scrollTop]="scrollMe.scrollHeight" class="conversation-message-list">
+          <div *ngFor="let message of window.chat.messages" class="message" [ngClass]="{'received-message': message.user.id != currentUser?.id}">
+            <div class="ui-g">
+              <div class="ui-g-3 ui-g-nopad">
+                <img class="message-user-img" src="{{message.user.photoURL}}" />
+              </div>
+              <div class="ui-g-9 ui-g-nopad">
+                <strong class="message-name text-overflow text-inline">{{message?.user?.displayName}}</strong>
+                <div class="message-text">{{message.text}}</div>
+                <div class="message-date">{{message.createdAt | date:'short'}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-inputgroup send-message-input">
+          <input class="border-top" type="text" pInputText [(ngModel)]="textMessage" (keyup.enter)="sendMessage()"
+            placeholder="Write message">
+          <button pButton class="ui-button-secondary send-button" icon="fa fa-send" (click)="sendMessage()"></button>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+</div>

@@ -1,0 +1,178 @@
+.header
+    background-color: rgb(0,0,0)
+    box-sizing: border-box
+    display: flex
+    justify-content: space-between
+    padding: 0
+    height: 60px
+    box-sizing: border-box
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    z-index: 9997
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.3)
+
+.notifications-block
+    /deep/.ui-overlaypanel
+        left: unset !important
+        right: 15px
+        top: 60px !important
+
+.menu-button
+    background-color: #20272a
+    color: #ffffff
+    border: none
+    font-size: 20px
+    margin-left: 20px
+    display: none
+
+.organizations
+    color: white
+    vertical-align: middle
+
+/deep/.user-info-btn
+    float: right
+    top: 0
+    font-weight: 500
+    color: white
+    cursor: pointer
+    padding: 7.5px 10px
+    margin-right: 16px !important
+    display: flex
+    flex-direction: row-reverse
+    font-size: 14px !important
+    align-items: center
+
+    .ui-button-text
+        padding: 0 !important
+        padding-right: 10px !important
+
+.user-photo
+    height: 25px
+    border-radius: 3px
+    vertical-align: middle
+    border: 0 none
+
+
+/deep/.ui-toolbar-group-right
+    display: flexbox
+
+/deep/ .header
+    .ui-button
+        background-color: #313232
+        border: 1px solid #313232
+        margin: 10px 1px 0 3px
+        font-size: 1.3em
+        height: auto
+
+    .ui-button-icon-only
+        width: 2em !important
+        height: 2em
+
+    .ui-tieredmenu-dynamic
+        top: 57px !important
+
+    .ui-tieredmenu
+        background: #F7F8FA !important
+
+/deep/#bell-button:hover
+    background-color: #116FBF !important
+
+.toolbar-item
+    display: inline-block
+    position: relative
+
+    .topbar-badge
+        position: absolute
+        right: 0
+        top: 10px
+        background-color: #3eb839
+        color: #ffffff
+        -moz-border-radius: 50%
+        -webkit-border-radius: 50%
+        border-radius: 50%
+        padding: 2px 4px
+        display: block
+        font-size: 12px
+        line-height: 12px
+
+.selectedMenuItem
+    color: red
+    font-weight: 900
+
+.logo-wr
+    height: 40px
+    margin-left: 16px
+    margin-top: 10px
+    display: flex
+
+.logo
+    font-size: 1.2em
+    font-weight: 600
+    letter-spacing: 2px
+    color: white
+    display: flexbox
+    text-transform: uppercase
+    margin-top: 10px
+
+
+/deep/body .ui-overlaypanel .ui-overlaypanel-content,
+.ui-overlaypanel-content
+    padding: 0
+    width: auto
+    border-bottom: 1px solid #DFE1E2
+    border-right: 1px solid #DFE1E2
+    border-left: 1px solid #DFE1E2
+
+
+/deep/.user-overlay
+    font-size: 15px
+    padding: 0
+    top: 60px !important
+    right: 15px !important
+
+    .user-info-wrp
+        display: flex
+        padding: 15px
+
+    .user-name
+        font-weight: bold
+
+    .user-email
+        font-size: 12px
+        margin-right: 0
+
+    .user-organization
+        margin-top: 17.5px
+        margin-right: 0
+        text-transform: uppercase
+
+        .fa-fw
+            width: 1em // ???
+            margin-right: 5px
+
+    .overlay-buttons
+        display: flex
+        justify-content: space-between
+        padding: 10px 20px
+
+        .overlay-btn
+            cursor: pointer
+            color: gray
+            text-decoration: none
+
+        .edit-btn
+            .icon-btn
+                margin-right: 3px
+
+
+    .user-photo-wrp
+        margin-right: 15px
+
+    .user-photo
+        height: 75px
+        border-radius: 5px
+
+.colorCompanyName
+    color: #2a2a2a
