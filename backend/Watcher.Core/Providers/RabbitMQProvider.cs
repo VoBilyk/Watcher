@@ -60,6 +60,12 @@
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 
+            _channel.QueueDeclare(_queueOptions.Value.DataQueueName, false, false, true, null);
+            _channel.QueueDeclare(_queueOptions.Value.ErrorQueueName, false, false, true, null);
+            _channel.QueueDeclare(_queueOptions.Value.SettingsQueueName, false, false, true, null);
+            _channel.QueueDeclare(_queueOptions.Value.NotificationQueueName, false, false, true, null);
+            _channel.QueueDeclare(_queueOptions.Value.AnomalyReportQueueName, false, false, true, null);
+
             _sender = sender;
             _receiver = receiver;
 

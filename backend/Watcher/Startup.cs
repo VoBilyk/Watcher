@@ -1,53 +1,52 @@
-﻿using ServiceBus.Shared.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+using AutoMapper;
+
+using DataAccumulator.DataAccessLayer.Entities;
+using DataAccumulator.DataAccessLayer.Interfaces;
+using DataAccumulator.DataAccessLayer.Repositories;
+
+using FluentValidation.AspNetCore;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+
+using Newtonsoft.Json;
+
+using RabbitMQ.Client;
+
+using ServiceBus.Shared.Queue;
+using ServiceBus.Shared.Interfaces;
+using DataAccumulator.Shared.Models;
+
+using Watcher.Common.Options;
+using Watcher.Common.Validators;
+using Watcher.Core.Hubs;
+using Watcher.Core.Interfaces;
+using Watcher.Core.MappingProfiles;
+using Watcher.Core.Providers;
+using Watcher.Core.Services;
+using Watcher.DataAccess;
+using Watcher.DataAccess.Data;
+using Watcher.DataAccess.Interfaces;
+using Watcher.Extensions;
+using Watcher.Utils;
 
 namespace Watcher
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
-
-    using AutoMapper;
-
-    using DataAccumulator.DataAccessLayer.Entities;
-    using DataAccumulator.DataAccessLayer.Interfaces;
-    using DataAccumulator.DataAccessLayer.Repositories;
-
-    using FluentValidation.AspNetCore;
-
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.SignalR;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.IdentityModel.Tokens;
-
-    using Newtonsoft.Json;
-
-    using RabbitMQ.Client;
-
-    using ServiceBus.Shared.Queue;
-    using DataAccumulator.Shared.Models;
-
-    using Watcher.Common.Options;
-    using Watcher.Common.Validators;
-    using Watcher.Core.Hubs;
-    using Watcher.Core.Interfaces;
-    using Watcher.Core.MappingProfiles;
-    using Watcher.Core.Providers;
-    using Watcher.Core.Services;
-    using Watcher.DataAccess;
-    using Watcher.DataAccess.Data;
-    using Watcher.DataAccess.Interfaces;
-    using Watcher.Extensions;
-    using Watcher.Utils;
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -83,28 +82,6 @@ namespace Watcher
                     o.Security_Key = securitySection["Security_Key"];
                 });
 
-            var useRabbitMQ = true;
-            if (useRabbitMQ)
-            {
-                //var connectionFactory = new ConnectionFactory();
-                //Configuration.GetSection("RabbitMqConnection").Bind(connectionFactory);
-            }
-
-            {
-                //var serviceBusSection = Configuration.GetSection("ServiceBus");
-
-                var serviceBusSection = Configuration.GetSection("RabbitMq");
-
-                services.Configure<QueueSettings>(o =>
-                {
-                    //o.ConnectionString = serviceBusSection["ConnectionString"];
-                    o.DataQueueName = serviceBusSection["DataQueueName"];
-                    o.ErrorQueueName = serviceBusSection["ErrorQueueName"];
-                    o.SettingsQueueName = serviceBusSection["SettingsQueueName"];
-                    o.NotificationQueueName = serviceBusSection["NotificationQueueName"];
-                    o.AnomalyReportQueueName = serviceBusSection["AnomalyReportQueueName"];
-                });
-            }
 
             services.ConfigureSwagger(Configuration);
 
@@ -136,14 +113,11 @@ namespace Watcher
             services.AddTransient<ICollectorActionLogService, CollectorActionLogService>();
             services.AddTransient<IThemeService, ThemeService>();
             services.AddTransient<ICollectorAppsService, CollectorAppsService>();
-
-            //services.AddTransient<IAzureQueueSender, AzureQueueSender>();
-            //services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
-            //services.AddSingleton<IServiceBusProvider, ServiceBusProvider>();
-
             services.AddTransient<IRabbitMqSender, RabbitMqSender>();
             services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
             services.AddSingleton<IServiceBusProvider, RabbitMqProvider>();
+
+            ConfigureRabbitMq(services, Configuration);
 
             // repo initialization localhost while development env, azure in prod
             ConfigureCosmosDb(services, Configuration);
@@ -199,8 +173,7 @@ namespace Watcher
                             new TokenValidationParameters
                             {
                                 ValidateIssuer = true,
-                                ValidIssuer =
-                                        "https://securetoken.google.com/watcherapp-2984b",
+                                ValidIssuer = "https://securetoken.google.com/watcherapp-2984b",
                                 ValidateAudience = true,
                                 ValidAudience = "watcherapp-2984b",
                                 ValidateLifetime = true
@@ -294,6 +267,26 @@ namespace Watcher
             app.UseMvc();
 
             var provider = app.ApplicationServices.GetService<IServiceBusProvider>();
+        }
+
+        public virtual void ConfigureRabbitMq(IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionFactory = new ConnectionFactory();
+            Configuration.GetSection("RabbitMqConnection").Bind(connectionFactory);
+
+            IConnection connection = connectionFactory.CreateConnection();
+            IModel channel = connection.CreateModel();
+
+            var rabbitMqSection = Configuration.GetSection("RabbitMq");
+
+            services.Configure<QueueSettings>(o =>
+            {
+                o.DataQueueName = rabbitMqSection["DataQueueName"];
+                o.ErrorQueueName = rabbitMqSection["ErrorQueueName"];
+                o.SettingsQueueName = rabbitMqSection["SettingsQueueName"];
+                o.NotificationQueueName = rabbitMqSection["NotificationQueueName"];
+                o.AnomalyReportQueueName = rabbitMqSection["AnomalyReportQueueName"];
+            });
         }
 
         public virtual void ConfigureCosmosDb(IServiceCollection services, IConfiguration configuration)
