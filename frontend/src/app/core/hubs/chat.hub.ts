@@ -52,7 +52,7 @@ export class ChatHub {
                 })
                 .catch(err => {
                     console.log('Error while establishing connection (ChatHub)');
-                    setTimeout(this.startConnection(), 3000);
+                    setTimeout(() => this.startConnection(), 3000);
                 });
       });
     }

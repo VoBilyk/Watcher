@@ -38,7 +38,7 @@ export class DashboardsHub {
         })
         .catch(err => {
           console.log('Error while establishing connection (Dashboards Hub)');
-          setTimeout(this.startConnection(), 3000);
+          setTimeout(() => this.startConnection(), 3000);
         });
     });
   }

@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {AuthService} from './core/services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './core/services/auth.service';
 import { ThemeService } from './core/services/theme.service';
 import { DomSanitizer } from 'node_modules/@angular/platform-browser';
 
@@ -19,12 +19,12 @@ export class AppComponent implements OnInit {
       await this.authService.populate();
     }
 
-    const user =  this.authService.getCurrentUserLS();
-    if (user) {
-      const themeId = user.lastPickedOrganization.themeId;
-      if (themeId) {
-      this.themeService.applyThemeById(themeId);
-      }
-    }
+    // const user = this.authService.getCurrentUserLS();
+    // if (user) {
+    //   const themeId = user.lastPickedOrganization.themeId;
+    //   if (themeId) {
+    //     this.themeService.applyThemeById(themeId);
+    //   }
+    // }
   }
 }

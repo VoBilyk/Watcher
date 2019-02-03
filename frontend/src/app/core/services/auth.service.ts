@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject, Observable, ReplaySubject, forkJoin } from 'rxjs';
 import { UserRegisterRequest } from '../../shared/models/user-register-request';
 import { TokenService } from './token.service';
@@ -130,7 +130,7 @@ export class AuthService {
     return this.tokenService.login(request).toPromise()
       .then(tokenDto => {
         this.setAuth(tokenDto);
-        if (tokenDto.user.lastPickedOrganization.themeId) {
+        if (tokenDto.user.lastPickedOrganization) {
           this.themeService.applyThemeById(tokenDto.user.lastPickedOrganization.themeId);
         }
       })

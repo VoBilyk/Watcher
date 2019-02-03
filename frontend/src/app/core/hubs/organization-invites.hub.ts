@@ -43,7 +43,7 @@ export class OrganizationInvitesHub {
         })
         .catch(err => {
           console.error('Error while establishing connection (OrganizationInvitesHub)');
-          setTimeout(this.startInviteHubConnection(), 3000);
+          setTimeout(() => this.startInviteHubConnection(), 3000);
         });
     });
   }
