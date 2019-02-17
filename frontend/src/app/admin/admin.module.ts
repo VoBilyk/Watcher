@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminRoutingModule } from './admin-routing.module';
-import { AdminPageComponent } from './admin-page/admin-page.component';
 import { OrganizationListComponent } from './organization-list/organization-list.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { FeedbackListComponent } from './feedback-list/feedback-list.component';
@@ -37,7 +36,6 @@ import { DataCollectorComponent } from './data-collector/data-collector.componen
     FileUploadModule
   ],
   declarations: [
-    AdminPageComponent,
     FeedbackListComponent,
     UserListComponent,
     OrganizationListComponent,

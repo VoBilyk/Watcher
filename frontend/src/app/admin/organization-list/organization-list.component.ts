@@ -3,7 +3,6 @@ import { FormControl, FormBuilder, Validators } from '@angular/forms';
 import { OrganizationService } from '../../core/services/organization.service';
 import { InstanceService } from '../../core/services/instance.service';
 import { User } from '../../shared/models/user.model';
-import { Feedback } from '../../shared/models/feedback.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastrService } from '../../core/services/toastr.service';
 import { Organization } from '../../shared/models/organization.model';

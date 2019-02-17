@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { FeedbackService } from '../../core/services/feedback.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -10,7 +10,6 @@ import { Response } from '../../shared/models/response.model';
 import { LongAnswerType } from '../../shared/models/long-answer-type.enum';
 import { ShortAnswerType } from '../../shared/models/short-answer-type.enum';
 import { ResponseService } from '../../core/services/response.service';
-import { ValueTransformer } from '@angular/compiler/src/util';
 import { ForShow } from '../forShow.model';
 import { LazyLoadEvent } from '../../../../node_modules/primeng/api';
 
