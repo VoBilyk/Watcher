@@ -1,30 +1,30 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { AuthService } from '../services/auth.service';
-import { Observable, from } from 'rxjs';
+import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class TokensInterceptor implements HttpInterceptor {
   headersConfig = {
     'Content-Type': 'application/json; charset=utf-8',
-    'Accept': 'application/json'
+    Accept: 'application/json'
   };
 
-  constructor(public auth: AuthService) {
-  }
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  constructor(private auth: AuthService) { }
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
     // check for preventing infinite loop while getting new token from backend
     if (req.url.match(/\/Tokens\/Login/)) {
       console.log('Login...');
       return from(this.auth.getFirebaseToken()).pipe(
-        flatMap<string, HttpEvent<any>>((firebaseToken) => {
+        flatMap(firebaseToken => {
           let headers = {};
           if (firebaseToken) {
             headers = {
               'Content-Type': 'application/json; charset=utf-8',
-              'Accept': 'application/json',
-              'Authorization': `Bearer ${firebaseToken}`
+              Accept: 'application/json',
+              Authorization: `Bearer ${firebaseToken}`
             };
           } else {
             headers = this.headersConfig;
@@ -34,7 +34,7 @@ export class TokensInterceptor implements HttpInterceptor {
         }));
     }
     return this.auth.getTokens().pipe(
-      flatMap<string[], HttpEvent<any>>(([firebaseToken, watcherToken]) => {
+      flatMap(([firebaseToken, watcherToken]) => {
         if (firebaseToken) {
           this.headersConfig['Authorization'] = `Bearer ${firebaseToken}`;
         }

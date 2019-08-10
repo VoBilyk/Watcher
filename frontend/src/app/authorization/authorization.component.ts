@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { AuthService } from '../core/services/auth.service';
 import { Router } from '@angular/router';
-import { ReplaySubject, Observable } from 'rxjs';
 import { Organization } from '../shared/models/organization.model';
 
 @Component({
@@ -11,10 +10,10 @@ import { Organization } from '../shared/models/organization.model';
 })
 export class AuthorizationComponent implements OnInit {
 
-  @ViewChild('signInTemplate') signInTemplate;
-  @ViewChild('signUpTemplate') signUpTemplate;
-  @ViewChild('userDetailsTemplate') userDetailsTemplate;
-  @ViewChild('notRegisteredSignInTemplate') notRegisteredSignInTemplate;
+  @ViewChild('signInTemplate', { static: true }) signInTemplate;
+  @ViewChild('signUpTemplate', { static: true }) signUpTemplate;
+  @ViewChild('userDetailsTemplate', { static: true }) userDetailsTemplate;
+  @ViewChild('notRegisteredSignInTemplate', { static: true }) notRegisteredSignInTemplate;
 
   @Input() display = false; // two-way binding
   @Output() displayChange = new EventEmitter<boolean>();

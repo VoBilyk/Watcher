@@ -14,7 +14,7 @@
     top: 60px
 
 
-/deep/ .menu 
+::ng-deep .menu
     .ui-panelmenu .ui-panelmenu-panel
         margin-top: 0
 
@@ -23,19 +23,19 @@
         padding: .7em
 
     .ui-menuitem-icon
-        font-size: 1.6em   
+        font-size: 1.6em
 
-    .ui-menuitem-text  
-        font-size: 1.3em 
+    .ui-menuitem-text
+        font-size: 1.3em
         font-weight: 500
 
     span.ui-menuitem-text
         width: 185px
         display: inline-block
-        text-overflow: ellipsis 
+        text-overflow: ellipsis
         overflow: hidden
 
-    .ui-panelmenu .ui-panelmenu-header > a  
+    .ui-panelmenu .ui-panelmenu-header > a
         background-color: #fff
         width: 100%
         height: 50px
@@ -45,15 +45,15 @@
         border-top: 1px solid #e3e9ea
         border-right: 1px solid transparent
         border-bottom: 1px solid #e3e9ea
-        box-sizing: border-box    
+        box-sizing: border-box
 
-.search 
+.search
     position: relative
     display: flex
     padding: .7em .9em
     i
         margin-top: 2px
-        margin-right: 12px 
+        margin-right: 12px
 
 input
     position: relative
@@ -70,7 +70,7 @@ input
     transition: box-shadow 0.3s, border-color 0.3s
     width: 230px
 
-i 
+i
     position: absolute
     color: #777777
     top: 18px
@@ -78,9 +78,8 @@ i
     font-size: 1.2em
     cursor: pointer
 
-/deep/body .ui-panelmenu .ui-panelmenu-content .ui-menuitem .ui-menuitem-link
+::ng-deepbody .ui-panelmenu .ui-panelmenu-content .ui-menuitem .ui-menuitem-link
     padding: 0.714em 1.4em !important
     span.ui-menuitem-text
         width: 160px
 
-    

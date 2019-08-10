@@ -16,8 +16,8 @@ import {date_sort_asc, date_sort_desc} from '../charts/models';
 })
 export class AnomalyReportComponent implements OnInit {
 
-  @ViewChild('cf1') calendarFilter1: Calendar;
-  @ViewChild('cf2') calendarFilter2: Calendar;
+  @ViewChild('cf1', { static: true }) calendarFilter1: Calendar;
+  @ViewChild('cf2', { static: true }) calendarFilter2: Calendar;
 
   id: string;
 

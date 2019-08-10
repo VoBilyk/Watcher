@@ -23,9 +23,9 @@ import html2canvas from 'html2canvas';
 })
 export class ReportComponent implements OnInit {
 
-  @ViewChild('cf1') calendarFilter1: Calendar;
-  @ViewChild('cf2') calendarFilter2: Calendar;
-  @ViewChild('ct') timeInput: Calendar;
+  @ViewChild('cf1', { static: true }) calendarFilter1: Calendar;
+  @ViewChild('cf2', { static: true }) calendarFilter2: Calendar;
+  @ViewChild('ct', { static: true }) timeInput: Calendar;
   @ViewChildren('chartPDF') chartPDF: QueryList<ElementRef>;
 
   private id: string;

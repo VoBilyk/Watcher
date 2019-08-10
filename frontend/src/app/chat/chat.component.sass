@@ -1,125 +1,129 @@
-/deep/.ui-accordion
-	.ui-accordion-header
-		margin: 0 !important
-		a
-			border-top-left-radius: 3px
-			border-top-right-radius: 3px
-			padding: 4px !important
-	.ui-accordion-content
-		padding: 0 !important
-		border: 0 !important
-		height: 300px
-		width: 100%
-		overflow-x: hidden
+::ng-deep.ui-accordion
+    .ui-accordion-header
+        margin: 0 !important
+
+        a
+            border-top-left-radius: 3px
+            border-top-right-radius: 3px
+            padding: 4px !important
+    .ui-accordion-content
+        padding: 0 !important
+        border: 0 !important
+        height: 300px
+        width: 100%
+        overflow-x: hidden
 
 .panel-name
-	display: inline-flex
-	width: 80%
-	align-items: center
-	padding: 0px 5px
-	white-space: nowrap
+    display: inline-flex
+    width: 80%
+    align-items: center
+    padding: 0px 5px
+    white-space: nowrap
+
 .chat-list-panel
-	position: fixed
-	bottom: 0
-	right: 20px
-	width: 150px
-	.chat-list-img
-		width: 30px
-		height: 30px
-		border-radius: 50%
-	.chat-list-name
-		display: block
-		max-width: 100%
-		white-space: nowrap
-		line-height: 30px
-	/deep/.ui-listbox
-		border: 0
-		min-width: 100%
-		.ui-listbox-list
-			width: 100%
-			overflow-x: hidden
-		.ui-listbox-item
-			padding: 0.25em 0.5em
+    position: fixed
+    bottom: 0
+    right: 190px
+    width: 250px
+
+    .chat-list-img
+        width: 30px
+        height: 30px
+        border-radius: 50%
+    .chat-list-name
+        display: block
+        max-width: 100%
+        white-space: nowrap
+        line-height: 30px
+    ::ng-deep.ui-listbox
+        border: 0
+        min-width: 100%
+
+        .ui-listbox-list
+            width: 100%
+            overflow-x: hidden
+        .ui-listbox-item
+            padding: 0.25em 0.5em
 
 .vertical-center
-	display: flex
-	align-items: center
-	justify-content: space-between
+    display: flex
+    align-items: center
+    justify-content: space-between
 
 .icon
-	cursor: pointer
-	font-size: 1.3em
-	margin: 0 4px
+    cursor: pointer
+    font-size: 1.3em
+    margin: 0 4px
 
 .icon:hover
     color: gray
 
 .field
-	margin-left: 3px
-	margin-top: 10px
+    margin-left: 3px
+    margin-top: 10px
 
 .text-overflow
-	overflow: hidden
-	text-overflow: ellipsis
+    overflow: hidden
+    text-overflow: ellipsis
 
 .user-list
-	overflow-y: auto
-	max-height: 150px
-	white-space: nowrap
+    overflow-y: auto
+    max-height: 150px
+    white-space: nowrap
 
 .user-list-img
-	width: 40px
-	height: 40px
-	float: left
-	margin-right: 5px
-	border-radius: 50%
+    width: 40px
+    height: 40px
+    float: left
+    margin-right: 5px
+    border-radius: 50%
 
 .user-list-item
-	border-top: 1px solid #d5d5d5
-	padding: 5px
+    border-top: 1px solid #d5d5d5
+    padding: 5px
 
 .user-list-name
-	display: flex
-	align-items: center
+    display: flex
+    align-items: center
 
 .message-counter
-	background-color: #CF513D
-	color: #ffffff
-	border-radius: 50%
-	padding: 0px 4px
-	font-size: 12px
-	height: fit-content
-	margin-right: 5px
+    background-color: #CF513D
+    color: #ffffff
+    border-radius: 50%
+    padding: 0px 4px
+    font-size: 12px
+    height: fit-content
+    margin-right: 5px
 
 .counter-absolute
-	position: absolute
-	z-index: 10
-	right: 0px
-	top: -2px
-	padding: 0px 3px
-	font-size: 10px
+    position: absolute
+    z-index: 10
+    right: 0px
+    top: -2px
+    padding: 0px 3px
+    font-size: 10px
 
 .notification-settings
     border-top: 1px solid #d5d5d5
     padding-top: 10px
     padding-bottom: 5px
-    /deep/.ui-inputswitch
+    ::ng-deep.ui-inputswitch
         margin: 0 5px !important
 .notification-setting-item
-	display: flex
-	align-items: center
-	justify-content: center
-	margin: 0 5px
+    display: flex
+    align-items: center
+    justify-content: center
+    margin: 0 5px
 
 .spinner
-  margin-top: 15px
+    margin-top: 15px
 
 .empty-chat
-  text-align: center
-  margin-top: 10px
+    text-align: center
+    margin-top: 10px
 
 .chat-window
-	position: fixed
-	bottom: 0
-	right: 190px
-	width: 250px
+    position: fixed
+    bottom: 0
+    right: 190px
+    width: 250px

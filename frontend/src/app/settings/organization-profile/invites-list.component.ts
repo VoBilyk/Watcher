@@ -15,7 +15,7 @@ import { environment } from '../../../environments/environment';
 })
 export class InvitesListComponent implements OnInit {
 
-  @ViewChild('dt') dataView: DataView;
+  @ViewChild('dt', { static: true }) dataView: DataView;
 
   invites: ShowInvite[] = [];
 

@@ -14,7 +14,7 @@
     box-shadow: 0 2px 5px 0 rgba(0,0,0,.3)
 
 .notifications-block
-    /deep/.ui-overlaypanel
+    ::ng-deep.ui-overlaypanel
         left: unset !important
         right: 15px
         top: 60px !important
@@ -31,7 +31,7 @@
     color: white
     vertical-align: middle
 
-/deep/.user-info-btn
+::ng-deep.user-info-btn
     float: right
     top: 0
     font-weight: 500
@@ -55,10 +55,10 @@
     border: 0 none
 
 
-/deep/.ui-toolbar-group-right
+::ng-deep.ui-toolbar-group-right
     display: flexbox
 
-/deep/ .header
+::ng-deep .header
     .ui-button
         background-color: #313232
         border: 1px solid #313232
@@ -76,7 +76,7 @@
     .ui-tieredmenu
         background: #F7F8FA !important
 
-/deep/#bell-button:hover
+::ng-deep#bell-button:hover
     background-color: #116FBF !important
 
 .toolbar-item
@@ -117,7 +117,7 @@
     margin-top: 10px
 
 
-/deep/body .ui-overlaypanel .ui-overlaypanel-content,
+::ng-deepbody .ui-overlaypanel .ui-overlaypanel-content,
 .ui-overlaypanel-content
     padding: 0
     width: auto
@@ -126,7 +126,7 @@
     border-left: 1px solid #DFE1E2
 
 
-/deep/.user-overlay
+::ng-deep.user-overlay
     font-size: 15px
     padding: 0
     top: 60px !important

@@ -15,17 +15,17 @@
   font-size: 1.3em !important
   margin-top: 5px
 
-/deep/ .active-instance
+::ng-deep .active-instance
           .fa-circle
             @extend .status-icon
             color: #009933
 
-/deep/ .non-active-instance
+::ng-deep .non-active-instance
           .fa-circle
             @extend .status-icon
             color: #FF6600
 
-/deep/ .semi-active-instance
+::ng-deep .semi-active-instance
           .fa-circle
             @extend .status-icon
             color: #f1e10efa
@@ -33,7 +33,7 @@
 .panelMenuContainer
   top: 60px
 
-/deep/ .menu
+::ng-deep .menu
   .ui-panelmenu .ui-panelmenu-panel
     margin-top: 0
 
@@ -92,7 +92,7 @@ i
   font-size: 1.2em
   cursor: pointer
 
-/deep/ body .ui-panelmenu .ui-panelmenu-content .ui-menuitem .ui-menuitem-link
+::ng-deep body .ui-panelmenu .ui-panelmenu-content .ui-menuitem .ui-menuitem-link
   padding: 0.714em 1.4em !important
   span.ui-menuitem-text
     width: 160px

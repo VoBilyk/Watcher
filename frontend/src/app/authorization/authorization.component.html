@@ -83,7 +83,7 @@
             <input placeholder="Email" email type="email" [disabled]="emailExists" class="form-control" id="eName" required #eName="ngModel"
                 [(ngModel)]="userEmail" />
             <div *ngIf="eName?.invalid && (eName?.dirty || eName?.touched)" class="alert alert-danger">
-                <div *ngIf="eName.errors.required">
+                <div *ngIf="eName.errors['required']">
                     Email is required.
                 </div>
                 <div *ngIf="eName?.value">
@@ -95,10 +95,10 @@
             <input placeholder="Company" [disabled]="isDisabledCompanyName" pInputText type="text" class="form-control" id="cName" required minlength="4" #cName="ngModel"
                 [(ngModel)]="companyName" />
             <div *ngIf="cName?.invalid && (cName?.dirty || cName?.touched)" class="alert alert-danger">
-                <div *ngIf="cName.errors.required">
+                <div *ngIf="cName.errors['required']">
                     Company is required.
                 </div>
-                <div *ngIf="cName.errors.minlength">
+                <div *ngIf="cName.errors['minlength']">
                     Company must be at least 4 characters long.
                 </div>
             </div>
@@ -107,10 +107,10 @@
             <input placeholder="First Name" pInputText type="text" class="form-control" id="fName" required minlength="4" #fName="ngModel"
                 [(ngModel)]="firstName" />
             <div *ngIf="fName?.invalid && (fName?.dirty || fName?.touched)" class="alert alert-danger">
-                <div *ngIf="fName.errors.required">
+                <div *ngIf="fName.errors['required']">
                     First Name is required.
                 </div>
-                <div *ngIf="fName.errors.minlength">
+                <div *ngIf="fName.errors['minlength']">
                     First Name must be at least 4 characters long.
                 </div>
             </div>
@@ -119,10 +119,10 @@
             <input placeholder="Last Name" pInputText type="text" class="form-control" id="lName" required minlength="4" #lName="ngModel"
                 [(ngModel)]="lastName" />
             <div *ngIf="lName?.invalid && (lName?.dirty || lName?.touched)" class="alert alert-danger">
-                <div *ngIf="lName.errors.required">
+                <div *ngIf="lName.errors['required']">
                     Last Name is required.
                 </div>
-                <div *ngIf="lName.errors.minlength">
+                <div *ngIf="lName.errors['minlength']">
                     Last Name must be at least 4 characters long.
                 </div>
             </div>
