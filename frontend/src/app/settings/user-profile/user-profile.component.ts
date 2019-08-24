@@ -1,11 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
-import { UserService } from '../../core/services/user.service';
-import { AuthService } from '../../core/services/auth.service';
-import { User } from '../../shared/models/user.model';
-import { ToastrService } from '../../core/services/toastr.service';
 import { ImageCropperComponent, CropperSettings } from 'ngx-img-cropper';
-import { PathService } from '../../core/services/path.service';
+import { UserService, AuthService, PathService, ToastrService } from '../../core/services';
+import { User } from '../../shared/models/user.model';
 import { UserDto } from '../../shared/models/user-dto.model';
 
 @Component({
@@ -14,50 +11,47 @@ import { UserDto } from '../../shared/models/user-dto.model';
   styleUrls: ['./user-profile.component.sass']
 })
 export class UserProfileComponent implements OnInit {
-  data: any;
+  data: any = {};
   photoUrl: string;
   photoType: string;
-  isUpdating: Boolean = false;
+  isUpdating = false;
 
-
-  @ViewChild('cropper', undefined)
-
-  cropper: ImageCropperComponent;
-
+  @ViewChild('cropper', { static: false }) cropper: ImageCropperComponent;
   cropperSettings: CropperSettings;
-  display: Boolean = false;
+  display = false;
+  user: User;
 
-  constructor(private fb: FormBuilder,
-    private userService: UserService,
-    private authService: AuthService,
-    private toastrService: ToastrService,
-    private pathService: PathService) {
-
-    this.cropperSettings = new CropperSettings();
-    this.cropperSettings.width = 200;
-    this.cropperSettings.height = 200;
-    this.cropperSettings.minWidth = 100;
-    this.cropperSettings.minHeight = 100;
-    this.cropperSettings.croppedWidth = 70;
-    this.cropperSettings.croppedHeight = 70;
-    this.cropperSettings.canvasWidth = 400;
-    this.cropperSettings.canvasHeight = 400;
-    this.cropperSettings.noFileInput = true;
-    this.cropperSettings.preserveSize = true;
-
-    this.data = {};
-    }
-
-  public user: User;
   private userId: string;
 
-  public userForm = this.fb.group({
+  userForm = this.fb.group({
     displayName: new FormControl({ value: '', disabled: true }, Validators.required),
     firstName: new FormControl({ value: '', disabled: true }, Validators.required),
     emailForNotifications: new FormControl({ value: '', disabled: true }, Validators.email),
     lastName: new FormControl({ value: '', disabled: true }, Validators.required),
     bio: new FormControl({ value: '', disabled: true })
   });
+
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService,
+    private authService: AuthService,
+    private toastrService: ToastrService,
+    private pathService: PathService
+  ) {
+
+    this.cropperSettings = new CropperSettings({
+      width: 200,
+      height: 200,
+      minHeight: 100,
+      minWidth: 100,
+      croppedWidth: 70,
+      croppedHeight: 70,
+      canvasWidth: 400,
+      canvasHeight: 400,
+      noFileInput: true,
+      preserveSize: true
+    });
+  }
 
   ngOnInit() {
     this.authService.currentUser.subscribe(
@@ -125,12 +119,13 @@ export class UserProfileComponent implements OnInit {
         photoType: this.user.photoType
       };
 
-      this.userService.update(this.userId, userDto).subscribe(value => {
-        this.authService.updateCurrentUser(this.user);
-        this.toastrService.success('Profile was updated');
-        this.isUpdating = false;
-      },
-        err => {
+      this.userService.update(this.userId, userDto).subscribe(
+        () => {
+          this.authService.updateCurrentUser(this.user);
+          this.toastrService.success('Profile was updated');
+          this.isUpdating = false;
+        },
+        () => {
           this.toastrService.error('Profile was not updated');
           this.isUpdating = false;
         });

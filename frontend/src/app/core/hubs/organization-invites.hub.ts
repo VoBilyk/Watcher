@@ -40,10 +40,6 @@ export class OrganizationInvitesHub {
           console.log('OrganizationInvitesHub connected');
           this.isConnect = true;
           this.registerOnServerEvents();
-        })
-        .catch(err => {
-          console.error('Error while establishing connection (OrganizationInvitesHub)');
-          setTimeout(() => this.startInviteHubConnection(), 3000);
         });
     });
   }

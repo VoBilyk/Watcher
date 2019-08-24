@@ -58,13 +58,20 @@
       <div class="ui-g-12">
         <figure class="center-flex">
           <div class="img1">
-            <img src="{{photoUrl}}" alt="profile photo" class="img1">
+            <img [src]="photoUrl" alt="profile photo" class="img1">
           </div>
           <figcaption class="text-center custom-upload-btn">
             <span>
               <i class="fa fa-camera"></i> Update profile photo</span>
-            <p-fileUpload #upload mode="basic" name="myfile[]" files="photosList" accept="image/*" (uploadHandler)="onImageSelected($event.files)"
-              customUpload="true" maxFileSize="2000000" auto="true" chooseLabel="Change"></p-fileUpload>
+            <p-fileUpload
+              mode="basic"
+              accept="image/*"
+              (uploadHandler)="onImageSelected($event.files)"
+              [customUpload]="true"
+              maxFileSize="2000000"
+              [auto]="true"
+              chooseLabel="Change">
+            </p-fileUpload>
           </figcaption>
         </figure>
 
@@ -82,7 +89,7 @@
         <div class="ui-g ui-g-6">
           <div class="ui-g-4 left-flex">Role: </div>
           <div class="ui-g-8">
-            <p-dropdown [autoWidth]="false" [options]="dropdownRole" [(ngModel)]="selectedRole"></p-dropdown>
+            <p-dropdown [options]="dropdownRole" [(ngModel)]="selectedRole"></p-dropdown>
           </div>
         </div>
 
@@ -128,7 +135,7 @@
   <div class="ui-g">
     <div class="ui-g-6 left-flex">List of other organizations</div>
     <div class="ui-g-4 ui-fluid">
-      <p-dropdown [autoWidth]="false" [options]="dropdownCompany" [(ngModel)]="selectedCompany" filter="true"></p-dropdown>
+      <p-dropdown [options]="dropdownCompany" [(ngModel)]="selectedCompany" [filter]="true"></p-dropdown>
     </div>
     <div class="ui-g-2 right-flex">
       <button pButton label="Invite" (click)="onSentInviteToEmail()" class="ui-button-primary"></button>

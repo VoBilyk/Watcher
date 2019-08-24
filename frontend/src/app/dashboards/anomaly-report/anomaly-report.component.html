@@ -11,7 +11,7 @@
   <div class="ui-g filters">
     <div class="ui-g-2 ui-fluid left-padding">
       <p class="filter-label">Type:</p>
-      <p-dropdown [autoWidth]="false" [(ngModel)]="selectedType" [options]="types" (onChange)="changeType($event)"></p-dropdown>
+      <p-dropdown [(ngModel)]="selectedType" [options]="types" (onChange)="changeType($event)"></p-dropdown>
     </div>
     <div class="ui-g-2 ui-fluid">
       <p class="filter-label">From:</p>

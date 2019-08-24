@@ -1,8 +1,8 @@
-import {Injectable, EventEmitter} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HubConnection} from '@aspnet/signalr';
 import * as signalR from '@aspnet/signalr';
 import {environment} from '../../../environments/environment';
-import {from, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {AuthService} from '../services/auth.service';
 import {CollectedData} from '../../shared/models/collected-data.model';
 import {InstanceChecked} from '../../shared/models/instance-checked';
@@ -11,18 +11,18 @@ import {InstanceChecked} from '../../shared/models/instance-checked';
 @Injectable()
 export class DashboardsHub {
   private hubName = 'dashboards';
-  private hubConnection: HubConnection | undefined;
-  public connectionEstablished$ = new EventEmitter<boolean>();
+  private hubConnection: HubConnection;
+  public connectionEstablished$ = new Subject<boolean>();
   public isConnect: boolean;
 
-  public infoSubObservable = new EventEmitter<CollectedData>(); // from(this.infoSub);
-  public instanceCheckedSubObservable = new EventEmitter<InstanceChecked>();
+  public infoSubObservable = new Subject<CollectedData>(); // from(this.infoSub);
+  public instanceCheckedSubObservable = new Subject<InstanceChecked>();
 
   constructor(private authService: AuthService) {
     this.startConnection();
   }
 
-  private startConnection(): void {
+  private startConnection() {
     if (!this.authService.getCurrentUserLS()) { return; }
     if (this.isConnect) { return; }
     this.authService.getTokens().subscribe(([firebaseToken, watcherToken]) => {
@@ -33,12 +33,11 @@ export class DashboardsHub {
         .then(() => {
           console.log('Dashboards Hub connected');
           this.isConnect = true;
-          this.connectionEstablished$.emit(true);
+          this.connectionEstablished$.next(true);
           this.registerOnEvents();
         })
         .catch(err => {
           console.log('Error while establishing connection (Dashboards Hub)');
-          setTimeout(() => this.startConnection(), 3000);
         });
     });
   }
@@ -52,15 +51,15 @@ export class DashboardsHub {
       .build();
   }
 
-  private registerOnEvents(): void {
+  private registerOnEvents() {
     this.hubConnection.on('InstanceDataTick', (info: CollectedData) => {
         info.time = new Date(info.time);
-        this.infoSubObservable.emit(info);
+        this.infoSubObservable.next(info);
       });
 
     this.hubConnection.on('InstanceStatusCheck', (info: InstanceChecked) => {
       info.statusCheckedAt = new Date(info.statusCheckedAt);
-      this.instanceCheckedSubObservable.emit(info);
+      this.instanceCheckedSubObservable.next(info);
     });
 
     // On Close open connection again
@@ -110,8 +109,8 @@ export class DashboardsHub {
   }
 
   public disconnect() {
-    this.connectionEstablished$ = new EventEmitter<boolean>();
-    this.infoSubObservable = new EventEmitter<CollectedData>();
-    this.instanceCheckedSubObservable = new EventEmitter<InstanceChecked>();
+    this.connectionEstablished$ = new Subject<boolean>();
+    this.infoSubObservable = new Subject<CollectedData>();
+    this.instanceCheckedSubObservable = new Subject<InstanceChecked>();
   }
 }

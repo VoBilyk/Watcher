@@ -41,10 +41,6 @@ export class NotificationsHubService {
           console.log('NotificationsHub connected');
           this.isConnect = true;
           this.registerOnServerEvents();
-        })
-        .catch(err => {
-          console.error('Error while establishing connection (NotificationsHub)');
-          setTimeout(() => this.startNotificationsHubConnection(), 3000);
         });
     });
   }

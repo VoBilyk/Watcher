@@ -31,22 +31,22 @@ export class LeftSideMenuComponent implements OnInit, AfterContentChecked, After
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.activeUrl = this.router.url;
     this.initMenuItems();
     this.changeMenu();
     this.subscribeRouteChanges();
   }
 
-  ngAfterContentChecked(): void {
+  ngAfterContentChecked() {
     this.highlightCurrentSetting();
   }
 
-  ngAfterViewChecked(): void {
+  ngAfterViewChecked() {
     this.highlightCurrentSetting();
   }
 
-  private initMenuItems(): void {
+  private initMenuItems() {
     this.settingsItems = [{
       label: 'User Profile',
       icon: 'fa fa-fw fa-user',
@@ -84,7 +84,7 @@ export class LeftSideMenuComponent implements OnInit, AfterContentChecked, After
     }];
   }
 
-  private subscribeRouteChanges(): void {
+  private subscribeRouteChanges() {
     this.router.events.subscribe((event: RouterEvent) => {
       if (event.url) {
         this.activeUrl = event.url;
@@ -93,7 +93,7 @@ export class LeftSideMenuComponent implements OnInit, AfterContentChecked, After
     });
   }
 
-  private changeMenu(): void {
+  private changeMenu() {
     if (this.checkRoute(this.regexSettingsUrl)) {
       this.menuItems = this.settingsItems;
       this.isComponentInvisible = false;
@@ -113,11 +113,11 @@ export class LeftSideMenuComponent implements OnInit, AfterContentChecked, After
     }
   }
 
-  private checkRoute(regex: RegExp): boolean {
+  private checkRoute(regex: RegExp) {
     return !!(this.activeUrl.match(regex));
   }
 
-  private clearSettings(url: string): void {
+  private clearSettings(url: string) {
     if (this.activeUrl !== this.previousSettingUrl) {
 
       const setting = this.getSettingByUrl(url);
@@ -130,7 +130,7 @@ export class LeftSideMenuComponent implements OnInit, AfterContentChecked, After
     }
   }
 
-  private highlightCurrentSetting(): void {
+  private highlightCurrentSetting() {
     const setting = this.getSettingByUrl(this.activeUrl);
 
     if (setting) {
@@ -141,7 +141,7 @@ export class LeftSideMenuComponent implements OnInit, AfterContentChecked, After
     }
   }
 
-  private getSettingByUrl(url: string): Element {
+  private getSettingByUrl(url: string) {
     return document.querySelector(`div.ui-panelmenu-header a[href="${url}"]`);
   }
 }

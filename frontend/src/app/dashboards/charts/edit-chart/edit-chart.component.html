@@ -16,7 +16,6 @@
         <div class="chart-panel-menu-title field-top">Data:</div>
         <p class="field">Select chart type: </p>
         <p-dropdown [options]="dropdownTypes"
-                    [autoWidth]="false"
                     [(ngModel)]="dashboardChart.type"
                     placeholder="Select a type"
                     [group]="true"
@@ -28,7 +27,7 @@
                       (onChange)="resetBuilderForm()"
                       binary="true">
           </p-checkbox>
-        </p><!--type [disabled]="!dashboardChart.dataSources.length<1"-->
+        </p>
         <p class="field">Select source: </p>
         <p-multiSelect *ngIf="dashboardChart.showCommon && dashboardChart.type !== type.Pie
                               && dashboardChart.type != type.AdvancedPie && dashboardChart.type != type.PieGrid"
@@ -43,7 +42,6 @@
 
         <p-dropdown *ngIf="!dashboardChart.showCommon || dashboardChart.type == type.Pie
                           || dashboardChart.type == type.AdvancedPie || dashboardChart.type == type.PieGrid"
-                    [autoWidth]="false"
                     [options]="dropdownGroupSources"
                     placeholder="Select a type"
                     (onChange)="dropDownSelect($event)"
@@ -88,7 +86,6 @@
                pInputText/>
         <p class="field">Color schemes:</p>
         <p-dropdown [options]="colorSchemes"
-                    [autoWidth]="false"
                     optionLabel="name"
                     [(ngModel)]="dashboardChart.colorScheme"
                     placeholder="Select a scheme"

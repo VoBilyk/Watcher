@@ -1,19 +1,14 @@
+import { commonEnvironment } from './enviroment.common';
+
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  ...commonEnvironment,
   production: false,
-  server_url: 'http://localhost:64542', // 'http://watcher.dev.com',
-  client_url: 'http://localhost:4200',
-  firebase: {
-    apiKey: 'AIzaSyDkG6cWbERooMWbAn9sRBbYiRkXm81WP8U',
-    authDomain: 'watcherapp-2984b.firebaseapp.com',
-    databaseURL: 'https://watcherapp-2984b.firebaseio.com',
-    projectId: 'watcherapp-2984b',
-    storageBucket: 'watcherapp-2984b.appspot.com',
-    messagingSenderId: '772299845034'
-  }
+  server_url: 'http://localhost:64543', // 'http://watcher.dev.com',
+  client_url: 'http://localhost:4200'
 };
 
 /*

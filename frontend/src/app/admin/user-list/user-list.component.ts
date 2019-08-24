@@ -3,14 +3,11 @@ import { FormControl, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../core/services/user.service';
 import { User } from '../../shared/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
-import { ToastrService } from '../../core/services/toastr.service';
 import { Organization } from '../../shared/models/organization.model';
-import { OrganizationService } from '../../core/services/organization.service';
-import { RoleService } from '../../core/services/role.service';
+import {  } from '../../core/services/role.service';
 import { SelectItem, LazyLoadEvent } from 'primeng/api';
 
-import { UserOrganizationService } from '../../core/services/user-organization.service';
-import { OrganizationInvitesService } from '../../core/services/organization-invites.service';
+import { UserOrganizationService, OrganizationInvitesService, RoleService, OrganizationService, ToastrService } from '../../core/services';
 import { OrganizationInvite } from '../../shared/models/organization-invite.model';
 import { OrganizationInviteState } from '../../shared/models/organization-invite-state.enum';
 import { Role } from '../../shared/models/role.model';
@@ -47,7 +44,7 @@ export class UserListComponent implements OnInit {
   photoType: string;
   display: Boolean = false;
 
-  @ViewChild('cropper', undefined)
+  @ViewChild('cropper', { static: false })
 
   cropper: ImageCropperComponent;
 
@@ -161,7 +158,6 @@ export class UserListComponent implements OnInit {
       value => {
         this.toastrService.success(`Now last picked organization - not selected.`);
         if (this.user.id === this.currentUser.id) {
-          console.log('I am here');
           const index = this.currentUser.organizations.indexOf(company);
           this.currentUser.organizations.splice(index, 1);
           this.authService.updateCurrentUser(this.currentUser);

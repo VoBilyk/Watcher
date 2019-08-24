@@ -30,7 +30,8 @@ export class ConversationPanelComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private chatHub: ChatHub) { }
+    private chatHub: ChatHub
+  ) { }
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();

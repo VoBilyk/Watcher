@@ -28,8 +28,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { DashboardRoutingModule } from './dashboards-routing.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-// import { NgxUIModule } from '@swimlane/ngx-ui';
-import { NgxSmoothDnDModule } from 'ngx-smooth-dnd';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EditDashboardComponent } from './editDashboard/editDashboard.component';
@@ -62,7 +60,6 @@ import { AnomalyReportComponent } from './anomaly-report/anomaly-report.componen
 
     // NgxUIModule,
     NgxChartsModule,
-    NgxSmoothDnDModule,
     DashboardRoutingModule,
     DropdownModule,
     CheckboxModule,
