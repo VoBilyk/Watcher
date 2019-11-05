@@ -1,8 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { firebase } from '../environments/firebase.config';
 
 import {
   AccordionModule,
@@ -13,25 +17,20 @@ import {
   InputTextModule,
   PanelModule,
   RadioButtonModule,
-  DialogModule } from 'primeng/primeng';
+  DialogModule
+} from 'primeng/primeng';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/components/confirmdialog/confirmdialog';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { ShellModule } from './shell/shell.module';
+import { CoreModule } from './core/core.module';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 
 import { LandingComponent } from './landing/landing.component';
 import { InviteComponent } from './invite/invite.component';
-import { CoreModule } from './core/core.module';
 import { AuthorizationComponent } from './authorization/authorization.component';
-import { AdminModule } from './admin/admin.module';
 
-import { AngularFireModule } from '@angular/fire';
-import { environment } from '../environments/environment';
-import { AngularFireDatabaseModule } from '@angular/fire/database';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AuthService } from './core/services/auth.service';
-import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/components/confirmdialog/confirmdialog';
-import { ShellModule } from './shell/shell.module';
 import { CustomConfirmDialogComponent } from './notification/custom-confirm-dialog/custom-confirm-dialog.component';
 import { SystemNotificationComponent } from './notification/system-notification/system-notification.component';
 import { AboutComponent } from './about/about.component';
@@ -63,8 +62,8 @@ import { AboutComponent } from './about/about.component';
     InputTextareaModule,
     InputTextModule,
 
-    AngularFireModule.initializeApp(environment.firebase, 'watcherapp'),
-    AngularFireDatabaseModule,
+    AngularFireModule.initializeApp(firebase),
+    // AngularFireDatabaseModule,
     AngularFireAuthModule,
 
     CoreModule,
