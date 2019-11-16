@@ -97,7 +97,6 @@ export class AnomalyReportComponent implements OnInit {
   getInfo(): void {
     this.isGetting = true;
     this.anomalyReportService.getDataByInstanceIdAndTypeInTime(this.createRequest()).subscribe((data: InstanceAnomalyReport[]) => {
-      debugger;
       data.forEach(item => {
         item.date = new Date(item.date);
         if (!item.htmlDocUrl) {
@@ -147,9 +146,9 @@ export class AnomalyReportComponent implements OnInit {
     console.log('sorting');
   }
 
-  private sortByDueDate(value): void {
+  private sortByDueDate(value) {
     // debugger;
-    value.sort((a, b) => date_sort_asc(a, b)); // (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    value.sort((a, b) => date_sort_asc(a, b));
   }
 
   onCopy(link: string) {
@@ -166,6 +165,4 @@ export class AnomalyReportComponent implements OnInit {
     document.body.removeChild(selBox);
     this.toastrService.info('Link was copied to clipboard');
   }
-
-
 }

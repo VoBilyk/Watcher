@@ -223,19 +223,19 @@ export class AuthService {
       });
   }
 
-  isLoggedIn(): boolean {
+  isLoggedIn() {
     return !!this.userDetails;
   }
 
-  isAuthorized(): boolean {
+  isAuthorized() {
     return !!this.getCurrentUserLS();
   }
 
-  getCurrentUser(): User | null {
+  getCurrentUser() {
     return this.currentUserSubject.value;
   }
 
-  getCurrentUserLS(): User {
+  getCurrentUserLS() {
     const userStr = localStorage.getItem('currentUser');
     return (<User>JSON.parse(userStr));
   }
@@ -250,10 +250,10 @@ export class AuthService {
   }
 
   getTokens() {
-    return forkJoin(this.getFirebaseToken(), this.getWatcherToken());
+    return forkJoin([this.getFirebaseToken(), this.getWatcherToken()]);
   }
 
-  async getFirebaseToken(): Promise<string> {
+  async getFirebaseToken() {
     const currentToken =  localStorage.getItem('firebaseToken');
     if (currentToken && this.tokenHelper.isTokenExpired(currentToken)) {
       await this.refreshFirebaseToken();

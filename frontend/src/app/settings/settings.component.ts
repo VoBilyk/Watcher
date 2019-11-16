@@ -7,24 +7,21 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./settings.component.sass']
 })
 export class SettingsComponent implements OnInit {
-
-constructor() { }
-
-menuItems: MenuItem[];
+  menuItems: MenuItem[];
 
   ngOnInit() {
     this.menuItems = [{
-        label: 'User Profile',
-        icon: 'fa fa-fw fa-user',
-        routerLink: ['/user/settings/user-profile']
-      }, {
-        label: 'Organization Profile',
-        icon: 'fa fa-fw fa-building',
-        routerLink: ['/user/settings/organization-profile']
-      }, {
-        label: 'Notification Settings',
-        icon: 'fa fa-fw fa-send',
-        routerLink: ['/user/settings/notification-settings']
-      }];
+      label: 'User Profile',
+      icon: 'fa fa-fw fa-user',
+      routerLink: ['/user/settings/user-profile']
+    }, {
+      label: 'Organization Profile',
+      icon: 'fa fa-fw fa-building',
+      routerLink: ['/user/settings/organization-profile']
+    }, {
+      label: 'Notification Settings',
+      icon: 'fa fa-fw fa-send',
+      routerLink: ['/user/settings/notification-settings']
+    }];
   }
 }

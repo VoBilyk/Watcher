@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit, EventEmitter, OnDestroy} from '@angular/core';
+import { Component, HostListener, OnInit, EventEmitter } from '@angular/core';
 import { SelectItem } from 'primeng/primeng';
 
 import { ChatHub } from '../core/hubs/chat.hub';
@@ -11,20 +11,19 @@ import { Chat } from '../shared/models/chat.model';
 import { Message } from '../shared/models/message.model';
 import { ChatWindow } from '../shared/models/chat-window.model';
 
-
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.sass']
 })
-export class ChatComponent implements OnInit, OnDestroy {
-
+export class ChatComponent implements OnInit {
   constructor(
     private chatHub: ChatHub,
     private authService: AuthService,
     private chatService: ChatService,
     private toastrService: ToastrService,
-    private systemToastrService: SystemToastrService) { }
+    private systemToastrService: SystemToastrService
+  ) { }
 
   public onDisplayCreating = new EventEmitter<boolean>();
 
@@ -59,10 +58,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     );
-  }
-
-  ngOnDestroy(): void {
-
   }
 
   openChat() {

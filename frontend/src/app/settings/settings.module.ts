@@ -17,7 +17,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { SettingsRoutingModule } from './settings-routing.module';
-import { UserPictureComponent } from './user-picture/user-picture.component';
 import { ImageCropperModule } from 'ngx-img-cropper';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -57,7 +56,6 @@ import { SpinnerPopupComponent } from './spinner-popup/spinner-popup.component';
     NotificationSettingsComponent,
     UserProfileComponent,
     OrganizationProfileComponent,
-    UserPictureComponent,
     InvitesListComponent,
     OrganizationMembersComponent,
     SpinnerPopupComponent

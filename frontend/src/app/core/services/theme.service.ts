@@ -21,7 +21,6 @@ export class ThemeService {
   }
 
   public applyTheme(theme: Theme) {
-
     const cssUrl = `/assets/themes/${theme.name}.css`;
 
     this.deleteThemeTags();
@@ -81,12 +80,12 @@ export class ThemeService {
   }
 
   private deleteThemeTags() {
-    const themeLink: HTMLElement = document.getElementById('themeLink');
+    const themeLink = document.getElementById('themeLink');
     if (themeLink) {
       document.head.removeChild(themeLink);
     }
 
-    const themeStyle: HTMLElement = document.getElementById('themeStyle');
+    const themeStyle = document.getElementById('themeStyle');
     if (themeStyle) {
       document.head.removeChild(themeStyle);
     }
