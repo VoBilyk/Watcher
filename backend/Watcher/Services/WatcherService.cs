@@ -30,13 +30,13 @@
         private readonly ILogger<WatcherService> _logger;
         private readonly IOptions<TimeServiceConfiguration> _options;
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IServiceBusProvider _serviceBusProvider;
+        private readonly IQueueProvider _serviceBusProvider;
 
         public WatcherService(IHubContext<DashboardsHub> hubContext,
                               ILogger<WatcherService> logger,
                               IOptions<TimeServiceConfiguration> options,
                               IServiceScopeFactory scopeFactory,
-                              IServiceBusProvider serviceBusProvider)
+                              IQueueProvider serviceBusProvider)
         {
             _scopeFactory = scopeFactory;
             _hubContext = hubContext;

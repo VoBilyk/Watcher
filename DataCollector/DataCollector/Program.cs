@@ -52,7 +52,8 @@ namespace DataCollector
             // sender and collector for timer
             var payload = (
                 new DataSender(_client, uri),
-                Collector.Instance);
+                Collector.Instance
+                );
 
             _logger = new Logger(_client, ClientIdentifier, uri + "/log");
             _logger.Log("Data collection began", LogLevel.State).GetAwaiter().GetResult();
@@ -95,6 +96,11 @@ namespace DataCollector
 
         protected static Guid ConfigureClientIdentifier()
         {
+            if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "Development")
+            {
+                return Guid.Empty;
+            }
+
             var sep = Path.DirectorySeparatorChar;
             var currentDir = AppContext.BaseDirectory;
             var fileInfo = new FileInfo($@"{currentDir}{sep}guid.txt");
@@ -136,8 +142,8 @@ namespace DataCollector
             }
             catch (Exception ex)
             {
-                await _logger.Log(ex.Message, LogLevel.Error);
-                Console.WriteLine($"{DateTime.Now}\t Data wasn`t sent successfully");
+                // await _logger.Log(ex.Message, LogLevel.Error);
+                Console.WriteLine($"{DateTime.Now}\t Data wasn`t sent successfully. Problem with connection");
             }
 
             Console.WriteLine("Press ctr+c for exit");

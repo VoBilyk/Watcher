@@ -11,8 +11,6 @@
 
         void CommitTransaction();
 
-        ISamplesRepository SamplesRepository { get; }
-
         IUsersRepository UsersRepository { get; }
 
         IDashboardsRepository DashboardsRepository { get; }

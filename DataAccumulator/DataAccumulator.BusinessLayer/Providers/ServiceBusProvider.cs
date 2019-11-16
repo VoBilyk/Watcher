@@ -16,11 +16,11 @@
     using ServiceBus.Shared.Messages;
     using ServiceBus.Shared.Queue;
 
-    public class ServiceBusProvider : IServiceBusProvider, IDisposable
+    public class ServiceBusProvider : IQueueProvider, IDisposable
     {
         private readonly ILogger<ServiceBusProvider> _logger;
         private readonly IInstanceSettingsService<InstanceSettingsDto> _instanceSettingsService;
-        private readonly IOptions<QueueSettings> _queueOptions;
+        private readonly IOptions<QueueOptions> _queueOptions;
         private readonly IAzureQueueSender _azureQueueSender;
         private readonly IAzureQueueReceiver _azureQueueReceiver;
 
@@ -32,7 +32,7 @@
 
         public ServiceBusProvider(ILoggerFactory loggerFactory,
                                   IInstanceSettingsService<InstanceSettingsDto> instanceSettingsService,
-                                  IOptions<QueueSettings> queueOptions,
+                                  IOptions<QueueOptions> queueOptions,
                                   IAzureQueueSender azureQueueSender,
                                   IAzureQueueReceiver azureQueueReceiver)
         {

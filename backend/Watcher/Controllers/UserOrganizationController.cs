@@ -133,18 +133,6 @@ namespace Watcher.Controllers
             return Ok(organizationRole);
         }
 
-        /// <summary>
-        /// Delete UserOrganization
-        /// </summary>
-        /// <param name="id">UserOrganization identifier</param>
-        /// <returns>
-        /// Action Result
-        /// </returns>
-        /// <response code="500">Internal error on server</response>
-        /// <response code="404">UserOrganization not found</response>
-        /// <response code="403">You don`t have permission to delete UserOrganization</response>
-        /// <response code="400">Model is not valid</response>
-        /// <response code="200">Success</response>
         [HttpDelete] //("{companyId}") [FromBody] 
         public virtual async Task<ActionResult> Delete(int companyId, string userId)
         {

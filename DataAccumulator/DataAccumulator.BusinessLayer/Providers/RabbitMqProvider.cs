@@ -17,10 +17,11 @@
     using DataAccumulator.BusinessLayer.Interfaces;
     using DataAccumulator.Shared.Models;
 
-    public class RabbitMqProvider : IServiceBusProvider, IDisposable
+    public class RabbitMqProvider : IQueueProvider, IDisposable
     {
         private readonly ILogger<RabbitMqProvider> _logger;
-        private readonly IOptions<QueueSettings> _queueOptions;
+        private readonly IOptions<RabbitMqConnectionOptions> _connectionOptions;
+        private readonly IOptions<QueueOptions> _queueOptions;
         private readonly IInstanceSettingsService<InstanceSettingsDto> _instanceSettingsService;
 
         private readonly IConnection _connection;
@@ -30,63 +31,37 @@
         private readonly IRabbitMqReceiver _receiver;
 
         public RabbitMqProvider(ILoggerFactory loggerFactory,
-                                IOptions<QueueSettings> queueOptions,
+                                IOptions<RabbitMqConnectionOptions> connectionOptions,
+                                IOptions<QueueOptions> queueOptions,
                                 IRabbitMqSender sender,
                                 IRabbitMqReceiver receiver,
                                 IInstanceSettingsService<InstanceSettingsDto> instanceSettingsService)
         {
             _logger = loggerFactory?.CreateLogger<RabbitMqProvider>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+
+            _connectionOptions = connectionOptions;
             _queueOptions = queueOptions;
             _instanceSettingsService = instanceSettingsService;
-
-            var factory = new ConnectionFactory { HostName = "localhost" };
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
 
             _sender = sender;
             _receiver = receiver;
 
-            _channel.QueueDeclare(
-                queue: _queueOptions.Value.NotificationQueueName,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
+            _connection = GetConnection();
+            _channel = _connection.CreateModel();
 
-            _channel.QueueDeclare(
-                queue: _queueOptions.Value.DataQueueName,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            _channel.QueueDeclare(
-                queue: _queueOptions.Value.ErrorQueueName,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            _channel.QueueDeclare(
-                queue: _queueOptions.Value.AnomalyReportQueueName,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            _channel.QueueDeclare(
-                queue: _queueOptions.Value.SettingsQueueName,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
+            _channel.QueueDeclare(_queueOptions.Value.NotificationQueueName);
+            _channel.QueueDeclare(_queueOptions.Value.DataQueueName);
+            _channel.QueueDeclare(_queueOptions.Value.ErrorQueueName);
+            _channel.QueueDeclare(_queueOptions.Value.AnomalyReportQueueName);
+            _channel.QueueDeclare(_queueOptions.Value.SettingsQueueName);
 
             _receiver.Receive<InstanceSettingsMessage>(
                 _channel,
                 _queueOptions.Value.SettingsQueueName,
-                onSettingsProcessAsync,
+                OnSettingsProcessAsync,
                 ExceptionWhileProcessingHandler,
-                OnWait);
+                OnWait
+                );
         }
 
         public async Task SendNotificationMessage(InstanceNotificationMessage message)
@@ -110,7 +85,7 @@
             _sender.Send(_channel, _queueOptions.Value.AnomalyReportQueueName, message);
         }
 
-        private async Task<MessageProcessResponse> onSettingsProcessAsync(InstanceSettingsMessage arg)
+        private async Task<MessageProcessResponse> OnSettingsProcessAsync(InstanceSettingsMessage arg)
         {
             var dto = new InstanceSettingsDto()
             {
@@ -148,6 +123,19 @@
             Debug.WriteLine("*******************WAITING***********************");
         }
 
+        private IConnection GetConnection()
+        {
+            var factory = new ConnectionFactory()
+            {
+                HostName = _connectionOptions.Value.HostName,
+                UserName = _connectionOptions.Value.UserName,
+                Password = _connectionOptions.Value.Password,
+                VirtualHost = _connectionOptions.Value.VirtualHost
+            };
+
+            return factory.CreateConnection();
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -157,6 +145,7 @@
             {
                 if (disposing)
                 {
+                    _channel.Close();
                     _connection.Close();
                 }
 

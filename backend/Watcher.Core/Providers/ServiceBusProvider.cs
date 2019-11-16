@@ -32,12 +32,12 @@
     using Watcher.Core.Interfaces;
     using Watcher.DataAccess.Interfaces;
 
-    public class ServiceBusProvider : IServiceBusProvider, IDisposable
+    public class ServiceBusProvider : IQueueProvider, IDisposable
     {
         private readonly ILogger<ServiceBusProvider> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IHubContext<DashboardsHub> _dashboardsHubContext;
-        private readonly IOptions<QueueSettings> _queueOptions;
+        private readonly IOptions<QueueOptions> _queueOptions;
         private readonly IAzureQueueReceiver _azureQueueReceiver;
         private readonly IAzureQueueSender _azureQueueSender;
 
@@ -51,7 +51,7 @@
             ILoggerFactory loggerFactory,
             IServiceScopeFactory scopeFactory,
             IHubContext<DashboardsHub> dashboardsHubContext,
-            IOptions<QueueSettings> queueOptions,
+            IOptions<QueueOptions> queueOptions,
             IAzureQueueReceiver azureQueueReceiver,
             IAzureQueueSender azureQueueSender)
         {

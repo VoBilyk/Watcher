@@ -4,7 +4,6 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    using Microsoft.Azure.ServiceBus;
     using Newtonsoft.Json;
 
     using RabbitMQ.Client;

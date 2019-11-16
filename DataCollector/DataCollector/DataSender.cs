@@ -22,7 +22,7 @@ namespace DataCollector
 
         public async Task<bool> SendAsync(CollectedData dataItem)
         {
-            TestData(dataItem);
+            //TestData(dataItem);
             var myContent = JsonConvert.SerializeObject(dataItem);
 
             var buffer = Encoding.UTF8.GetBytes(myContent);

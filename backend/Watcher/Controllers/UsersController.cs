@@ -193,7 +193,7 @@
         [Authorize]
         [Route("login")]
         [HttpPost]
-        public virtual async Task<ActionResult<FirebaseUserDto>> Login([FromBody] FirebaseUserDto firebaseUserDto)
+        public virtual ActionResult<FirebaseUserDto> Login([FromBody] FirebaseUserDto firebaseUserDto)
         {
             return Ok(firebaseUserDto);
         }

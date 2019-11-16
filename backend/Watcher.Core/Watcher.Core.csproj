@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.0.0" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="2.1.0" />
@@ -22,10 +23,5 @@
     <ProjectReference Include="..\ServiceBus.Shared\ServiceBus.Shared.csproj" />
     <ProjectReference Include="..\Watcher.Common\Watcher.Common.csproj" />
     <ProjectReference Include="..\Watcher.DataAccess\Watcher.DataAccess.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Hosting">
-      <HintPath>..\..\..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.hosting\2.1.0\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

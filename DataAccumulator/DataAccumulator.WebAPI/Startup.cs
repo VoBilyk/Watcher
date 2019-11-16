@@ -11,7 +11,6 @@ using DataAccumulator.DataAccessLayer.Interfaces;
 using DataAccumulator.DataAccessLayer.Repositories;
 using DataAccumulator.DataAggregator;
 using DataAccumulator.DataAggregator.Interfaces;
-using DataAccumulator.DataAggregator.Providers;
 using DataAccumulator.DataAggregator.Services;
 using DataAccumulator.Shared.Models;
 using DataAccumulator.WebAPI.Extensions;
@@ -32,10 +31,7 @@ namespace DataAccumulator
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -52,23 +48,13 @@ namespace DataAccumulator
             });
 
             //var serviceBusSection = Configuration.GetSection("ServiceBus");
-            var serviceBusSection = Configuration.GetSection("RabbitMq");
-            services.Configure<QueueSettings>(o =>
-                {
-                    //o.ConnectionString = serviceBusSection["ConnectionString"];
-                    o.DataQueueName = serviceBusSection["DataQueueName"];
-                    o.ErrorQueueName = serviceBusSection["ErrorQueueName"];
-                    o.SettingsQueueName = serviceBusSection["SettingsQueueName"];
-                    o.NotificationQueueName = serviceBusSection["NotificationQueueName"];
-                    o.AnomalyReportQueueName = serviceBusSection["AnomalyReportQueueName"];
-                });
 
-            var azureMLSection = Configuration.GetSection("AzureML");
-            services.Configure<AzureMLOptions>(o =>
-            {
-                o.ApiKey = azureMLSection["ApiKey"];
-                o.Url = azureMLSection["Url"];
-            });
+            //var azureMLSection = Configuration.GetSection("AzureML");
+            //services.Configure<AzureMLOptions>(o =>
+            //{
+            //    o.ApiKey = azureMLSection["ApiKey"];
+            //    o.Url = azureMLSection["Url"];
+            //});
 
             services.AddTransient<IDataAccumulatorService<CollectedDataDto>, DataAccumulatorService>();
             services.AddTransient<IDataAggregatorService<CollectedDataDto>, DataAggregatorService>();
@@ -92,7 +78,7 @@ namespace DataAccumulator
                 });
 
             // repo initialization localhost while development env, azure in prod
-            ConfigureCosmosDb(services, Configuration);
+            ConfigureDataStorage(services, Configuration);
 
             // services.AddTransient<CollectedDataAggregatingByFiveMinutesJob>();
             services.AddTransient<CollectedDataAggregatingByHourJob>();
@@ -106,12 +92,14 @@ namespace DataAccumulator
 
             services.AddTransient<IRabbitMqSender, RabbitMqSender>();
             services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
-            services.AddSingleton<IServiceBusProvider, RabbitMqProvider>();
+            services.AddSingleton<IQueueProvider, RabbitMqProvider>();
 
             var mapper = MapperConfiguration().CreateMapper();
             services.AddTransient(_ => mapper);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            ConfigureRabbitMq(services, Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -138,28 +126,28 @@ namespace DataAccumulator
                 }
             });
 
-            var provider = app.ApplicationServices.GetService<IServiceBusProvider>();
+            app.UseRabbitListener();
         }
-        public virtual void ConfigureCosmosDb(IServiceCollection services, IConfiguration configuration)
+        public virtual void ConfigureDataStorage(IServiceCollection services, IConfiguration configuration)
         {
             var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            string connectionString = Configuration.GetConnectionString(enviroment == EnvironmentName.Production ? "AzureCosmosDbConnection" : "MongoDbConnection");
+            var connectionString = Configuration.GetConnectionString(enviroment == EnvironmentName.Production ? "AzureCosmosDbConnection" : "MongoDbConnection");
 
             services.AddTransient<IDataAccumulatorRepository<CollectedData>, DataAccumulatorRepository>(
-                options => new DataAccumulatorRepository(connectionString, "bsa-watcher-data-storage", CollectedDataType.Accumulation));
+                options => new DataAccumulatorRepository(connectionString, "watcher-data-storage", CollectedDataType.Accumulation));
             services.AddTransient<IDataAggregatorRepository<CollectedData>, DataAggregatorRepository>(
-                options => new DataAggregatorRepository(connectionString, "bsa-watcher-data-storage"));
+                options => new DataAggregatorRepository(connectionString, "watcher-data-storage"));
             services.AddTransient<ILogRepository, LogRepository>(
-                options => new LogRepository(connectionString, "bsa-watcher-data-storage"));
+                options => new LogRepository(connectionString, "watcher-data-storage"));
             services.AddTransient<IInstanceSettingsRepository<InstanceSettings>, InstanceSettingsRepository>(
-              options => new InstanceSettingsRepository(connectionString, "bsa-watcher-data-storage"));
+              options => new InstanceSettingsRepository(connectionString, "watcher-data-storage"));
             services.AddTransient<IInstanceAnomalyReportsRepository, InstanceAnomalyReportsRepository>(
-                options => new InstanceAnomalyReportsRepository(connectionString, "bsa-watcher-data-storage"));
+                options => new InstanceAnomalyReportsRepository(connectionString, "watcher-data-storage"));
         }
 
         public MapperConfiguration MapperConfiguration()
         {
-            var config = new MapperConfiguration(cfg =>
+            return new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<CollectedData, CollectedDataDto>();
                 cfg.CreateMap<CollectedDataDto, CollectedData>();
@@ -169,8 +157,16 @@ namespace DataAccumulator
                 cfg.CreateMap<InstanceSettingsDto, InstanceSettings>();
                 cfg.CreateMap<InstanceSettings, InstanceSettings>();
             });
+        }
 
-            return config;
+        public void ConfigureRabbitMq(IServiceCollection services, IConfiguration configuration)
+        {
+            var rabbitMqConnection = Configuration.GetSection("RabbitMqConnection");
+            var rabbitMqQueues = Configuration.GetSection("RabbitMqQueues");
+
+            services
+                .Configure<RabbitMqConnectionOptions>(rabbitMqConnection)
+                .Configure<QueueOptions>(rabbitMqQueues);
         }
     }
 }

@@ -17,12 +17,12 @@ namespace DataAccumulator.BusinessLayer.Services
         private readonly IMapper _mapper;
         private readonly IDataAccumulatorRepository<CollectedData> _repository;
         private readonly IThresholdsValidatorCore<CollectedDataDto> _thresholdsValidatorCore;
-        private readonly IServiceBusProvider _serviceBusProvider;
+        private readonly IQueueProvider _serviceBusProvider;
 
         public DataAccumulatorService(IMapper mapper,
                                       IDataAccumulatorRepository<CollectedData> repository,
                                       IThresholdsValidatorCore<CollectedDataDto> thresholdsValidatorCore,
-                                      IServiceBusProvider serviceBusProvider)
+                                      IQueueProvider serviceBusProvider)
         {
             _mapper = mapper;
             _repository = repository;

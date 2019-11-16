@@ -8,6 +8,7 @@ namespace Watcher.Controllers
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
+    using Watcher.DataAccess.Entities;
 
     [Route("[controller]")]
     [ApiController]
@@ -18,12 +19,6 @@ namespace Watcher.Controllers
        /// </summary>
         private readonly INotificationSettingsService _service;
         
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SamplesController"/> class. 
-        /// </summary>
-        /// <param name="service">
-        /// Samples service
-        /// </param>
         public NotificationSettingsController(INotificationSettingsService service)
         {
             _service = service;
@@ -54,7 +49,7 @@ namespace Watcher.Controllers
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult<SampleDto>> Create([FromBody] NotificationSettingRequest request)
+        public virtual async Task<ActionResult<NotificationSetting>> Create([FromBody] NotificationSettingRequest request)
         {
             if (!ModelState.IsValid)
             {

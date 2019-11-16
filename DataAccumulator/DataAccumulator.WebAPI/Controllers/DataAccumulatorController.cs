@@ -17,11 +17,11 @@ namespace DataAccumulator.WebAPI.Controllers
     {
         private readonly ILogger<DataAccumulatorController> _logger;
         private readonly IDataAccumulatorService<CollectedDataDto> _dataAccumulatorService;
-        private readonly IServiceBusProvider _serviceBusProvider;
+        private readonly IQueueProvider _serviceBusProvider;
 
         public DataAccumulatorController(ILogger<DataAccumulatorController> logger,
                                          IDataAccumulatorService<CollectedDataDto> dataAccumulatorService,
-                                         IServiceBusProvider serviceBusProvider)
+                                         IQueueProvider serviceBusProvider)
         {
             _logger = logger;
             _dataAccumulatorService = dataAccumulatorService;

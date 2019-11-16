@@ -68,7 +68,7 @@ namespace Watcher.Core.Services
 
         public async Task<List<CollectedDataDto>> GetCollectedDataByInstanceId(Guid id, CollectedDataType dataType)
         {
-            var entities = await _repository.GetCollectedDataByInstanceIdAsync(id, dataType);
+           var entities = await _repository.GetCollectedDataByInstanceIdAsync(id, dataType);
 
             if (entities == null)
             {

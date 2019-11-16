@@ -1,10 +1,10 @@
 ﻿namespace ServiceBus.Shared.Queue
 {
-    public class QueueSettings
+    public class QueueOptions
     {
-        public QueueSettings() { }
+        public QueueOptions() { }
 
-        public QueueSettings(string connectionString, 
+        public QueueOptions(string connectionString, 
                              string dataQueueName, 
                              string errorQueueName,
                              string settingsQueueName, 

@@ -8,7 +8,6 @@
     using AutoMapper;
 
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.ChangeTracking;
 
     using Watcher.DataAccess.Data;
     using Watcher.DataAccess.Interfaces;
@@ -21,7 +20,6 @@
         private readonly WatcherDbContext _context;
         private readonly IMapper _mapper;
 
-        private ISamplesRepository _samplesRepository;
         private IUsersRepository _usersRepository;
         private IDashboardsRepository _dashboardsRepository;
         private IOrganizationRepository _organizationRepository;
@@ -72,8 +70,6 @@
         {
             _context.Database.CommitTransaction();
         }
-
-        public ISamplesRepository SamplesRepository => _samplesRepository ?? (_samplesRepository = new SamplesRepository(_context, _mapper));
 
         public IUsersRepository UsersRepository => _usersRepository ?? (_usersRepository = new UsersRepository(_context, _mapper));
 

@@ -29,12 +29,6 @@ namespace Watcher.Controllers
         private readonly IUsersService _usersService;
         private readonly IOrganizationService _organizationService;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OrganizationInvitesController"/> class. 
-        /// </summary>
-        /// <param name="service">
-        /// Organizations service
-        /// </param>
         public OrganizationInvitesController(IOrganizationInvitesService service, IEmailProvider emailProvider, IUsersService usersService, IOrganizationService organizationService)
         {
             _service = service;

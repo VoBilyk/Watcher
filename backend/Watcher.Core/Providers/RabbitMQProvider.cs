@@ -31,12 +31,14 @@
     using ServiceBus.Shared.Messages;
     using ServiceBus.Shared.Queue;
 
-    public class RabbitMqProvider : IServiceBusProvider, IDisposable
+    public class RabbitMqProvider : IQueueProvider, IDisposable
     {
         private readonly ILogger<RabbitMqProvider> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IHubContext<DashboardsHub> _dashboardsHubContext;
-        private readonly IOptions<QueueSettings> _queueOptions;
+
+        private readonly IOptions<RabbitMqConnectionOptions> _connectionOptions;
+        private readonly IOptions<QueueOptions> _queueOptions;
 
         private readonly IConnection _connection;
         private readonly IModel _channel;
@@ -47,27 +49,28 @@
         public RabbitMqProvider(ILoggerFactory loggerFactory,
                                 IServiceScopeFactory scopeFactory,
                                 IHubContext<DashboardsHub> dashboardsHubContext,
-                                IOptions<QueueSettings> queueOptions,
+                                IOptions<RabbitMqConnectionOptions> connectionOptions,
+                                IOptions<QueueOptions> queueOptions,
                                 IRabbitMqSender sender,
                                 IRabbitMqReceiver receiver)
         {
             _logger = loggerFactory?.CreateLogger<RabbitMqProvider>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+
+            _connectionOptions = connectionOptions;
             _queueOptions = queueOptions;
             _dashboardsHubContext = dashboardsHubContext;
             _scopeFactory = scopeFactory;
 
-            var factory = new ConnectionFactory { HostName = "localhost" };
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
-
-            _channel.QueueDeclare(_queueOptions.Value.DataQueueName, false, false, true, null);
-            _channel.QueueDeclare(_queueOptions.Value.ErrorQueueName, false, false, true, null);
-            _channel.QueueDeclare(_queueOptions.Value.SettingsQueueName, false, false, true, null);
-            _channel.QueueDeclare(_queueOptions.Value.NotificationQueueName, false, false, true, null);
-            _channel.QueueDeclare(_queueOptions.Value.AnomalyReportQueueName, false, false, true, null);
-
             _sender = sender;
             _receiver = receiver;
+            _connection = GetConnection();
+            _channel = _connection.CreateModel();
+
+            _channel.QueueDeclare(_queueOptions.Value.NotificationQueueName);
+            _channel.QueueDeclare(_queueOptions.Value.DataQueueName);
+            _channel.QueueDeclare(_queueOptions.Value.ErrorQueueName);
+            _channel.QueueDeclare(_queueOptions.Value.AnomalyReportQueueName);
+            _channel.QueueDeclare(_queueOptions.Value.SettingsQueueName);
 
             _receiver.Receive<InstanceCollectedDataMessage>(
                 _channel,
@@ -236,6 +239,19 @@
         private void OnWait()
         {
             Debug.WriteLine("*******************WAITING***********************");
+        }
+
+        private IConnection GetConnection()
+        {
+            var factory = new ConnectionFactory()
+            {
+                HostName = _connectionOptions.Value.HostName,
+                UserName = _connectionOptions.Value.UserName,
+                Password = _connectionOptions.Value.Password,
+                VirtualHost = _connectionOptions.Value.VirtualHost
+            };
+
+            return factory.CreateConnection();
         }
 
         #region IDisposable Support

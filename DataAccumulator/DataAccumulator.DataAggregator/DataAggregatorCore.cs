@@ -23,13 +23,13 @@ namespace DataAccumulator.DataAggregator
         private readonly IInstanceAnomalyReportsRepository _reportsRepository;
         private readonly ILogger<DataAggregatorCore> _logger;
         private readonly IAnomalyDetector _anomalyDetector;
-        private readonly IServiceBusProvider _serviceBusProvider;
+        private readonly IQueueProvider _serviceBusProvider;
 
         public DataAggregatorCore(IAggregatorService<CollectedDataDto> aggregatorService,
                                   IInstanceAnomalyReportsRepository reportsRepository,
                                   ILogger<DataAggregatorCore> logger,
                                   IAnomalyDetector anomalyDetector,
-                                  IServiceBusProvider provider)
+                                  IQueueProvider provider)
         {
             _aggregatorService = aggregatorService;
             _reportsRepository = reportsRepository;

@@ -133,7 +133,7 @@ namespace DataAccumulator.DataAccessLayer.Repositories
                 var query = _context.Datasets
                     .Find(d => d.ClientId == id && d.CollectedDataType == collectedDataType && d.Time >= timeFrom && d.Time <= timeTo);
 
-                return await query.CountAsync();
+                return await query.CountDocumentsAsync();
             }
             catch (Exception e)
             {

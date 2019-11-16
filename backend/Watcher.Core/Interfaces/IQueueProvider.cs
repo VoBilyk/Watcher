@@ -3,7 +3,7 @@
     using ServiceBus.Shared.Messages;
     using System.Threading.Tasks;
 
-    public interface IServiceBusProvider
+    public interface IQueueProvider
     {
         Task SendInstanceSettingsAsync(InstanceSettingsMessage message);
     }

@@ -22,12 +22,12 @@ namespace DataAccumulator.WebAPI.Controllers
         private readonly ILogger<ValuesController> _logger;
         private readonly IDataAccumulatorRepository<CollectedData> _repository;
         private readonly IInstanceSettingsRepository<InstanceSettings> _validatorRepository;
-        private readonly IServiceBusProvider _serviceBusProvider;
+        private readonly IQueueProvider _serviceBusProvider;
         
         public ValuesController(ILogger<ValuesController> logger, 
                                 IDataAccumulatorRepository<CollectedData> repository,
                                 IInstanceSettingsRepository<InstanceSettings> validatorRepository,
-                                IServiceBusProvider serviceBusProvider)
+                                IQueueProvider serviceBusProvider)
         {
             _logger = logger;
             _repository = repository;

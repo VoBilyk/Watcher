@@ -18,9 +18,9 @@ namespace Watcher.Core.Services
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-        private readonly IServiceBusProvider _serviceBus;
+        private readonly IQueueProvider _serviceBus;
 
-        public InstanceService(IUnitOfWork uow, IMapper mapper, IServiceBusProvider serviceBus)
+        public InstanceService(IUnitOfWork uow, IMapper mapper, IQueueProvider serviceBus)
         {
             _uow = uow;
             _mapper = mapper;

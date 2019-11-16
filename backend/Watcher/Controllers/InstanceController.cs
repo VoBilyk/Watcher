@@ -33,7 +33,6 @@ namespace Watcher.Controllers
         /// </summary>
         /// <param name="service">
         /// Samples service
-
         public InstancesController(IInstanceService service)
         {
             _instanceService = service;
@@ -127,7 +126,7 @@ namespace Watcher.Controllers
         /// <response code="400">Model is not valid</response>
         /// <response code="200">Success</response>
         [HttpPost]
-        public virtual async Task<ActionResult<SampleDto>> Create([FromBody] InstanceRequest request)
+        public virtual async Task<ActionResult<InstanceDto>> Create([FromBody] InstanceRequest request)
         {
             if (!ModelState.IsValid)
             {

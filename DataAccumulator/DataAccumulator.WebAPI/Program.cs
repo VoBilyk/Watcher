@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using System.IO;
+
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage;
+
+using Serilog;
+using Serilog.Events;
 
 namespace DataAccumulator
 {
-    using System;
-    using System.IO;
-
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.WindowsAzure.Storage;
-
-    using Serilog;
-    using Serilog.Events;
-
     public class Program
     {
         public static IConfiguration Configuration { get; } = GetConfigurationRoot();

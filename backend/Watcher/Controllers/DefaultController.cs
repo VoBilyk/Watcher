@@ -23,11 +23,11 @@ namespace Watcher.Controllers
     {
         private readonly ILogger<DefaultController> _logger;
 
-        private readonly IServiceBusProvider _serviceBusProvider;
+        private readonly IQueueProvider _serviceBusProvider;
         private readonly IFileStorageProvider _provider;
 
         public DefaultController(ILogger<DefaultController> logger,
-                                 IServiceBusProvider serviceBusProvider,
+                                 IQueueProvider serviceBusProvider,
                                  IFileStorageProvider provider)
         {
             _logger = logger;

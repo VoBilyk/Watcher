@@ -26,8 +26,6 @@ using Microsoft.IdentityModel.Tokens;
 
 using Newtonsoft.Json;
 
-using RabbitMQ.Client;
-
 using ServiceBus.Shared.Queue;
 using ServiceBus.Shared.Interfaces;
 using DataAccumulator.Shared.Models;
@@ -49,10 +47,7 @@ namespace Watcher
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -88,11 +83,9 @@ namespace Watcher
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Add your services here
-            services.AddTransient<ISamplesService, SamplesService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITokensService, TokensService>();
             services.AddTransient<IDashboardsService, DashboardsService>();
-            services.AddTransient<ITransientService, TransientService>();
             services.AddTransient<IOrganizationService, OrganizationService>();
             services.AddTransient<IChatsService, ChatsService>();
             services.AddTransient<IMessagesService, MessagesService>();
@@ -115,12 +108,12 @@ namespace Watcher
             services.AddTransient<ICollectorAppsService, CollectorAppsService>();
             services.AddTransient<IRabbitMqSender, RabbitMqSender>();
             services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
-            services.AddSingleton<IServiceBusProvider, RabbitMqProvider>();
+            services.AddSingleton<IQueueProvider, RabbitMqProvider>();
 
             ConfigureRabbitMq(services, Configuration);
 
             // repo initialization localhost while development env, azure in prod
-            ConfigureCosmosDb(services, Configuration);
+            ConfigureDataStorage(services, Configuration);
 
             ConfigureFileStorage(services, Configuration);
 
@@ -168,14 +161,14 @@ namespace Watcher
                               }
                         };
 
-                        options.Authority = "https://securetoken.google.com/watcherapp-2984b";
+                        options.Authority = "https://securetoken.google.com/watcher-e868a";
                         options.TokenValidationParameters =
                             new TokenValidationParameters
                             {
                                 ValidateIssuer = true,
-                                ValidIssuer = "https://securetoken.google.com/watcherapp-2984b",
+                                ValidIssuer = "https://securetoken.google.com/watcher-e868a",
                                 ValidateAudience = true,
-                                ValidAudience = "watcherapp-2984b",
+                                ValidAudience = "watcher-e868a",
                                 ValidateLifetime = true
                             };
                     });
@@ -194,7 +187,9 @@ namespace Watcher
                         });
                 });
 
-            var addSignalRBuilder = services.AddSignalR(o => o.EnableDetailedErrors = true) // .AddAzureService()
+            var addSignalRBuilder = services
+                .AddSignalR(o => o.EnableDetailedErrors = true)
+                // .AddAzureService()
                 .AddJsonProtocol(options => options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             if (UseAzureSignalR)
@@ -208,7 +203,6 @@ namespace Watcher
                     {
                         fv.ImplicitlyValidateChildProperties = true;
                         // fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                        fv.RegisterValidatorsFromAssemblyContaining<SampleValidator>();
                         fv.RegisterValidatorsFromAssemblyContaining<OrganizationValidator>();
                     })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -238,10 +232,9 @@ namespace Watcher
             app.UseFileServer();
 
             app.UseAuthentication();
-
             app.UseWatcherAuth();
-
             app.UseMvc();
+            app.UseRabbitListener();
 
             if (UseAzureSignalR)
             {
@@ -263,45 +256,34 @@ namespace Watcher
                         routes.MapHub<ChatsHub>("/chatsHub");
                     });
             }
-
-            app.UseMvc();
-
-            var provider = app.ApplicationServices.GetService<IServiceBusProvider>();
         }
 
-        public virtual void ConfigureRabbitMq(IServiceCollection services, IConfiguration configuration)
+        public void ConfigureRabbitMq(IServiceCollection services, IConfiguration configuration)
         {
-            var connectionFactory = new ConnectionFactory();
-            Configuration.GetSection("RabbitMqConnection").Bind(connectionFactory);
+            var rabbitMqConnection = Configuration.GetSection("RabbitMqConnection");
+            var rabbitMqQueues = Configuration.GetSection("RabbitMqQueues");
 
-            IConnection connection = connectionFactory.CreateConnection();
-            IModel channel = connection.CreateModel();
-
-            var rabbitMqSection = Configuration.GetSection("RabbitMq");
-
-            services.Configure<QueueSettings>(o =>
-            {
-                o.DataQueueName = rabbitMqSection["DataQueueName"];
-                o.ErrorQueueName = rabbitMqSection["ErrorQueueName"];
-                o.SettingsQueueName = rabbitMqSection["SettingsQueueName"];
-                o.NotificationQueueName = rabbitMqSection["NotificationQueueName"];
-                o.AnomalyReportQueueName = rabbitMqSection["AnomalyReportQueueName"];
-            });
+            services
+                .Configure<RabbitMqConnectionOptions>(rabbitMqConnection)
+                .Configure<QueueOptions>(rabbitMqQueues);
         }
 
-        public virtual void ConfigureCosmosDb(IServiceCollection services, IConfiguration configuration)
+        public virtual void ConfigureDataStorage(IServiceCollection services, IConfiguration configuration)
         {
             var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            string connectionString = configuration.GetConnectionString(enviroment == EnvironmentName.Production ? "AzureCosmosDbConnection" : "MongoDbConnection");
+            string connectionString = configuration.GetConnectionString(enviroment == EnvironmentName.Production
+                ? "AzureCosmosDbConnection"
+                : "MongoDbConnection"
+                );
+            
             services.AddScoped<IDataAccumulatorRepository<CollectedData>, DataAccumulatorRepository>(
-                  options => new DataAccumulatorRepository(connectionString, "bsa-watcher-data-storage", CollectedDataType.Accumulation));
-
+                  options => new DataAccumulatorRepository(connectionString, "watcher-data-storage", CollectedDataType.Accumulation));
             services.AddScoped<IDataAggregatorRepository<CollectedData>, DataAggregatorRepository>(
-                options => new DataAggregatorRepository(connectionString, "bsa-watcher-data-storage"));
+                options => new DataAggregatorRepository(connectionString, "watcher-data-storage"));
             services.AddScoped<ILogRepository, LogRepository>(
-                    options => new LogRepository(connectionString, "bsa-watcher-data-storage"));
+                options => new LogRepository(connectionString, "watcher-data-storage"));
             services.AddScoped<IInstanceAnomalyReportsRepository, InstanceAnomalyReportsRepository>(
-                options => new InstanceAnomalyReportsRepository(connectionString, "bsa-watcher-data-storage"));
+                options => new InstanceAnomalyReportsRepository(connectionString, "watcher-data-storage"));
         }
 
         public virtual void ConfigureFileStorage(IServiceCollection services, IConfiguration configuration)
@@ -325,12 +307,8 @@ namespace Watcher
 
         public virtual IServiceCollection InitializeAutomapper(IServiceCollection services)
         {
-            // Used in older versions
-            // ServiceCollectionExtensions.UseStaticRegistration = false;
-
             services.AddAutoMapper(cfg =>
                 {
-                    cfg.AddProfile<SamplesProfile>();
                     cfg.AddProfile<UsersProfile>();
                     cfg.AddProfile<DashboardsProfile>();
                     cfg.AddProfile<OrganizationProfile>();
@@ -347,8 +325,7 @@ namespace Watcher
                     cfg.AddProfile<CollectedDataProfile>();
                     cfg.AddProfile<CollectorActionLogProfile>();
                     cfg.AddProfile<ThemeProfile>();
-                }); // Scoped Lifetime!
-            // https://lostechies.com/jimmybogard/2016/07/20/integrating-automapper-with-asp-net-core-di/
+                });
 
             return services;
         }
@@ -370,7 +347,7 @@ namespace Watcher
             {
                 services.AddDbContext<WatcherDbContext>(options =>
                     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                                         b => b.MigrationsAssembly(configuration["MigrationsAssembly"])));
+                        b => b.MigrationsAssembly(configuration["MigrationsAssembly"])));
             }
         }
 

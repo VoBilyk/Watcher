@@ -18,9 +18,9 @@ namespace DataAccumulator.BusinessLayer.Services
     {
         private readonly IMapper _mapper;
         private readonly ILogRepository _repository;
-        private readonly IServiceBusProvider _serviceBusProvider;
+        private readonly IQueueProvider _serviceBusProvider;
 
-        public LogService(IMapper mapper, ILogRepository repository, IServiceBusProvider serviceBusProvider)
+        public LogService(IMapper mapper, ILogRepository repository, IQueueProvider serviceBusProvider)
         {
             _mapper = mapper;
             _repository = repository;

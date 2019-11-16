@@ -17,10 +17,10 @@ namespace DataAccumulator.BusinessLayer.Validators
     public class ThresholdsValidatorCore : IThresholdsValidatorCore<CollectedDataDto>
     {
         private readonly IInstanceSettingsService<InstanceSettingsDto> _instanceValidatorService;
-        private readonly IServiceBusProvider _serviceBusProvider;
+        private readonly IQueueProvider _serviceBusProvider;
 
         public ThresholdsValidatorCore(IInstanceSettingsService<InstanceSettingsDto> instanceValidatorService, 
-            IServiceBusProvider serviceBusProvider)
+            IQueueProvider serviceBusProvider)
         {
             _instanceValidatorService = instanceValidatorService;
             _serviceBusProvider = serviceBusProvider;
