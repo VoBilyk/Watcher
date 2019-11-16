@@ -49,11 +49,11 @@
             _connection = GetConnection();
             _channel = _connection.CreateModel();
 
-            _channel.QueueDeclare(_queueOptions.Value.NotificationQueueName);
-            _channel.QueueDeclare(_queueOptions.Value.DataQueueName);
-            _channel.QueueDeclare(_queueOptions.Value.ErrorQueueName);
-            _channel.QueueDeclare(_queueOptions.Value.AnomalyReportQueueName);
-            _channel.QueueDeclare(_queueOptions.Value.SettingsQueueName);
+            _channel.QueueDeclare(queue: _queueOptions.Value.NotificationQueueName, exclusive: false);
+            _channel.QueueDeclare(queue: _queueOptions.Value.DataQueueName, exclusive: false);
+            _channel.QueueDeclare(queue: _queueOptions.Value.ErrorQueueName, exclusive: false);
+            _channel.QueueDeclare(queue: _queueOptions.Value.AnomalyReportQueueName, exclusive: false);
+            _channel.QueueDeclare(queue: _queueOptions.Value.SettingsQueueName, exclusive: false);
 
             _receiver.Receive<InstanceSettingsMessage>(
                 _channel,

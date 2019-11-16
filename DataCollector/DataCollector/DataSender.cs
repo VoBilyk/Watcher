@@ -33,19 +33,5 @@ namespace DataCollector
             var response = await _client.PostAsync(_uri, byteContent);
             return response.StatusCode == HttpStatusCode.Created;
         }
-
-        private void TestData(CollectedData date)
-        {
-            float cpu = 0;
-            float ram = 0;
-            float pram = 0;
-            foreach (var item in date.Processes)
-            {
-                cpu += item.PCpu;
-                 ram += item.RamMBytes;
-                 pram += item.PRam;
-            }
-            System.Console.WriteLine($"cpu:{cpu} \t ram:{ram} \t pram:{pram}");
-        }
     }
 }
