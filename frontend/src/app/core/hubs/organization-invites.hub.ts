@@ -20,22 +20,24 @@ export class OrganizationInvitesHub {
     this.startInviteHubConnection();
   }
 
-  private createConnection(firebaseToken: string, watcherToken: string): void {
-    const connPath = `${environment.server_url}/invites?Authorization=${firebaseToken}&WatcherAuthorization=${watcherToken}`;
-
+  private createConnection(firebaseToken: string, watcherToken: string) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(connPath, ) // {accessTokenFactory: () => firebaseToken}
-      .configureLogging(signalR.LogLevel.Information)
+      .withUrl(`${environment.server_url}/invites?Authorization=${firebaseToken}&WatcherAuthorization=${watcherToken}`)
+      .configureLogging(signalR.LogLevel.None)
       .build();
+
+      return this.hubConnection;
   }
 
   private startInviteHubConnection(): void {
-    if (!this.authService.getCurrentUserLS()) { return; }
-    if (this.isConnect) { return; }
-    this.authService.getTokens().subscribe( ([firebaseToken, watcherToken]) => {
-      this.createConnection(firebaseToken, watcherToken);
+    if (this.isConnect || !this.authService.getCurrentUserLS()) {
+      return;
+    }
+
+    this.authService.getTokens().subscribe(([firebaseToken, watcherToken]) => {
       console.log('OrganizationInvitesHub trying to connect');
-      this.hubConnection.start()
+      this.createConnection(firebaseToken, watcherToken)
+        .start()
         .then(() => {
           console.log('OrganizationInvitesHub connected');
           this.isConnect = true;

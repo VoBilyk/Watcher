@@ -1,6 +1,13 @@
-<p-dialog header="Add new organizations" [(visible)]="display" [width]="350" [minWidth]="200" [minY]="70" [closable]="false"
-[modal]="true" [responsive]="true" [draggable]="false" [width]="350" [minWidth]="200" [maximizable]="false" [baseZIndex]="999"  >
-
+<p-dialog header="Add new organizations" [(visible)]="display"
+  [contentStyle]="{'width':'350px', 'min-width': '70px'}"
+  [minY]="70"
+  [closable]="false"
+  [modal]="true"
+  [responsive]="true"
+  [draggable]="false"
+  [maximizable]="false"
+  [baseZIndex]="999"
+>
   <form class="organizationForm" [formGroup]="organizationForm">
     <div class="ui-g">
       <div class="ui-g-12 ui-md-12 ui-lg-12">
@@ -65,7 +72,7 @@
   <p-footer>
     <div class="text-center">
         <button pButton type="button" label="Add" [disabled]="!organizationForm.valid" (click)="hiddenSaveButton.click()"  class="ui-button-success button"></button>
-        <button pButton type="button" class="ui-button-raised ui-button-danger button" (click)="onClose()" label="Cancel"></button>  
+        <button pButton type="button" class="ui-button-raised ui-button-danger button" (click)="onClose()" label="Cancel"></button>
     </div>
   </p-footer>
 </p-dialog>

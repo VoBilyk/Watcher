@@ -25,8 +25,8 @@ export class NotificationsHubService {
     const connPath = `${environment.server_url}/notifications?Authorization=${firebaseToken}&WatcherAuthorization=${watcherToken}`;
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(connPath) // {accessTokenFactory: () => firebaseToken}
-      .configureLogging(signalR.LogLevel.Information)
+      .withUrl(connPath)
+      .configureLogging(signalR.LogLevel.None)
       .build();
   }
 

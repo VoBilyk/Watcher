@@ -7,7 +7,6 @@ import {AuthService} from '../services/auth.service';
 import {CollectedData} from '../../shared/models/collected-data.model';
 import {InstanceChecked} from '../../shared/models/instance-checked';
 
-
 @Injectable()
 export class DashboardsHub {
   private hubName = 'dashboards';
@@ -23,8 +22,10 @@ export class DashboardsHub {
   }
 
   private startConnection() {
-    if (!this.authService.getCurrentUserLS()) { return; }
-    if (this.isConnect) { return; }
+    if (this.isConnect || !this.authService.getCurrentUserLS()) {
+      return;
+    }
+
     this.authService.getTokens().subscribe(([firebaseToken, watcherToken]) => {
       this.buildConnection(firebaseToken, watcherToken);
       console.log('Dashboards Hub trying to connect');
@@ -36,9 +37,7 @@ export class DashboardsHub {
           this.connectionEstablished$.next(true);
           this.registerOnEvents();
         })
-        .catch(err => {
-          console.log('Error while establishing connection (Dashboards Hub)');
-        });
+        .catch(() => console.log('Error while establishing connection (Dashboards Hub)'));
     });
   }
 
@@ -47,7 +46,7 @@ export class DashboardsHub {
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(connPath)
-      .configureLogging(signalR.LogLevel.Information)
+      .configureLogging(signalR.LogLevel.None)
       .build();
   }
 

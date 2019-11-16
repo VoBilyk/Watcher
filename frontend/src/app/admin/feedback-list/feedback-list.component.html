@@ -56,8 +56,16 @@
     </ng-template>
   </p-table>
 </div>
-<p-dialog header="Create response" [(visible)]="display" [modal]="true" [responsive]="true" [width]="350" [minWidth]="200"
-  [minY]="70" [maximizable]="false" [baseZIndex]="10000">
+<p-dialog
+  header="Create response"
+  [(visible)]="display"
+  [modal]="true"
+  [responsive]="true"
+  [contentStyle]="{'width':'350px', 'min-width': '200px'}"
+  [minY]="70"
+  [maximizable]="false"
+  [baseZIndex]="10000"
+>
   <p class="field">Email</p>
   <input type="text" disabled [value]="email" />
   <p class="field">Text</p>

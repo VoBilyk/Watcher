@@ -34,62 +34,65 @@
   </div>
 </div>
 
-  <p-dialog header="Add new dataCollector version." [(visible)]="displayAddWindow" [modal]="true"
-    [maximizable]="false" [baseZIndex]="10000" [width]="600" [draggable]="false">
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-8">
-          <p class="field">Version:</p>
-          <input type="text" [(ngModel)]="collectorApp.version" pInputText placeholder="Version number" />
-        </div>
-        <div class="ui-g-4">
-        <p class="text-center space">isActual:</p>
-        <div class="text-center">
-            <p-checkbox binary="true" [(ngModel)]="collectorApp.isActive" ></p-checkbox>
-          </div>
-        </div>
-      </div>
-
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-12">
-          <div class="ui-inputgroup">
-            <input type="text"  [(ngModel)]="collectorApp.exeLink" disabled pInputText placeholder="Exe file" />
-            <div class="upload-btn-wrapper">
-              <button pButton class="ui-button-raised ui-button-success btn" label="Upload"></button>
-              <input #exeFile type="file" (change)="uploadExeFile(exeFile.files)" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-12">
-          <div class="ui-inputgroup">
-            <input type="text"  [(ngModel)]="collectorApp.tgzLink" disabled pInputText placeholder="Tgz file" />
-            <div class="upload-btn-wrapper">
-              <button pButton class="ui-button-raised ui-button-success btn" label="Upload"></button>
-              <input #tgzFile type="file" (change)="uploadTgxFile(tgzFile.files)" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-12">
-          <div class="ui-inputgroup">
-            <input type="text"  [(ngModel)]="collectorApp.debLink" disabled pInputText placeholder="Deb file" />
-            <div class="upload-btn-wrapper">
-              <button pButton class="ui-button-raised ui-button-success btn" label="Upload"></button>
-              <input #debFile type="file" (change)="uploadDebFile(debFile.files)" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-    <p-footer>
+<p-dialog
+  header="Add new dataCollector version."
+  [(visible)]="displayAddWindow"
+  [modal]="true"
+  [maximizable]="false"
+  [baseZIndex]="10000"
+  [draggable]="false"
+  [contentStyle]="{'width':'600px'}"
+>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-8">
+      <p class="field">Version:</p>
+      <input type="text" [(ngModel)]="collectorApp.version" pInputText placeholder="Version number" />
+    </div>
+    <div class="ui-g-4">
+    <p class="text-center space">isActual:</p>
     <div class="text-center">
-        <button type="button" pButton (click)="onSubmit()" class="ui-button-raised ui-button-success"  label="Save"></button>
-        <button type="button" pButton (click)="onCancel()" label="Cancel" class="ui-button-warning"></button>
+        <p-checkbox binary="true" [(ngModel)]="collectorApp.isActive" ></p-checkbox>
       </div>
-    </p-footer>
-    </p-dialog>
+    </div>
+  </div>
+
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-md-12">
+      <div class="ui-inputgroup">
+        <input type="text"  [(ngModel)]="collectorApp.exeLink" disabled pInputText placeholder="Exe file" />
+        <div class="upload-btn-wrapper">
+          <button pButton class="ui-button-raised ui-button-success btn" label="Upload"></button>
+          <input #exeFile type="file" (change)="uploadExeFile(exeFile.files)" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-md-12">
+      <div class="ui-inputgroup">
+        <input type="text" [(ngModel)]="collectorApp.tgzLink" disabled pInputText placeholder="Tgz file" />
+        <div class="upload-btn-wrapper">
+          <button pButton class="ui-button-raised ui-button-success btn" label="Upload"></button>
+          <input #tgzFile type="file" (change)="uploadTgxFile(tgzFile.files)" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-md-12">
+      <div class="ui-inputgroup">
+        <input type="text"  [(ngModel)]="collectorApp.debLink" disabled pInputText placeholder="Deb file" />
+        <div class="upload-btn-wrapper">
+          <button pButton class="ui-button-raised ui-button-success btn" label="Upload"></button>
+          <input #debFile type="file" (change)="uploadDebFile(debFile.files)" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="text-center">
+      <button type="button" pButton (click)="onSubmit()" class="ui-button-raised ui-button-success"  label="Save"></button>
+      <button type="button" pButton (click)="onCancel()" label="Cancel" class="ui-button-warning"></button>
+    </div>
+  </p-footer>
+</p-dialog>
