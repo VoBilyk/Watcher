@@ -11,7 +11,7 @@ import { User } from '../../shared/models/user.model';
 import { Chat } from '../../shared/models/chat.model';
 import { NotificationSetting } from '../../shared/models/notification-setting.model';
 import { NotificationType } from '../../shared/models/notification-type.enum';
-
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-conversation-settings-popup',
@@ -36,18 +36,23 @@ export class ConversationSettingsPopupComponent implements OnInit {
   wantedUser: string;
   notificationSettings: NotificationSetting;
 
+  resourcesUrl = `${environment.server_url}/`;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
     private toastrService: ToastrService,
-    private chatHub: ChatHub) { }
+    private chatHub: ChatHub
+  ) { }
 
   ngOnInit() {
     this.currentUserId = this.authService.getCurrentUser().id;
+
     this.chatSettingsForm = this.fb.group({
       'name': ['', Validators.required]
     });
+
     this.notificationSettingsForm = this.fb.group({
       'isMute': [false],
       'isEmailable': [false]
@@ -67,7 +72,7 @@ export class ConversationSettingsPopupComponent implements OnInit {
     });
   }
 
-  addUser(value) {
+  addUser(value: User) {
     if (this.chat.users.some(u => u === value)) {
       this.toastrService.error('User already added');
       return;
@@ -123,7 +128,7 @@ export class ConversationSettingsPopupComponent implements OnInit {
     this.chatSettingsForm.reset();
   }
 
-  createDefaultNotificationsSettings(): NotificationSetting {
+  createDefaultNotificationsSettings() {
     return {
       type: NotificationType.Chat,
       userId: this.currentUserId,

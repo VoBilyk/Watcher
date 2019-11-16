@@ -38,5 +38,9 @@
 </div>
 
 <div class="chat-window" *ngFor="let window of chatWindows; let i = index" [ngStyle]="{'right': 190 + (250 + 20) * i + 'px'}">
-  <app-conversation-panel [window]="window" (close)="removeChatWindow(window.chat.id)" (extended)="clearCounterForChat($event)"></app-conversation-panel>
+  <app-conversation-panel
+    [window]="window"
+    (close)="removeChatWindow(window.chat.id)"
+    (extended)="clearCounterForChat($event)">
+  </app-conversation-panel>
 </div>

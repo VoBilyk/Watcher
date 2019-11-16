@@ -12,6 +12,7 @@ import { Chat } from '../../shared/models/chat.model';
 import { User } from '../../shared/models/user.model';
 import { NotificationType } from '../../shared/models/notification-type.enum';
 import { NotificationSetting } from '../../shared/models/notification-setting.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-chat-create-popup',
@@ -38,6 +39,7 @@ export class ChatCreatePopupComponent implements OnInit {
   filteredUsers: User[];
   users: User[] = [];
   currentUserId: string;
+  resourcesUrl = `${environment.server_url}/`;
 
   ngOnInit() {
     this.chatSettingsForm = this.fb.group({

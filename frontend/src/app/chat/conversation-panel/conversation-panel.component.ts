@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../../core/services/auth.service';
 import { ChatHub } from '../../core/hubs/chat.hub';
@@ -9,7 +10,6 @@ import { User } from '../../shared/models/user.model';
 import { Chat } from '../../shared/models/chat.model';
 import { ChatWindow } from '../../shared/models/chat-window.model';
 
-
 @Component({
   selector: 'app-conversation-panel',
   templateUrl: './conversation-panel.component.html',
@@ -18,15 +18,15 @@ import { ChatWindow } from '../../shared/models/chat-window.model';
     '../chat.component.sass']
 })
 export class ConversationPanelComponent implements OnInit {
-
   @Input() window: ChatWindow;
-  @Output() close = new EventEmitter();
+  @Output() close = new EventEmitter<void>();
   @Output() extended = new EventEmitter<number>();
 
   onDisplaySettings = new EventEmitter<Chat>();
 
   currentUser: User;
   textMessage: string;
+  resourcesUrl = `${environment.server_url}/`;
 
   constructor(
     private authService: AuthService,
@@ -59,13 +59,13 @@ export class ConversationPanelComponent implements OnInit {
     this.extended.emit(this.window.chat.id);
   }
 
-  openSettings(event) {
+  openSettings(event: MouseEvent) {
     event.stopPropagation();
     event.preventDefault();
     this.onDisplaySettings.emit(this.window.chat);
   }
 
-  closePanel(event) {
+  closePanel(event: MouseEvent) {
     event.stopPropagation();
     event.preventDefault();
     this.close.emit();
@@ -88,10 +88,8 @@ export class ConversationPanelComponent implements OnInit {
   }
 
   markMessagesAsRead() {
-    this.window.chat.messages.forEach(m => {
-      if (!m.wasRead) {
-        this.chatHub.markMessageAsRead(m.id);
-      }
-    });
+    this.window.chat.messages
+      .filter(m => !m.wasRead)
+      .forEach(({ id }) => this.chatHub.markMessageAsRead(id));
   }
 }

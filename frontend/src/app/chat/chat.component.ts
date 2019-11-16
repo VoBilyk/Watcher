@@ -10,6 +10,7 @@ import { SystemToastrService } from '../core/services/system-toastr.service';
 import { Chat } from '../shared/models/chat.model';
 import { Message } from '../shared/models/message.model';
 import { ChatWindow } from '../shared/models/chat-window.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-chat',
@@ -175,13 +176,15 @@ export class ChatComponent implements OnInit {
     const partnerImg = 'http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-8/128/User-blue-icon.png';
 
     if (chat.users.length === 2) {
-      const photo = chat.users.find(u => u.id !== this.currentUserId).photoURL;
-      return photo || partnerImg;
+      const userImg = chat.users.find(u => u.id !== this.currentUserId).photoURL;
+      return userImg ? `${environment.server_url}/${userImg}` : partnerImg;
     }
 
     if (chat.users.length === 1) {
-      return chat.users[0].photoURL || partnerImg;
+      const userImg = chat.users[0].photoURL;
+      return userImg ? `${environment.server_url}/${userImg}` : partnerImg;
     }
+
     return groupeImg;
   }
 
