@@ -20,35 +20,13 @@ namespace Watcher.Controllers
     [ApiController]
     public class InstancesController : ControllerBase
     {
-        /// <summary>
-        /// The Samples Service service
-        /// </summary>
         private readonly IInstanceService _instanceService;
 
-        /// <summary>
-        /// Notifications Hub Context
-        /// </summary>
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SamplesController"/> class. 
-        /// </summary>
-        /// <param name="service">
-        /// Samples service
         public InstancesController(IInstanceService service)
         {
             _instanceService = service;
         }
 
-        /// <summary>
-        /// Get Samples
-        /// </summary>
-        /// <returns>
-        /// List of Dtos of Samples
-        /// </returns>
-        /// <response code="500">Internal error on server</response>
-        /// <response code="404">Samples not found</response>
-        /// <response code="403">You don`t have permission to create watch Samples</response>
-        /// <response code="400">Model is not valid</response>
-        /// <response code="200">Success</response>
         [HttpGet]
         [AllowAnonymous]
         public virtual async Task<ActionResult<IEnumerable<InstanceDto>>> Get()

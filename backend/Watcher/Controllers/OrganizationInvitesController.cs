@@ -131,10 +131,6 @@ namespace Watcher.Controllers
         /// <summary>
         /// Update OrganizationInvite by id
         /// </summary>
-        /// <param name="id">OrganizationInvite identifier</param> 
-        /// <param name="userId">OrganizationInvite identifier</param>
-        /// <returns>
-        /// </returns>
         /// <response code="500">Internal error on server</response>
         /// <response code="404">OrganizationInvite not found</response>
         /// <response code="403">You don`t have permission to create watch OrganizationInvite</response>

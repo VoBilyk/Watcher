@@ -29,7 +29,6 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="FeedbacksController"/> class. 
         /// </summary>
-        /// <param name="service">
         /// Feedbacks service
         /// </param>
         public FeedbacksController(IFeedbackService service, IEmailProvider provider)

@@ -56,7 +56,7 @@
 
             if (query != null)
             {
-                return query.CountAsync();
+                return query.CountDocumentsAsync();
             }
 
             return Task.FromResult((long)0);

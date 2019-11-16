@@ -139,7 +139,7 @@
                 var dto = _mapper.Map<Notification, NotificationDto>(created);
                 dto.NotificationSetting = _mapper.Map<NotificationSetting, NotificationSettingDto>(notificationSetting);
 
-                if (notificationSetting.IsEmailable)
+                if (notificationSetting.IsEmailable && !string.IsNullOrEmpty(receiver.EmailForNotifications))
                     await _emailProvider.SendMessageOneToOne("watcher@net.com",
                         $"{notificationSetting.Type} Notification", receiver.EmailForNotifications,
                         dto.Text, "");
@@ -299,11 +299,6 @@
             }
 
             return htmlDocUrl;
-        }
-
-        private string CreateReportHtmlMessage(string message, AzureMLAnomalyReport report)
-        {
-            return null;
         }
     }
 }

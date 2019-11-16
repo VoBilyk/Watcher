@@ -31,10 +31,6 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ResponsesController"/> class. 
         /// </summary>
-        /// <param name="service">
-        /// Responses service
-        /// </param>
-        /// <param name="provider"></param>
         public ResponsesController(IResponseService service, INotificationService notificationService, IEmailProvider provider)
         {
             _responseService = service;
