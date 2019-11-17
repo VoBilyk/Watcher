@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <ApplicationIcon>cloud-computing.ico</ApplicationIcon>
     <SignAssembly>false</SignAssembly>
     <Authors>BsaWatcherTeam</Authors>

@@ -50,10 +50,7 @@ namespace DataCollector
             Console.Clear();
             Console.WriteLine("Initializating...");
             // sender and collector for timer
-            var payload = (
-                new DataSender(_client, uri),
-                Collector.Instance
-                );
+            var payload = (new DataSender(_client, uri), Collector.Instance);
 
             _logger = new Logger(_client, ClientIdentifier, uri + "/log");
             _logger.Log("Data collection began", LogLevel.State).GetAwaiter().GetResult();

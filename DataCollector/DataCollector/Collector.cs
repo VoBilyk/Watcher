@@ -7,6 +7,7 @@ using System.Threading;
 
 namespace DataCollector
 {
+    using System.IO;
     using System.Threading.Tasks;
 
 #if Windows
@@ -38,27 +39,34 @@ namespace DataCollector
 
         public static Collector Instance => Value.Value;
 
-
         public async Task<CollectedData> Collect()
         {
             CollectedData dataItem = null;
             try
             {
                 var allProcesses = await GetProcesses();
+                var freeRam = _systemCounters["FreeRam"].NextValue();
+                var freeDiskMb = _systemCounters["DiskFreeMb"].NextValue();
+                var localDisk = _systemCounters["LocalDisk"].NextValue();
+                var diskFreeMb = _systemCounters["DiskFreeMb"].NextValue();
+
+                float GetDiskTotalMbytes() => (diskFreeMb / localDisk) * 100.0f;
+                float GetDiskUsageMbytes() => GetDiskTotalMbytes() - diskFreeMb;
+
                 dataItem = new CollectedData
                 {
                     InterruptsPerSeconds = (float)Math.Round(_systemCounters["Interrupts"].NextValue(), 2),
                     InterruptsTimePercent = (float)Math.Round(_systemCounters["InterruptsTime"].NextValue(), 2),
 
                     TotalRamMBytes = (float)Math.Round(_totalRamMbyte, 2),
-                    RamUsagePercentage = (float)Math.Round(100 - (_systemCounters["FreeRam"].NextValue() / (_totalRamMbyte / 100)), 2),
-                    UsageRamMBytes = (float)Math.Round(_totalRamMbyte -_systemCounters["FreeRam"].NextValue(), 2),
+                    RamUsagePercentage = (float)Math.Round(100 - (freeRam / (_totalRamMbyte / 100)), 2),
+                    UsageRamMBytes = (float)Math.Round(_totalRamMbyte - freeRam, 2),
 
                     CpuUsagePercentage = (float)Math.Round(_systemCounters["CPU"].NextValue(), 2),
 
                     LocalDiskTotalMBytes = (float)Math.Round(GetDiskTotalMbytes()),
                     LocalDiskUsageMBytes = (float)Math.Round(GetDiskUsageMbytes()),
-                    LocalDiskUsagePercentage = (float)Math.Round(100 - _systemCounters["LocalDisk"].NextValue(), 2),
+                    LocalDiskUsagePercentage = (float)Math.Round(100 - localDisk, 2),
 
                     Processes = allProcesses,
                     ProcessesCount = allProcesses.Count,
@@ -73,27 +81,16 @@ namespace DataCollector
             return dataItem;
         }
 
-        private float GetDiskTotalMbytes()
-        {
-            return (_systemCounters["DiskFreeMb"].NextValue() / _systemCounters["LocalDisk"].NextValue()) * 100.0f;
-        }
-
-        private float GetDiskUsageMbytes()
-        {
-            return GetDiskTotalMbytes() - _systemCounters["DiskFreeMb"].NextValue();
-        }
-
         private float GetTotalRAM()
         {
             var totalRam = 1.0f;
 
-            ManagementObjectSearcher ramMonitor =    //query to WMI
-            new ManagementObjectSearcher("SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem");
-
-            foreach (ManagementObject objram in ramMonitor.Get())
+            using (var ramMonitor = new ManagementObjectSearcher("SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem"))
             {
-                totalRam = Convert.ToUInt64(objram["TotalVisibleMemorySize"]) / 1024;    // Total RAM
-                float busyRam = totalRam - Convert.ToUInt64(objram["FreePhysicalMemory"]);// Usage RAM
+                foreach (ManagementObject objram in ramMonitor.Get())
+                {
+                    totalRam = Convert.ToUInt64(objram["TotalVisibleMemorySize"]) / 1024;    // Total RAM
+                }
             }
 
             return totalRam;
@@ -110,9 +107,6 @@ namespace DataCollector
 
             foreach (var item in processes)
             {
-
-                if (item.ProcessName == "Idle") continue; // cpu > 350%
-
                 if (_processCpuCounters.ContainsKey(item.Id)) continue;
 
                 var cpu = new PerformanceCounter("Process", "% Processor Time", item.ProcessName, true);
@@ -121,7 +115,6 @@ namespace DataCollector
             }
 
             await Task.Delay(1000);
-            // Thread.Sleep(1000);
 
             foreach (var item in processes)
             {
