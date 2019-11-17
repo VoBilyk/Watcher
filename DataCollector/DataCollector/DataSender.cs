@@ -22,16 +22,18 @@ namespace DataCollector
 
         public async Task<bool> SendAsync(CollectedData dataItem)
         {
-            //TestData(dataItem);
             var myContent = JsonConvert.SerializeObject(dataItem);
 
             var buffer = Encoding.UTF8.GetBytes(myContent);
 
-            var byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var response = await _client.PostAsync(_uri, byteContent);
-            return response.StatusCode == HttpStatusCode.Created;
+            using(var byteContent = new ByteArrayContent(buffer))
+            {
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                var response = await _client.PostAsync(_uri, byteContent);
+                return response.StatusCode == HttpStatusCode.Created;
+            }
         }
     }
 }

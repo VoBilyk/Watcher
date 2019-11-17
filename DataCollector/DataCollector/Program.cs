@@ -142,7 +142,7 @@ namespace DataCollector
             }
             catch (Exception ex)
             {
-                // await _logger.Log(ex.Message, LogLevel.Error);
+                await _logger.Log(ex.Message, LogLevel.Error);
                 Console.WriteLine($"{DateTime.Now}\t Data wasn`t sent successfully. Problem with connection");
             }
 

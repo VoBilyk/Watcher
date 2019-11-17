@@ -23,9 +23,10 @@ namespace DataCollector
 
         public Task Log(string message, LogLevel logLevel = LogLevel.Info)
         {
-            var actionLog = new ActionLog(message, DateTime.Now, logLevel);
-
-            actionLog.ClientId = _clientId;
+            var actionLog = new ActionLog(message, DateTime.Now, logLevel)
+            {
+                ClientId = _clientId
+            };
 
             var content = JsonConvert.SerializeObject(actionLog);
             var buffer = Encoding.UTF8.GetBytes(content);
