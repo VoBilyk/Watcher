@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { UserService } from '../../core/services/user.service';
-import { AuthService } from '../../core/services/auth.service';
-import { ToastrService } from '../../core/services/toastr.service';
+import { UserService, AuthService, ToastrService } from '../../core/services';
 import { ChatHub } from '../../core/hubs/chat.hub';
 
 import { ChatUpdateRequest } from '../../shared/requests/chat-update-request';
@@ -11,7 +9,6 @@ import { User } from '../../shared/models/user.model';
 import { Chat } from '../../shared/models/chat.model';
 import { NotificationSetting } from '../../shared/models/notification-setting.model';
 import { NotificationType } from '../../shared/models/notification-type.enum';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-conversation-settings-popup',
@@ -35,8 +32,6 @@ export class ConversationSettingsPopupComponent implements OnInit {
   filteredUsers: User[];
   wantedUser: string;
   notificationSettings: NotificationSetting;
-
-  resourcesUrl = `${environment.server_url}/`;
 
   constructor(
     private fb: FormBuilder,

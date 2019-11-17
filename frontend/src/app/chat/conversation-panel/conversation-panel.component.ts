@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../../core/services/auth.service';
 import { ChatHub } from '../../core/hubs/chat.hub';
@@ -26,7 +25,6 @@ export class ConversationPanelComponent implements OnInit {
 
   currentUser: User;
   textMessage: string;
-  resourcesUrl = `${environment.server_url}/`;
 
   constructor(
     private authService: AuthService,

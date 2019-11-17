@@ -20,7 +20,7 @@
       (onSelect)="addUser($event)" emptyMessage="User not found" placeholder="Write name or email">
       <ng-template let-user pTemplate="item">
         <div class="ui-helper-clearfix">
-          <img class="user-list-img" src="{{resourcesUrl + user.photoURL}}" />
+          <img class="user-list-img" [src]="user.photoURL" />
           <strong class="text-overflow">{{user.firstName}} {{user.lastName}}</strong>
           <div class="text-overflow">{{user.email}}</div>
         </div>
@@ -31,7 +31,7 @@
     <div class="user-list">
       <div *ngFor="let user of users">
         <div class="ui-helper-clearfix user-list-item">
-          <img class="user-list-img" src="{{resourcesUrl + user.photoURL}}" />
+          <img class="user-list-img" [src]="user.photoURL" />
           <div class="user-list-name">
             <div class="text-overflow"><strong>{{user.firstName}} {{user.lastName}}</strong></div>
             <i class="icon fa fa-close" (click)="deleteUser(user.id)"></i>

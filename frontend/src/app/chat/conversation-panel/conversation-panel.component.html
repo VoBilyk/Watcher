@@ -19,7 +19,7 @@
           <div *ngFor="let message of window.chat.messages" class="message" [ngClass]="{'received-message': message.user.id != currentUser?.id}">
             <div class="ui-g">
               <div class="ui-g-3 ui-g-nopad">
-                <img class="message-user-img" src="{{resourcesUrl + message.user.photoURL}}" />
+                <img class="message-user-img" [src]="message.user.photoURL" />
               </div>
               <div class="ui-g-9 ui-g-nopad">
                 <strong class="message-name text-overflow text-inline">{{message?.user?.displayName}}</strong>

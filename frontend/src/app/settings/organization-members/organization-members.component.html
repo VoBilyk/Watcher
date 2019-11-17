@@ -27,7 +27,7 @@
         <td class="center">{{userOrganization.user.createdAt | date:'shortDate'}}</td>
         <td class="center">
           <div class="small-photo ">
-            <img *ngIf="userOrganization.user.photoURL" src="{{userOrganization.user.photoURL}}" alt="profile photo" class="small-photo" />
+            <img *ngIf="userOrganization.user.photoURL" [src]="userOrganization.user.photoURL" alt="profile photo" class="small-photo" />
           </div>
         </td>
         <td class="center">{{userOrganization.user.displayName}}</td>
