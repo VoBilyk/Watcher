@@ -30,7 +30,6 @@
         /// Initializes a new instance of the <see cref="FeedbacksController"/> class. 
         /// </summary>
         /// Feedbacks service
-        /// </param>
         public FeedbacksController(IFeedbackService service, IEmailProvider provider)
         {
             _feedbackService = service;

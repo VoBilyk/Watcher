@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  server_url: 'https://watcher.loc.com/api',
-  client_url: 'https://watcher.loc.com'
+  server_url: 'http://watcher.loc.com/api',
+  client_url: 'http://watcher.loc.com'
 };

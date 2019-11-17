@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  server_url: 'http://localhost:64542', // 'http://watcher.dev.com',
-  client_url: 'http://localhost:4200'
+  server_url:   'http://watcher.dev.com/api',
+  client_url: 'http://watcher.dev.com'
 };
 
 /*

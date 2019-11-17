@@ -140,7 +140,7 @@ namespace Watcher
                     {
                         options.Events = new JwtBearerEvents()
                         {
-                            OnMessageReceived = delegate (MessageReceivedContext context)
+                            OnMessageReceived = context =>
                               {
                                   if ((!context.Request.Path.Value.Contains("/notifications")
                                       && !context.Request.Path.Value.Contains("/dashboards")
@@ -151,7 +151,6 @@ namespace Watcher
                                       || !context.Request.Query.ContainsKey("WatcherAuthorization"))
                                       return Task.CompletedTask;
 
-                                  // context.Token = context.Request.Query["Authorization"];
                                   var watcherToken = context.Request.Query["WatcherAuthorization"];
                                   var firebaseToken = $"Bearer {context.Request.Query["Authorization"]}";
                                   context.Request.Headers.TryAdd("Authorization", firebaseToken);
@@ -162,15 +161,14 @@ namespace Watcher
                         };
 
                         options.Authority = "https://securetoken.google.com/watcher-e868a";
-                        options.TokenValidationParameters =
-                            new TokenValidationParameters
-                            {
-                                ValidateIssuer = true,
-                                ValidIssuer = "https://securetoken.google.com/watcher-e868a",
-                                ValidateAudience = true,
-                                ValidAudience = "watcher-e868a",
-                                ValidateLifetime = true
-                            };
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = "https://securetoken.google.com/watcher-e868a",
+                            ValidateAudience = true,
+                            ValidAudience = "watcher-e868a",
+                            ValidateLifetime = true
+                        };
                     });
 
             services.AddAuthorization(o =>
@@ -189,7 +187,6 @@ namespace Watcher
 
             var addSignalRBuilder = services
                 .AddSignalR(o => o.EnableDetailedErrors = true)
-                // .AddAzureService()
                 .AddJsonProtocol(options => options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             if (UseAzureSignalR)
@@ -275,7 +272,7 @@ namespace Watcher
                 ? "AzureCosmosDbConnection"
                 : "MongoDbConnection"
                 );
-            
+
             services.AddScoped<IDataAccumulatorRepository<CollectedData>, DataAccumulatorRepository>(
                   options => new DataAccumulatorRepository(connectionString, "watcher-data-storage", CollectedDataType.Accumulation));
             services.AddScoped<IDataAggregatorRepository<CollectedData>, DataAggregatorRepository>(

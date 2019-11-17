@@ -602,29 +602,6 @@ namespace Watcher.DataAccess.Data.Migrations
                     );
                 });
 
-            modelBuilder.Entity("Watcher.DataAccess.Entities.Sample", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Count");
-
-                    b.Property<DateTime>("CreationDate");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<int>("SampleField");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Samples");
-                });
-
             modelBuilder.Entity("Watcher.DataAccess.Entities.Theme", b =>
                 {
                     b.Property<int>("Id")
