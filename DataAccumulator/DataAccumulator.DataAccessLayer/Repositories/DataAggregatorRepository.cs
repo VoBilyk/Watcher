@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using DataAccumulator.DataAccessLayer.Data;
 using DataAccumulator.DataAccessLayer.Entities;
 using DataAccumulator.DataAccessLayer.Interfaces;
 using DataAccumulator.Shared.Models;
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -242,15 +240,6 @@ namespace DataAccumulator.DataAccessLayer.Repositories
                 Console.WriteLine(e);
                 throw;
             }
-        }
-
-        // Try to convert the Id to a BSonId value
-        private ObjectId GetInternalId(Guid id)
-        {
-            if (!ObjectId.TryParse(id.ToString(), out ObjectId internalId))
-                internalId = ObjectId.Empty;
-
-            return internalId;
         }
     }
 }

@@ -47,7 +47,6 @@ namespace DataAccumulator
                         .AllowCredentials());
             });
 
-            //var serviceBusSection = Configuration.GetSection("ServiceBus");
 
             //var azureMLSection = Configuration.GetSection("AzureML");
             //services.Configure<AzureMLOptions>(o =>

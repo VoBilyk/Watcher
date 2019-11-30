@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataAccumulator.Shared.Models
 {
-    using MongoDB.Bson.Serialization.Attributes;
-
     public class AzureMLAnomalyReport
     {
         public DateTime Date { get; set; }

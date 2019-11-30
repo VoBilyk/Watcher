@@ -98,7 +98,7 @@ namespace DataAccumulator.WebAPI.Controllers
                 await _dataAggregatorService.UpdateEntityAsync(collectedDataDto);
                 return NoContent();
             }
-            catch (NotFoundException e)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
@@ -119,7 +119,7 @@ namespace DataAccumulator.WebAPI.Controllers
                 await _dataAggregatorService.DeleteEntityAsync(id);
                 return NoContent();
             }
-            catch (NotFoundException e)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
