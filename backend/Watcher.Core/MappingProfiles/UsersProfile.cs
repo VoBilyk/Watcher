@@ -34,13 +34,13 @@
                 .ForMember(d => d.Organizations, o => o.MapFrom(s => s.UserOrganizations.Select(uo => uo.Organization).ToList()))
                 .ForMember(d => d.LastPickedOrganization, o => o.MapFrom(s => s.LastPickedOrganization))
                 .ForMember(d => d.ChatsId, o => o.MapFrom(s => s.UserChats.Select(uc => uc.Chat.Id)))
-                .ForMember(d => d.Feedbacks, o => o.UseValue(new List<FeedbackDto>()))
-                .ForMember(d => d.Messages, o => o.UseValue(new List<MessageDto>()))
+                .ForMember(d => d.Feedbacks, o => o.MapFrom(s => new List<FeedbackDto>()))
+                .ForMember(d => d.Messages, o => o.MapFrom(s => new List<MessageDto>()))
                 .ForMember(d => d.PhotoURL, o => o.MapFrom(s => s.PhotoURL))
                 .ForMember(d => d.EmailForNotifications, o => o.MapFrom(s => s.EmailForNotifications))
                 .ForMember(d => d.NotificationSettings, o => o.MapFrom(s => s.NotificationSettings))
                 .ForMember(d => d.Notifications, o => o.MapFrom(s => s.Notifications))
-                .ForMember(d => d.Responses, o => o.UseValue(new List<ResponseDto>()));
+                .ForMember(d => d.Responses, o => o.MapFrom(s => new List<ResponseDto>()));
 
             CreateMap<UserOrganization, UserOrganization>();
             CreateMap<UserOrganization, OrganizationDto>()
@@ -68,20 +68,20 @@
                 .ForMember(d => d.LastPickedOrganization, o => o.MapFrom(s => s.User.LastPickedOrganization)); // TODO: Include
 
             CreateMap<UserRegisterRequest, User>().ForMember(d => d.Id, o => o.MapFrom(s => s.Uid))
-                .ForMember(d => d.CreatedAt, o => o.UseValue(DateTime.UtcNow))
-                .ForMember(d => d.IsActive, o => o.UseValue(true))
-                .ForMember(d => d.RoleId, o => o.UseValue(2))
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => DateTime.UtcNow))
+                .ForMember(d => d.IsActive, o => o.MapFrom(s => true))
+                .ForMember(d => d.RoleId, o => o.MapFrom(s => 2))
                 .ForMember(d => d.EmailForNotifications, o => o.MapFrom(s => s.Email))
                 .ForMember(d => d.LastName, o => o.MapFrom(s => s.LastName))
-                .ForMember(d => d.UserOrganizations, o => o.UseValue(new List<UserOrganization>()))
-                .ForMember(d => d.CreatedOrganizations, o => o.UseValue(new List<Organization>()));
+                .ForMember(d => d.UserOrganizations, o => o.MapFrom(s => new List<UserOrganization>()))
+                .ForMember(d => d.CreatedOrganizations, o => o.MapFrom(s => new List<Organization>()));
 
-            CreateMap<ClaimsPrincipal, User>().ForMember(d => d.Id, o => o.UseValue(0))
-                .ForMember(d => d.RoleId, o => o.UseValue(2));
+            CreateMap<ClaimsPrincipal, User>().ForMember(d => d.Id, o => o.MapFrom(s => 0))
+                .ForMember(d => d.RoleId, o => o.MapFrom(s => 2));
 
             // .ForMember(d => d.Email, o => o.MapFrom(s => s.Claims.FirstOrDefault(c => c.Type == "Some string").Value)); 
             // TODO: Get Claim with user Data, extract email from this data, maybe use deserializer
-            CreateMap<UserUpdateRequest, User>().ForMember(d => d.Id, o => o.UseValue(0))
+            CreateMap<UserUpdateRequest, User>().ForMember(d => d.Id, o => o.MapFrom(s => 0))
                 .ForMember(d => d.RoleId, o => o.MapFrom(s => s.Role.Id))
                 .ForMember(d => d.EmailForNotifications, o => o.MapFrom(s =>
                     string.IsNullOrWhiteSpace(s.EmailForNotifications) ?

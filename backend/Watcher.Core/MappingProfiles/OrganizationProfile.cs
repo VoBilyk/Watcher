@@ -24,7 +24,7 @@
 
             CreateMap<OrganizationRequest, Organization>()
                 .ForMember(d => d.Id, o => o.Ignore())
-                .ForMember(d => d.UserOrganizations, o => o.UseValue(new List<UserOrganization>()));
+                .ForMember(d => d.UserOrganizations, o => o.MapFrom(src => new List<UserOrganization>()));
 
 
             CreateMap<Organization, OrganizationDto>()

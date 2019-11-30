@@ -21,7 +21,7 @@ namespace Watcher.Core.MappingProfiles
 
 
             CreateMap<CreateDashboardRequest, Dashboard>()
-                .ForMember(d => d.Id, o => o.UseValue(0))
+                .ForMember(d => d.Id, o => o.MapFrom(s => 0))
                 .ForMember(d => d.Charts, o => o.MapFrom(s => s.ChartRequests));
         }
     }

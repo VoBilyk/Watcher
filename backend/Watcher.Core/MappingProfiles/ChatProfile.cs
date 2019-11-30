@@ -25,7 +25,7 @@
                 .ForMember(d => d.Users, c => c.MapFrom(o => o.UserChats.Select(uc => uc.User)));
                 
             CreateMap<ChatRequest, Chat>()
-                .ForMember(d => d.UserChats, o => o.UseValue(new List<UserChat>()));
+                .ForMember(d => d.UserChats, o => o.MapFrom(s => new List<UserChat>()));
 
             CreateMap<ChatUpdateRequest, Chat>();
         }
