@@ -13,11 +13,11 @@ namespace Watcher.Core.Providers
 {
     public class EmailProvider : IEmailProvider
     {
-        private readonly IConfiguration _configuration;
+        private readonly string _key;
 
         public EmailProvider(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _key = configuration.GetSection("SENDGRID_API_KEY")?.Value;
         }
 
         public Task<Response> SendMessageOneToOne(string from, string subject, string recepient, string message, string messageHtml) =>
@@ -33,9 +33,10 @@ namespace Watcher.Core.Providers
 
             var msg = MailHelper.CreateSingleEmailToMultipleRecipients(fromAddress, recepientsAddresses, subject, message, messageHtml);
 
-            var client = new SendGridClient(_configuration.GetSection("SENDGRID_API_KEY").Value);
+            var client = new SendGridClient(_key);
 
-            return await client.SendEmailAsync(msg);
+            var response = await client.SendEmailAsync(msg);
+            return response;
         }
     }
 }
