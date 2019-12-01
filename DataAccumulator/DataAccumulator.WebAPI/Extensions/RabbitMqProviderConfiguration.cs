@@ -5,7 +5,7 @@ namespace DataAccumulator.WebAPI.Extensions
 {
     public static class RabbitMqProviderConfiguration
     {
-        public static IApplicationBuilder UseRabbitListener(this IApplicationBuilder app)
+        public static IApplicationBuilder UseMessageQueue(this IApplicationBuilder app)
         {
             app.ApplicationServices.GetService(typeof(IQueueProvider));
             return app;

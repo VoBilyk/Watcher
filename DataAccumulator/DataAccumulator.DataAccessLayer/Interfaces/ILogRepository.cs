@@ -8,7 +8,6 @@ namespace DataAccumulator.DataAccessLayer.Interfaces
     public interface ILogRepository
     {
         Task<IEnumerable<ActionLog>> GetAllLogs(Guid instanceId);
-
         Task AddEntity(ActionLog actionLog);
     }
 }

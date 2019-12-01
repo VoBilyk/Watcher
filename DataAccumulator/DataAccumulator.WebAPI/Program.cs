@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.WindowsAzure.Storage;
 
 using Serilog;
@@ -17,12 +16,14 @@ namespace DataAccumulator
 
         private static IConfigurationRoot GetConfigurationRoot()
         {
+            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? EnvironmentName.Production}.json", optional: true)
+                .AddJsonFile($"appsettings.{enviroment ?? Environments.Production}.json", optional: true)
                 .AddEnvironmentVariables();
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == EnvironmentName.Development)
+
+            if (enviroment == Environments.Development)
             {
                 configurationBuilder.AddUserSecrets<Program>(false);
             }
@@ -33,9 +34,45 @@ namespace DataAccumulator
 
         public static int Main(string[] args)
         {
+            ConfigureLogger();
+
+            try
+            {
+                Log.Information("Starting Data Accumulator...");
+                CreateHostBuilder(args).Build().Run();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Data Accumulator Host terminated unexpectedly");
+                return 1;
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    //webBuilder.UseKestrel();
+                    webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
+                    webBuilder.UseSetting("detailedErrors", "true");
+                    webBuilder.UseConfiguration(Configuration);
+                    webBuilder.UseIISIntegration();
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseSerilog();
+                    webBuilder.CaptureStartupErrors(true);
+                });
+
+        public static void ConfigureLogger()
+        {
             var outputTemplate = "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{properties}{NewLine}";
 
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == EnvironmentName.Production)
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Production)
             {
                 var connectionString = Configuration.GetConnectionString("LogsConnection");
                 var storageAccount = CloudStorageAccount.Parse(connectionString);
@@ -51,45 +88,15 @@ namespace DataAccumulator
                         period: new TimeSpan(0, 0, 3),
                         propertyColumns: new[] { "LogEventId", "ClassName", "Source" })
                     .CreateLogger();
-            }
-            else
-            {
-                Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console(outputTemplate: outputTemplate)
-                    .CreateLogger();
+                
+                return;
             }
 
-            try
-            {
-                Log.Error("Starting BSA Data Accumulator...");
-
-                BuildWebHost(args).Run();
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "BSA Data Accumulator Host terminated unexpectedly");
-                return 1;
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .Enrich.FromLogContext()
+                .WriteTo.Console(outputTemplate: outputTemplate)
+                .CreateLogger();
         }
-
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseSetting("detailedErrors", "true")
-                .UseConfiguration(Configuration)
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .UseSerilog()
-                .CaptureStartupErrors(true)
-                .Build();
     }
 }

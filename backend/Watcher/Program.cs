@@ -1,28 +1,30 @@
-﻿namespace Watcher
+﻿using System;
+using System.IO;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.WindowsAzure.Storage;
+
+using Serilog;
+using Serilog.Events;
+
+namespace Watcher
 {
-    using System;
-    using System.IO;
-
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.WindowsAzure.Storage;
-
-    using Serilog;
-    using Serilog.Events;
-
     public class Program
     {
         public static IConfiguration Configuration { get; } = GetConfigurationRoot();
 
         private static IConfigurationRoot GetConfigurationRoot()
         {
+            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environments.Production}.json", optional: true)
+                .AddJsonFile($"appsettings.{enviroment ?? Environments.Production}.json", optional: true)
                 .AddEnvironmentVariables();
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development)
+
+            if (enviroment == Environments.Development)
             {
                 configurationBuilder.AddUserSecrets<Program>(false);
             }
@@ -32,33 +34,7 @@
 
         public static int Main(string[] args)
         {
-            var outputTemplate = "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{properties}{NewLine}";
-
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Production)
-            {
-                var connectionString = Configuration.GetConnectionString("LogsConnection");
-                var storageAccount = CloudStorageAccount.Parse(connectionString);
-                Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console(outputTemplate: outputTemplate)
-                    .WriteTo.AzureTableStorageWithProperties(storageAccount,
-                        LogEventLevel.Warning,
-                        storageTableName: "logs-table",
-                        writeInBatches: true,
-                        batchPostingLimit: 100,
-                        period: new TimeSpan(0, 0, 3),
-                        propertyColumns: new[] { "LogEventId" })
-                    .CreateLogger();
-            }
-            else
-            {
-                Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console(outputTemplate: outputTemplate)
-                    .CreateLogger();
-            }
+            ConfigureLogger();
 
             try
             {
@@ -83,10 +59,10 @@
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel(options =>
-                    {
-                        options.Limits.MaxRequestBodySize = 1024 * 1024 * 100; // 100MB
-                    });
+                    //webBuilder.UseKestrel(options =>
+                    //{
+                    //    options.Limits.MaxRequestBodySize = 1024 * 1024 * 100; // 100MB
+                    //});
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseSetting("detailedErrors", "true");
                     webBuilder.UseConfiguration(Configuration);
@@ -95,5 +71,36 @@
                     webBuilder.UseSerilog();
                     webBuilder.CaptureStartupErrors(true);
                 });
+
+        public static void ConfigureLogger()
+        {
+            var outputTemplate = "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{properties}{NewLine}";
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Production)
+            {
+                var connectionString = Configuration.GetConnectionString("LogsConnection");
+                var storageAccount = CloudStorageAccount.Parse(connectionString);
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console(outputTemplate: outputTemplate)
+                    .WriteTo.AzureTableStorageWithProperties(storageAccount,
+                        LogEventLevel.Warning,
+                        storageTableName: "logs-table",
+                        writeInBatches: true,
+                        batchPostingLimit: 100,
+                        period: new TimeSpan(0, 0, 3),
+                        propertyColumns: new[] { "LogEventId", "ClassName", "Source" })
+                    .CreateLogger();
+
+                return;
+            }
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .Enrich.FromLogContext()
+                .WriteTo.Console(outputTemplate: outputTemplate)
+                .CreateLogger();
+        }
     }
 }

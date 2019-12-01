@@ -219,7 +219,6 @@ namespace Watcher
 
             UpdateDatabase(app);
 
-            app.UseHsts();
             app.UseConfiguredSwagger();
             app.UseHttpsRedirection();
 
