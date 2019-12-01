@@ -6,5 +6,3 @@ export const firebase = {
   storageBucket: 'watcher-e868a.appspot.com',
   messagingSenderId: '470675156867'
 };
-
-// export default firebase;

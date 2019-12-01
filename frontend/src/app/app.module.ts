@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFireModule } from '@angular/fire';
-import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { firebase } from '../environments/firebase.config';
 
@@ -63,7 +62,6 @@ import { AboutComponent } from './about/about.component';
     InputTextModule,
 
     AngularFireModule.initializeApp(firebase),
-    // AngularFireDatabaseModule,
     AngularFireAuthModule,
 
     CoreModule,

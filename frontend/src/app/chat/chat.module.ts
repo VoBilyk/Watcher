@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 import {
   InputTextModule,
   ButtonModule,
@@ -12,7 +10,7 @@ import {
   AutoCompleteModule,
   TooltipModule,
   InputSwitchModule,
-  ProgressSpinnerModule
+  ProgressSpinnerModule,
 } from 'primeng/primeng';
 
 import { ChatComponent } from './chat.component';
@@ -22,12 +20,10 @@ import { ChatCreatePopupComponent } from './chat-create-popup/chat-create-popup.
 
 @NgModule({
   imports: [
-    CommonModule,
+    SharedModule,
     AccordionModule,
     InputTextModule,
     CardModule,
-    ReactiveFormsModule,
-    FormsModule,
     ButtonModule,
     ListboxModule,
     DialogModule,

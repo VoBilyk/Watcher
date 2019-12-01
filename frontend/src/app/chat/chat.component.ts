@@ -172,8 +172,8 @@ export class ChatComponent implements OnInit {
   }
 
   getChatImage(chat: Chat) {
-    const groupeImg = 'http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-8/128/Users-icon.png';
-    const partnerImg = 'http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-8/128/User-blue-icon.png';
+    const groupeImg = '/assets/users-icon.png';
+    const partnerImg = '/assets/user-icon.png';
 
     if (chat.users.length === 2) {
       const userImg = chat.users.find(u => u.id !== this.currentUserId).photoURL;

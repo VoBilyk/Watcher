@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminRoutingModule } from './admin-routing.module';
 import { OrganizationListComponent } from './organization-list/organization-list.component';
 import { UserListComponent } from './user-list/user-list.component';
@@ -11,14 +9,15 @@ import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { DropdownModule } from 'primeng/dropdown';
+import { FileUploadModule } from 'primeng/fileupload';
 
 import { ImageCropperModule } from 'ngx-img-cropper';
-import { FileUploadModule } from 'primeng/fileupload';
 import { DataCollectorComponent } from './data-collector/data-collector.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
-    CommonModule,
+    SharedModule,
     AdminRoutingModule,
     TabViewModule,
     InputTextModule,
@@ -26,8 +25,6 @@ import { DataCollectorComponent } from './data-collector/data-collector.componen
     ToggleButtonModule,
     InputTextareaModule,
     DialogModule,
-    FormsModule,
-    ReactiveFormsModule,
     TableModule,
     CheckboxModule,
     ScrollPanelModule,

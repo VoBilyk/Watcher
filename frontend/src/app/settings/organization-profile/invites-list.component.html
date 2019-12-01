@@ -1,7 +1,10 @@
-<p-dataView #dt [(value)]="invites"
-                                [paginator]="true" [rows]="rowsPerPage"
-                                [totalRecords]="invites.length"
-                                (onPage)="onPaginate($event)">
+<p-dataView
+  #dt
+  [(value)]="invites"
+  [paginator]="true" [rows]="rowsPerPage"
+  [totalRecords]="invites.length"
+  (onPage)="onPaginate($event)"
+>
     <p-header>List of invites</p-header>
     <ng-template let-invite pTemplate="listItem">
         <div class="ui-g ui-g-12 invite-item">
@@ -31,9 +34,9 @@
         </div>
     </ng-template>
     <ng-template pTemplate="paginatorleft" let-state>
-        <button type="button" pButton icon="fa-refresh"></button>
+        <button type="button" pButton icon="fa fa-refresh"></button>
     </ng-template>
     <ng-template pTemplate="paginatoright">
-        <button type="button" pButton icon="fa-cloud-upload"></button>
+        <button type="button" pButton icon="fa fa-cloud-upload"></button>
     </ng-template>
 </p-dataView>

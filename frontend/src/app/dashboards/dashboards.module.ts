@@ -58,7 +58,6 @@ import { AnomalyReportComponent } from './anomaly-report/anomaly-report.componen
     ToastModule,
     MessageModule,
 
-    // NgxUIModule,
     NgxChartsModule,
     DashboardRoutingModule,
     DropdownModule,
