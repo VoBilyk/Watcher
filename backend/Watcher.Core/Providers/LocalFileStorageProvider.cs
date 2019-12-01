@@ -49,7 +49,7 @@ namespace Watcher.Core.Providers
         {
             try
             {
-                string parent = string.Copy(Directory.GetCurrentDirectory());
+                string parent = Directory.GetCurrentDirectory();
                 while (new DirectoryInfo(parent).Name != "Watcher")
                 {
                     parent = Directory.GetParent(parent).FullName;
@@ -112,7 +112,7 @@ namespace Watcher.Core.Providers
 
         private string ConvertToAbsolutePath(string relativePath)
         {
-            string parent = string.Copy(Directory.GetCurrentDirectory());
+            string parent = Directory.GetCurrentDirectory();
             while (new DirectoryInfo(parent).Name != "Watcher")
             {
                 parent = Directory.GetParent(parent).FullName;
@@ -127,7 +127,7 @@ namespace Watcher.Core.Providers
             try
             {
                 string base64 = base64string.Split(',')[1];
-                string parent = string.Copy(Directory.GetCurrentDirectory());
+                string parent = Directory.GetCurrentDirectory();
                 while (new DirectoryInfo(parent).Name != "Watcher")
                 {
                     parent = Directory.GetParent(parent).FullName;
@@ -155,7 +155,7 @@ namespace Watcher.Core.Providers
         {
             try
             {
-                string parent = string.Copy(Directory.GetCurrentDirectory());
+                string parent = Directory.GetCurrentDirectory();
                 while (new DirectoryInfo(parent).Name != "Watcher")
                 {
                     parent = Directory.GetParent(parent).FullName;

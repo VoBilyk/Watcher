@@ -1,6 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {HubConnection} from '@aspnet/signalr';
-import * as signalR from '@aspnet/signalr';
+import {HubConnection, HubConnectionBuilder, LogLevel} from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { OrganizationInvite } from '../../shared/models/organization-invite.model';
@@ -21,9 +20,9 @@ export class OrganizationInvitesHub {
   }
 
   private createConnection(firebaseToken: string, watcherToken: string) {
-    this.hubConnection = new signalR.HubConnectionBuilder()
+    this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${environment.server_url}/invites?Authorization=${firebaseToken}&WatcherAuthorization=${watcherToken}`)
-      .configureLogging(signalR.LogLevel.None)
+      .configureLogging(LogLevel.None)
       .build();
 
       return this.hubConnection;

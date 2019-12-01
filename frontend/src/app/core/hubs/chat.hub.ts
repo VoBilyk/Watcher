@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { HubConnection } from '@aspnet/signalr';
-import * as signalR from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { AuthService } from '../services/auth.service';
 
 import { Message } from '../../shared/models/message.model';
@@ -30,9 +29,9 @@ export class ChatHub {
 
   private buildConnection(firebaseToken: string, watcherToken: string) {
     const connPath = `${environment.server_url}/${this.hubName}?Authorization=${firebaseToken}&WatcherAuthorization=${watcherToken}`;
-    this.hubConnection = new signalR.HubConnectionBuilder()
+    this.hubConnection = new HubConnectionBuilder()
       .withUrl(connPath)
-      .configureLogging(signalR.LogLevel.None)
+      .configureLogging(LogLevel.None)
       .build();
 
     return this.hubConnection;

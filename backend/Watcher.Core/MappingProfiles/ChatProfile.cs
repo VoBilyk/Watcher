@@ -23,7 +23,9 @@
 
             CreateMap<Chat, ChatDto>()
                 .ForMember(d => d.Users, c => c.MapFrom(o => o.UserChats.Select(uc => uc.User)));
-                
+
+            CreateMap<ChatDto, Chat>();
+
             CreateMap<ChatRequest, Chat>()
                 .ForMember(d => d.UserChats, o => o.MapFrom(s => new List<UserChat>()));
 

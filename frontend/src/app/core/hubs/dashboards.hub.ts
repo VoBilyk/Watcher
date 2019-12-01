@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HubConnection} from '@aspnet/signalr';
-import * as signalR from '@aspnet/signalr';
+import {HubConnection, HubConnectionBuilder, LogLevel} from '@microsoft/signalr';
 import {environment} from '../../../environments/environment';
 import {Subject} from 'rxjs';
 import {AuthService} from '../services/auth.service';
@@ -44,9 +43,9 @@ export class DashboardsHub {
   private buildConnection(firebaseToken: string, watcherToken: string) {
     const connPath = `${environment.server_url}/${this.hubName}?Authorization=${firebaseToken}&WatcherAuthorization=${watcherToken}`;
 
-    this.hubConnection = new signalR.HubConnectionBuilder()
+    this.hubConnection = new HubConnectionBuilder()
       .withUrl(connPath)
-      .configureLogging(signalR.LogLevel.None)
+      .configureLogging(LogLevel.None)
       .build();
   }
 

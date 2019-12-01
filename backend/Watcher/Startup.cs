@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,14 +13,10 @@ using FluentValidation.AspNetCore;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 using Newtonsoft.Json;
@@ -42,24 +37,31 @@ using Watcher.DataAccess.Data;
 using Watcher.DataAccess.Interfaces;
 using Watcher.Extensions;
 using Watcher.Utils;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Watcher
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration) => Configuration = configuration;
+        private readonly IWebHostEnvironment _env;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            Configuration = configuration;
+            _env = env;
+        }
 
         public IConfiguration Configuration { get; }
 
-        public bool UseAzureSignalR => !string.IsNullOrWhiteSpace(Configuration.GetConnectionString(ServiceOptions.ConnectionStringDefaultKey));
+        public string ImagesPath => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
                 {
-                    builder.AllowAnyOrigin()
+                    builder.WithOrigins("http://watcher.loc.com", "http://watcher.com")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -67,16 +69,7 @@ namespace Watcher
 
             services.Configure<TimeServiceConfiguration>(Configuration.GetSection("TimeService"));
 
-            var securitySection = Configuration.GetSection("Security");
-            services.Configure<WatcherTokenOptions>(o =>
-                {
-                    o.Issuer = securitySection["Issuer"];
-                    o.Audience = securitySection["Audience"];
-                    o.Access_Token_Lifetime = Convert.ToInt32(securitySection["Access_Token_Lifetime"]);
-                    o.Refresh_Token_Lifetime = Convert.ToInt32(securitySection["Refresh_Token_Lifetime"]);
-                    o.Security_Key = securitySection["Security_Key"];
-                });
-
+            services.Configure<WatcherTokenOptions>(Configuration.GetSection("Security"));
 
             services.ConfigureSwagger(Configuration);
 
@@ -110,26 +103,24 @@ namespace Watcher
             services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
             services.AddSingleton<IQueueProvider, RabbitMqProvider>();
 
-            ConfigureRabbitMq(services, Configuration);
-
-            // repo initialization localhost while development env, azure in prod
-            ConfigureDataStorage(services, Configuration);
-
-            ConfigureFileStorage(services, Configuration);
+            ConfigureRabbitMq(services);
 
             // It's Singleton so we can't consume Scoped services & Transient services that consume Scoped services
             // services.AddHostedService<WatcherService>();
 
-            var imageFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-            Directory.CreateDirectory(imageFolder);
+            ConfigureDataStorage(services);
+            ConfigureFileStorage(services);
 
-            services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")));
+            Directory.CreateDirectory(ImagesPath);
+            services.AddSingleton<IFileProvider>(_ => new PhysicalFileProvider(ImagesPath));
+            services.Configure<FormOptions>(options =>
+            {
+                options.MemoryBufferThreshold = 1024 * 1024 * 100;
+            });
 
-            InitializeAutomapper(services);
+            ConfigureDatabase(services);
 
-            ConfigureDatabase(services, Configuration);
+            ConfigureAutomapper(services);
 
             services.AddAuthentication(o =>
                     {
@@ -187,94 +178,90 @@ namespace Watcher
 
             var addSignalRBuilder = services
                 .AddSignalR(o => o.EnableDetailedErrors = true)
-                .AddJsonProtocol(options => options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+                .AddNewtonsoftJsonProtocol(o => o.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
-            if (UseAzureSignalR)
+            if (_env.IsProduction())
             {
-                addSignalRBuilder.AddAzureSignalR(
-                    Configuration.GetConnectionString(ServiceOptions.ConnectionStringDefaultKey));
+                addSignalRBuilder.AddAzureSignalR(Configuration.GetConnectionString("AzureSignalRConnection"));
             }
 
-            services.AddMvc()
+            services.AddHealthChecks();
+
+            services.AddMvcCore()
+                .AddApiExplorer();
+
+            services.AddRazorPages()
+                .AddNewtonsoftJson(MvcSetup.JsonSetupAction)
                 .AddFluentValidation(fv =>
                     {
                         fv.ImplicitlyValidateChildProperties = true;
                         // fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                         fv.RegisterValidatorsFromAssemblyContaining<OrganizationValidator>();
-                    })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(MvcSetup.JsonSetupAction);
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IFileProvider fileProvider)
+        public void Configure(IApplicationBuilder app)
         {
-            app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage();
+            if (_env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseHttpStatusCodeExceptionMiddleware();
 
+            app.UseRouting();
+
             UpdateDatabase(app);
 
-            app.UseCors("CorsPolicy");
             app.UseHsts();
             app.UseConfiguredSwagger();
             app.UseHttpsRedirection();
 
             app.UseDefaultFiles();
+
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = fileProvider
+                FileProvider = new PhysicalFileProvider(ImagesPath)
             });
             app.UseFileServer();
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseWatcherAuth();
-            app.UseMvc();
+
             app.UseRabbitListener();
 
-            if (UseAzureSignalR)
+            app.UseEndpoints(endpoints =>
             {
-                app.UseAzureSignalR(routes =>
-                    {
-                        routes.MapHub<NotificationsHub>("/notifications");
-                        routes.MapHub<DashboardsHub>("/dashboards");
-                        routes.MapHub<InvitesHub>("/invites");
-                        routes.MapHub<ChatsHub>("/chatsHub");
-                    });
-            }
-            else
-            {
-                app.UseSignalR(routes =>
-                    {
-                        routes.MapHub<NotificationsHub>("/notifications");
-                        routes.MapHub<DashboardsHub>("/dashboards");
-                        routes.MapHub<InvitesHub>("/invites");
-                        routes.MapHub<ChatsHub>("/chatsHub");
-                    });
-            }
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapHealthChecks("/health");
+                endpoints.MapHub<NotificationsHub>("/notifications");
+                endpoints.MapHub<DashboardsHub>("/dashboards");
+                endpoints.MapHub<InvitesHub>("/invites");
+                endpoints.MapHub<ChatsHub>("/chatsHub");
+            });
         }
 
-        public void ConfigureRabbitMq(IServiceCollection services, IConfiguration configuration)
-        {
-            var rabbitMqConnection = Configuration.GetSection("RabbitMqConnection");
-            var rabbitMqQueues = Configuration.GetSection("RabbitMqQueues");
-
+        public virtual void ConfigureRabbitMq(IServiceCollection services) =>
             services
-                .Configure<RabbitMqConnectionOptions>(rabbitMqConnection)
-                .Configure<QueueOptions>(rabbitMqQueues);
-        }
+                .Configure<RabbitMqConnectionOptions>(Configuration.GetSection("RabbitMqConnection"))
+                .Configure<QueueOptions>(Configuration.GetSection("RabbitMqQueues"));
 
-        public virtual void ConfigureDataStorage(IServiceCollection services, IConfiguration configuration)
+        public virtual void ConfigureDataStorage(IServiceCollection services)
         {
-            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            string connectionString = configuration.GetConnectionString(enviroment == EnvironmentName.Production
-                ? "AzureCosmosDbConnection"
-                : "MongoDbConnection"
-                );
+            string connectionString = Configuration.GetConnectionString(
+                _env.IsProduction() ? "AzureCosmosDbConnection" : "MongoDbConnection");
 
             services.AddScoped<IDataAccumulatorRepository<CollectedData>, DataAccumulatorRepository>(
-                  options => new DataAccumulatorRepository(connectionString, "watcher-data-storage", CollectedDataType.Accumulation));
+                options => new DataAccumulatorRepository(connectionString, "watcher-data-storage", CollectedDataType.Accumulation));
             services.AddScoped<IDataAggregatorRepository<CollectedData>, DataAggregatorRepository>(
                 options => new DataAggregatorRepository(connectionString, "watcher-data-storage"));
             services.AddScoped<ILogRepository, LogRepository>(
@@ -283,17 +270,12 @@ namespace Watcher
                 options => new InstanceAnomalyReportsRepository(connectionString, "watcher-data-storage"));
         }
 
-        public virtual void ConfigureFileStorage(IServiceCollection services, IConfiguration configuration)
+        public virtual void ConfigureFileStorage(IServiceCollection services)
         {
-            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            if (enviroment == EnvironmentName.Production)
+            if (_env.IsProduction())
             {
-                var fileStorageString = configuration.GetConnectionString("AzureFileStorageConnection");
-                if (!string.IsNullOrWhiteSpace(fileStorageString))
-                {
-                    services.AddScoped<IFileStorageProvider, FileStorageProvider>(
-                        prov => new FileStorageProvider(fileStorageString));
-                }
+                services.AddScoped<IFileStorageProvider, FileStorageProvider>(
+                    prov => new FileStorageProvider(Configuration.GetConnectionString("AzureFileStorageConnection")));
             }
             else
             {
@@ -302,63 +284,48 @@ namespace Watcher
             }
         }
 
-        public virtual IServiceCollection InitializeAutomapper(IServiceCollection services)
+        public virtual void ConfigureAutomapper(IServiceCollection services)
         {
-            services.AddAutoMapper(cfg =>
-                {
-                    cfg.AddProfile<UsersProfile>();
-                    cfg.AddProfile<DashboardsProfile>();
-                    cfg.AddProfile<OrganizationProfile>();
-                    cfg.AddProfile<UserOrganizationProfile>();
-                    cfg.AddProfile<NotificationSettingsProfile>();
-                    cfg.AddProfile<ChatProfile>();
-                    cfg.AddProfile<MessageProfile>();
-                    cfg.AddProfile<FeedbackProfile>();
-                    cfg.AddProfile<InstanceAnomalyReportProfile>();
-                    cfg.AddProfile<RoleProfile>();
-                    cfg.AddProfile<ResponseProfile>();
-                    cfg.AddProfile<InstancesProfile>();
-                    cfg.AddProfile<OrganizationInvitesProfile>();
-                    cfg.AddProfile<CollectedDataProfile>();
-                    cfg.AddProfile<CollectorActionLogProfile>();
-                    cfg.AddProfile<ThemeProfile>();
-                });
+            var configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMissingTypeMaps = true;
+                cfg.ValidateInlineMaps = false;
+                cfg.AddProfile<UsersProfile>();
+                cfg.AddProfile<DashboardsProfile>();
+                cfg.AddProfile<OrganizationProfile>();
+                cfg.AddProfile<UserOrganizationProfile>();
+                cfg.AddProfile<NotificationSettingsProfile>();
+                cfg.AddProfile<ChatProfile>();
+                cfg.AddProfile<MessageProfile>();
+                cfg.AddProfile<FeedbackProfile>();
+                cfg.AddProfile<InstanceAnomalyReportProfile>();
+                cfg.AddProfile<RoleProfile>();
+                cfg.AddProfile<ResponseProfile>();
+                cfg.AddProfile<InstancesProfile>();
+                cfg.AddProfile<OrganizationInvitesProfile>();
+                cfg.AddProfile<CollectedDataProfile>();
+                cfg.AddProfile<CollectorActionLogProfile>();
+                cfg.AddProfile<ThemeProfile>();
+            });
 
-            return services;
+            services.AddSingleton(configuration.CreateMapper());
         }
 
-        public virtual void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
+        public virtual void ConfigureDatabase(IServiceCollection services)
         {
-            // Use SQL Database if in Azure, otherwise, use Local DB
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            if (env == EnvironmentName.Production)
-            {
-                var azureConnStr = Configuration.GetConnectionString("AzureDbConnection");
-                if (!string.IsNullOrWhiteSpace(azureConnStr))
-                {
-                    services.AddDbContext<WatcherDbContext>(options => options.UseSqlServer(azureConnStr,
-                        b => b.MigrationsAssembly(configuration["MigrationsAssembly"])));
-                }
-            }
-            else
-            {
-                services.AddDbContext<WatcherDbContext>(options =>
-                    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly(configuration["MigrationsAssembly"])));
-            }
+            var connectionString = Configuration.GetConnectionString(_env.IsProduction() ? "AzureDbConnection" : "DefaultConnection");
+            
+            services.AddDbContext<WatcherDbContext>(options =>
+                options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Configuration["MigrationsAssembly"])));
         }
 
         private static void UpdateDatabase(IApplicationBuilder app)
         {
-            using (var serviceScope = app.ApplicationServices
+            using var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<WatcherDbContext>())
-                {
-                    context?.Database?.Migrate();
-                }
-            }
+                .CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<WatcherDbContext>();
+            context?.Database?.Migrate();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Watcher.Core.MappingProfiles
         public CollectorActionLogProfile()
         {
             CreateMap<ActionLog, ActionLogDto>();
+            CreateMap<ActionLogDto, ActionLog>();
         }
     }
 }

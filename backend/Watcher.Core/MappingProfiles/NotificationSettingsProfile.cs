@@ -19,6 +19,8 @@
             
             CreateMap<NotificationSettingDto, NotificationSetting>();
 
+            CreateMap<NotificationSetting, NotificationSettingDto>();
+
             CreateMap<NotificationSettingRequest, NotificationSetting>()
                 .ForMember(d => d.Id, o => o.Ignore());
 

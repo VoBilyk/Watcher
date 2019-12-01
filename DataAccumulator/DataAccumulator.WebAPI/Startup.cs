@@ -18,11 +18,10 @@ using DataAccumulator.WebAPI.TasksScheduler;
 using DataAccumulator.WebAPI.TasksScheduler.Jobs;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.Extensions.Hosting;
 using Quartz.Spi;
 using ServiceBus.Shared.Interfaces;
 using ServiceBus.Shared.Queue;
@@ -96,22 +95,21 @@ namespace DataAccumulator
             var mapper = MapperConfiguration().CreateMapper();
             services.AddTransient(_ => mapper);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddRazorPages();
 
-            ConfigureRabbitMq(services, Configuration);
+            ConfigureRabbitMq(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage();
 
             app.UseHttpStatusCodeExceptionMiddleware();
 
             app.UseCors("CorsPolicy");
             
-            app.UseMvc();
+            app.UseRouting();
 
             app.UseQuartz((quartz) =>
             {
@@ -130,7 +128,7 @@ namespace DataAccumulator
         public virtual void ConfigureDataStorage(IServiceCollection services, IConfiguration configuration)
         {
             var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var connectionString = Configuration.GetConnectionString(enviroment == EnvironmentName.Production ? "AzureCosmosDbConnection" : "MongoDbConnection");
+            var connectionString = Configuration.GetConnectionString(enviroment == Environments.Production ? "AzureCosmosDbConnection" : "MongoDbConnection");
 
             services.AddTransient<IDataAccumulatorRepository<CollectedData>, DataAccumulatorRepository>(
                 options => new DataAccumulatorRepository(connectionString, "watcher-data-storage", CollectedDataType.Accumulation));
@@ -158,12 +156,12 @@ namespace DataAccumulator
             });
         }
 
-        public void ConfigureRabbitMq(IServiceCollection services, IConfiguration configuration)
+        public IServiceCollection ConfigureRabbitMq(IServiceCollection services)
         {
             var rabbitMqConnection = Configuration.GetSection("RabbitMqConnection");
             var rabbitMqQueues = Configuration.GetSection("RabbitMqQueues");
 
-            services
+            return services
                 .Configure<RabbitMqConnectionOptions>(rabbitMqConnection)
                 .Configure<QueueOptions>(rabbitMqQueues);
         }

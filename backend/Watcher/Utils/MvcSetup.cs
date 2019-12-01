@@ -1,15 +1,15 @@
-﻿namespace Watcher.Utils
+﻿using System;
+
+using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+namespace Watcher.Utils
 {
-    using System;
-
-    using Microsoft.AspNetCore.Mvc;
-
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
-
     public static class MvcSetup
     {
-        public static Action<MvcJsonOptions> JsonSetupAction = mvcJsonOptions =>
+        public static Action<MvcNewtonsoftJsonOptions> JsonSetupAction = mvcJsonOptions =>
             {
                 mvcJsonOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); // For Typescript client
                 // mvcJsonOptions.SerializerSettings.ContractResolver = new DefaultContractResolver();  // Standart resolver

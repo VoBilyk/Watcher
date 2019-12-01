@@ -1,7 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 
-import { HubConnection } from '@aspnet/signalr';
-import * as signalR from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { Notification } from '../../shared/models/notification.model';
@@ -24,9 +23,9 @@ export class NotificationsHubService {
   private createConnection(firebaseToken: string, watcherToken: string): void {
     const connPath = `${environment.server_url}/notifications?Authorization=${firebaseToken}&WatcherAuthorization=${watcherToken}`;
 
-    this.hubConnection = new signalR.HubConnectionBuilder()
+    this.hubConnection = new HubConnectionBuilder()
       .withUrl(connPath)
-      .configureLogging(signalR.LogLevel.None)
+      .configureLogging(LogLevel.None)
       .build();
   }
 

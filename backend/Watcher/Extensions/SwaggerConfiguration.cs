@@ -1,16 +1,17 @@
-﻿namespace Watcher.Extensions
+﻿using System;
+using System.IO;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.OpenApi.Models;
+
+using Swashbuckle.AspNetCore.SwaggerUI;
+using Watcher.Utils;
+
+namespace Watcher.Extensions
 {
-    using System.IO;
-
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.PlatformAbstractions;
-
-    using Swashbuckle.AspNetCore.Swagger;
-
-    using Watcher.Utils;
-
     public static class SwaggerConfiguration
     {
         public static IServiceCollection ConfigureSwagger(this IServiceCollection services, IConfiguration configs)
@@ -18,27 +19,24 @@
             services.AddSwaggerGen(options =>
             {
                 options.OperationFilter<FormFileOperationFilter>();
-                options.SwaggerDoc("v1", new Info
+                options.SwaggerDoc("v1", new OpenApiInfo
                 {
 
                     Description = "Watcher Web Api",
                     Title = "Watcher Web Api",
                     Version = "v1",
-                    TermsOfService = "Knock yourself out",
-                    Contact = new Contact
+                    Contact = new OpenApiContact
                     {
                         Name = configs["Contacts:fullName"],
                         Email = configs["Contacts:email"],
-                        Url = configs["Contacts:webSite"]
+                        Url = new Uri(configs["Contacts:webSite"])
                     },
-                    License = new License
+                    License = new OpenApiLicense
                     {
                         Name = "Apache 2.0",
-                        Url = "http://www.apache.org/licenses/LICENSE-2.0.html"
+                        Url = new Uri("http://www.apache.org/licenses/LICENSE-2.0.html")
                     }
                 });
-
-                options.DescribeAllEnumsAsStrings();
 
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
                 var xmlPath = Path.Combine(basePath, "Watcher.xml");

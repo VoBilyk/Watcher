@@ -20,7 +20,13 @@ namespace Watcher.Core.Providers
             _configuration = configuration;
         }
 
-        private async Task SendMessage(string from, string subject, List<string> recepients, string message, string messageHtml)
+        public Task<Response> SendMessageOneToOne(string from, string subject, string recepient, string message, string messageHtml) =>
+            SendMessage(@from, subject, new List<string> { recepient }, message, messageHtml);
+        
+        public Task<Response> SendMessageOneToMany(string from, string subject, List<string> recepients, string message, string messageHtml) =>
+            SendMessage(@from, subject, recepients, message, messageHtml);
+
+        private async Task<Response> SendMessage(string from, string subject, List<string> recepients, string message, string messageHtml)
         {
             var fromAddress = new EmailAddress(from);
             var recepientsAddresses = recepients.Select(r => new EmailAddress(r)).ToList();
@@ -29,18 +35,7 @@ namespace Watcher.Core.Providers
 
             var client = new SendGridClient(_configuration.GetSection("SENDGRID_API_KEY").Value);
 
-            var response = await client.SendEmailAsync(msg);
+            return await client.SendEmailAsync(msg);
         }
-
-        public Task SendMessageOneToOne(string from, string subject, string recepient, string message, string messageHtml)
-        {
-            return SendMessage(@from, subject, new List<string> { recepient }, message, messageHtml);
-        }
-        
-        public Task SendMessageOneToMany(string from, string subject, List<string> recepients, string message, string messageHtml)
-        {
-            return SendMessage(@from, subject, recepients, message, messageHtml);
-        }
-
     }
 }
