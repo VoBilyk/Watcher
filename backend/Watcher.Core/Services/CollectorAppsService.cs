@@ -9,6 +9,7 @@ using Watcher.Core.Interfaces;
 using Watcher.DataAccess.Entities;
 using Watcher.DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Watcher.Common.Extensions;
 
 namespace Watcher.Core.Services
 {
@@ -31,7 +32,8 @@ namespace Watcher.Core.Services
 
         public async Task<string> UploadFileToStorage(IFormFile file)
         {
-            return await _fileStorageProvider.UploadFormFileWithNameAsync(file);
+            var path = await _fileStorageProvider.UploadFormFileWithNameAsync(file);
+            return path.After("wwwroot");
         }
 
         public async Task<List<CollectorAppVersionDto>> GetAllEntityesAsync()
@@ -95,9 +97,9 @@ namespace Watcher.Core.Services
 
             if (result)
             {
-                await _fileStorageProvider.DeleteFileAsync(entity.ExeLink);
-                await _fileStorageProvider.DeleteFileAsync(entity.DebLink);
-                await _fileStorageProvider.DeleteFileAsync(entity.TgzLink);
+                await DeleteFileIfExists(entity.ExeLink);
+                await DeleteFileIfExists(entity.DebLink);
+                await DeleteFileIfExists(entity.TgzLink);
             }
 
             return result;
@@ -117,7 +119,6 @@ namespace Watcher.Core.Services
                 _uow.CollectorAppVersionRepository.Update(x);
             });
 
-
             entity.IsActive = true;
             await _uow.CollectorAppVersionRepository.UpdateAsync(entity);
             var result = await _uow.SaveAsync();
@@ -133,6 +134,14 @@ namespace Watcher.Core.Services
             }
 
             return null;
+        }
+
+        private async Task DeleteFileIfExists(string link)
+        {
+            if (!string.IsNullOrEmpty(link))
+            {
+                await _fileStorageProvider.DeleteFileAsync(link);
+            }
         }
     }
 }
