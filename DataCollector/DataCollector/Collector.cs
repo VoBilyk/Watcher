@@ -4,12 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DataCollector
 {
-    using System.IO;
-    using System.Threading.Tasks;
-
 #if Windows
     public class Collector
     {

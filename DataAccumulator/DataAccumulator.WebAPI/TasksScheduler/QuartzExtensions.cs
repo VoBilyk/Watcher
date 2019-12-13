@@ -13,17 +13,17 @@ namespace DataAccumulator.WebAPI.TasksScheduler
             app.ApplicationServices.GetService<IScheduler>();
         }
 
-        public static void UseQuartz(this IApplicationBuilder app, Action<TasksScheduler.Quartz> configuration)
+        public static void UseQuartz(this IApplicationBuilder app, Action<Quartz> configuration)
         {
             // Job Factory through IOC container
             var jobFactory = (IJobFactory)app.ApplicationServices.GetService(typeof(IJobFactory));
             // Set job factory
-            TasksScheduler.Quartz.Instance.UseJobFactory(jobFactory);
+            Quartz.Instance.UseJobFactory(jobFactory);
 
             // Run configuration
-            configuration.Invoke(TasksScheduler.Quartz.Instance);
+            configuration.Invoke(Quartz.Instance);
             // Run Quartz
-            TasksScheduler.Quartz.Start();
+            Quartz.Start();
         }
     }
 }

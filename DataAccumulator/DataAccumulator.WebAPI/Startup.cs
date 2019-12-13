@@ -80,7 +80,7 @@ namespace DataAccumulator
             // repo initialization localhost while development env, azure in prod
             ConfigureDataStorage(services, Configuration);
 
-            // services.AddTransient<CollectedDataAggregatingByFiveMinutesJob>();
+            services.AddTransient<CollectedDataAggregatingByFiveMinutesJob>();
             services.AddTransient<CollectedDataAggregatingByHourJob>();
             services.AddTransient<CollectedDataAggregatingByDayJob>();
             services.AddTransient<CollectedDataAggregatingByWeekJob>();
@@ -112,7 +112,7 @@ namespace DataAccumulator
 
             app.UseRouting();
 
-            app.UseQuartz((quartz) =>
+            app.UseQuartz(quartz =>
             {
                 if (Configuration.GetSection("DataAggregator").GetValue<bool>("Aggregating"))
                 {
