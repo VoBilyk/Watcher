@@ -58,8 +58,7 @@ export class OrganizationProfileComponent implements OnInit {
   inviteEmail: string;
   invite: OrganizationInvite;
 
-  @ViewChild('cropper', undefined)
-  cropper: ImageCropperComponent;
+  @ViewChild('cropper') cropper: ImageCropperComponent;
   cropperSettings: CropperSettings;
   display: Boolean = false;
   imageUrl = '';

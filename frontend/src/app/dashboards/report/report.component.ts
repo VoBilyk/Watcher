@@ -5,7 +5,7 @@ import { DataType } from '../../shared/models/data-type.enum';
 import { CollectedData } from '../../shared/models/collected-data.model';
 import { AggregateDataRequest } from '../../shared/models/aggregate-data-request.model';
 import { SelectItem, MenuItem } from 'primeng/api';
-import { Calendar } from 'primeng/primeng';
+import { Calendar } from 'primeng/calendar';
 import { formatDate } from '@angular/common';
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';

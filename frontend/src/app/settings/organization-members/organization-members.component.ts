@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectItem } from 'primeng/api';
-import { Dropdown } from 'primeng/primeng';
-
 import { ToastrService } from '../../core/services/toastr.service';
 import { AuthService } from '../../core/services/auth.service';
 import { UserOrganizationService } from '../../core/services/user-organization.service';
@@ -94,7 +92,7 @@ export class OrganizationMembersComponent implements OnInit {
     return item;
   }
 
-  async changeRole(dropdown: Dropdown, userOrganization: UserOrganization ) {
+  async changeRole(dropdown: any, userOrganization: UserOrganization ) {
     const selectedOption: OrganizationRole = dropdown.selectedOption.value;
     if (await this.toastrService.confirm(`You sure you want to make ${userOrganization.user.displayName} a ${selectedOption.name}`)) {
 

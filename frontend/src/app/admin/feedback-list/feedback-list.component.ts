@@ -11,7 +11,7 @@ import { LongAnswerType } from '../../shared/models/long-answer-type.enum';
 import { ShortAnswerType } from '../../shared/models/short-answer-type.enum';
 import { ResponseService } from '../../core/services/response.service';
 import { ForShow } from '../forShow.model';
-import { LazyLoadEvent } from '../../../../node_modules/primeng/api';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-feedback-list',

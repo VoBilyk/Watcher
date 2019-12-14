@@ -10,7 +10,7 @@ import {Chart} from '../../shared/models/chart.model';
 import {DashboardChart} from '../../dashboards/models/dashboard-chart';
 import {defaultOptions} from '../../dashboards/charts/models/chart-options';
 import {ChartRequest} from '../../shared/requests/chart-request.model';
-import {colorSets} from '@swimlane/ngx-charts/release/utils';
+import {colorSets} from '@swimlane/ngx-charts';
 
 @Injectable()
 export class DataService {

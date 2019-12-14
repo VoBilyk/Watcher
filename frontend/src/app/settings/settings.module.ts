@@ -1,55 +1,25 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SettingsComponent } from './settings.component';
 import { NotificationSettingsComponent } from './notification-settings/notification-settings.component';
 import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
 
-import { TabViewModule
-       , InputTextModule
-       , ButtonModule
-       , ToggleButtonModule
-       , InputTextareaModule
-       , InputMaskModule
-       , ProgressSpinnerModule
-       , InputSwitchModule
-       , DropdownModule } from 'primeng/primeng';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { ImageCropperModule } from 'ngx-img-cropper';
-import { DialogModule } from 'primeng/dialog';
-import { FileUploadModule } from 'primeng/fileupload';
-import { TableModule } from 'primeng/table';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DataViewModule } from 'primeng/dataview';
 import { InvitesListComponent } from './organization-profile/invites-list.component';
-import { CalendarModule } from 'primeng/calendar';
 import { OrganizationMembersComponent } from './organization-members/organization-members.component';
 import { SpinnerPopupComponent } from './spinner-popup/spinner-popup.component';
+import { RouterModule } from '@angular/router';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
-    CommonModule,
-    TabViewModule,
-    FormsModule,
-    InputTextModule,
-    InputTextareaModule,
-    ButtonModule,
-    InputSwitchModule,
-    DropdownModule,
+    SharedModule,
+    RouterModule,
     ReactiveFormsModule,
     SettingsRoutingModule,
-    ToggleButtonModule,
     ImageCropperModule,
-    DialogModule,
-    FileUploadModule,
-    InputMaskModule,
-    ProgressSpinnerModule,
-    TableModule,
-    CheckboxModule,
-    DataViewModule,
-    CalendarModule
   ],
   declarations: [
     SettingsComponent,

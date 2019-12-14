@@ -1,5 +1,4 @@
 import { Component, HostListener, OnInit, EventEmitter } from '@angular/core';
-import { SelectItem } from 'primeng/primeng';
 
 import { ChatHub } from '../core/hubs/chat.hub';
 import { AuthService } from '../core/services/auth.service';
@@ -11,6 +10,7 @@ import { Chat } from '../shared/models/chat.model';
 import { Message } from '../shared/models/message.model';
 import { ChatWindow } from '../shared/models/chat-window.model';
 import { environment } from 'src/environments/environment';
+import { SelectItem } from 'primeng/api/selectitem';
 
 @Component({
   selector: 'app-chat',

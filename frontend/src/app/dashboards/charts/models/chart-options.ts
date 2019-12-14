@@ -1,7 +1,7 @@
-import {colorSets} from '@swimlane/ngx-charts/release/utils';
 import * as shape from 'd3-shape';
 import {DashboardChart} from '../../models/dashboard-chart';
 import { ChartType } from '../../../shared/models/chart-type.enum';
+import { colorSets } from '@swimlane/ngx-charts';
 
 export const defaultOptions = {
   view: [716, 337],

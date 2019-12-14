@@ -1,27 +1,14 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
-import { InputTextModule,
-         ButtonModule,
-         RadioButtonModule,
-         InputTextareaModule,
-         ProgressSpinnerModule } from 'primeng/primeng';
 import { FeedbackComponent } from '../feedback/feedback.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
-    CommonModule,
+    SharedModule,
     UserRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextareaModule,
-    ButtonModule,
-    RadioButtonModule,
-    InputTextModule,
-    ProgressSpinnerModule
   ],
   declarations: [ UserComponent, FeedbackComponent ]
 })

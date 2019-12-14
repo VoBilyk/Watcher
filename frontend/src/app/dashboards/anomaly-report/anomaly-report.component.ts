@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectItem } from 'primeng/api';
 import { DataType } from '../../shared/models/data-type.enum';
-import { Calendar } from 'primeng/primeng';
 import { AnomalyReportService } from '../../core/services/anomaly-report.service';
 import { InstanceAnomalyReport } from '../../shared/models/instance-anomaly-report.model';
 import { ActivatedRoute } from '@angular/router';
 import { AnomalyReportRequest } from '../../shared/models/anomaly-report-request.model';
 import { ToastrService } from '../../core/services/toastr.service';
-import {date_sort_asc, date_sort_desc} from '../charts/models';
+import { date_sort_asc } from '../charts/models';
+import { Calendar } from 'primeng/calendar';
 
 @Component({
   selector: 'app-anomaly-report',

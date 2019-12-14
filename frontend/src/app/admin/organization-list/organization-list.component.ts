@@ -8,7 +8,7 @@ import { ToastrService } from '../../core/services/toastr.service';
 import { Organization } from '../../shared/models/organization.model';
 import { Instance } from '../../shared/models/instance.model';
 import { InstanceRequest } from '../../dashboards/models/instance-request.model';
-import { LazyLoadEvent } from '../../../../node_modules/primeng/api';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-organization-list',

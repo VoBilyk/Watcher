@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SelectItem, SelectItemGroup} from 'primeng/api';
-import {colorSets} from '@swimlane/ngx-charts/release/utils';
 
 import {DataService} from '../../../core/services/data.service';
 import {ChartService} from '../../../core/services/chart.service';
@@ -12,6 +11,7 @@ import {ChartType, chartTypeLabels} from '../../../shared/models/chart-type.enum
 import {DataProperty, dataPropertyLables} from '../../../shared/models/data-property.enum';
 
 import {DashboardChart} from '../../models/dashboard-chart';
+import { colorSets } from '@swimlane/ngx-charts';
 
 
 @Component({

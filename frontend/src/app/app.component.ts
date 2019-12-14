@@ -7,7 +7,6 @@ import { DomSanitizer } from 'node_modules/@angular/platform-browser';
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-
 export class AppComponent implements OnInit {
   public cssUrl: string;
 

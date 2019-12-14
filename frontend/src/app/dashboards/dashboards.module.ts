@@ -1,30 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import {
-  TabViewModule,
-  PanelMenuModule,
-  DialogModule,
-  DropdownModule,
-  CheckboxModule,
-  TieredMenuModule,
-  MultiSelectModule,
-  SliderModule,
-  SpinnerModule,
-  ButtonModule,
-  TabMenuModule,
-  ProgressSpinnerModule,
-  TooltipModule,
-  ScrollPanelModule,
-  InputTextModule} from 'primeng/primeng';
-
-import { TableModule } from 'primeng/table';
-import { CalendarModule } from 'primeng/calendar';
-import { PaginatorModule } from 'primeng/paginator';
-import { MessageModule } from 'primeng/message';
-import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { DashboardRoutingModule } from './dashboards-routing.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -41,39 +15,13 @@ import { ReportComponent } from './report/report.component';
 import { ResourceTableComponent } from './charts/resource-table/resource-table.component';
 import { EditReportChartComponent } from './report/edit-report-chart/edit-report-chart.component';
 import { AnomalyReportComponent } from './anomaly-report/anomaly-report.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
-    CommonModule,
-    InputTextModule,
-    TabViewModule,
-    PanelMenuModule,
-    ButtonModule,
-    DialogModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TabMenuModule,
-    ConfirmDialogModule,
-    ProgressSpinnerModule,
-    ToastModule,
-    MessageModule,
-
+    SharedModule,
     NgxChartsModule,
-    DashboardRoutingModule,
-    DropdownModule,
-    CheckboxModule,
-    TieredMenuModule,
-    MultiSelectModule,
-    SliderModule,
-    SpinnerModule,
-    TableModule,
-    TooltipModule,
-    CalendarModule,
-    ScrollPanelModule,
-    TooltipModule,
-    TableModule,
-    PaginatorModule,
-    SliderModule
+    DashboardRoutingModule
   ],
   declarations: [
     DashboardComponent,

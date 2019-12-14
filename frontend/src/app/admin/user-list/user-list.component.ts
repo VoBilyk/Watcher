@@ -44,9 +44,7 @@ export class UserListComponent implements OnInit {
   photoType: string;
   display: Boolean = false;
 
-  @ViewChild('cropper', { static: false })
-
-  cropper: ImageCropperComponent;
+  @ViewChild('cropper') cropper: ImageCropperComponent;
 
   cropperSettings: CropperSettings;
 

@@ -1,9 +1,8 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { throwIfAlreadyLoaded } from './guards/module-import.guard';
-import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { TokenService } from './services/token.service';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokensInterceptor } from './interceptors/tokens-interceptor';
 import { ToastrService } from './services/toastr.service';
 import { SystemToastrService } from './services/system-toastr.service';
@@ -43,7 +42,7 @@ import { CollectorAppsService } from './services/collector-apps.service';
 
 @NgModule({
   imports: [
-    CommonModule
+    HttpClientModule
   ],
   providers: [
     ApiService,

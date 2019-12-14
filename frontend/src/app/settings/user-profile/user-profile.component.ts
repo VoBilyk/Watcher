@@ -16,7 +16,7 @@ export class UserProfileComponent implements OnInit {
   photoType: string;
   isUpdating = false;
 
-  @ViewChild('cropper', { static: false }) cropper: ImageCropperComponent;
+  @ViewChild('cropper') cropper: ImageCropperComponent;
   cropperSettings: CropperSettings;
   display = false;
   user: User;
