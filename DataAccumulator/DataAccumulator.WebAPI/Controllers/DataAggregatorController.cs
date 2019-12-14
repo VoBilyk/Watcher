@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataAccumulator.WebAPI.Controllers
 {
+    using DataAccumulator.DataAggregator.Interfaces;
     using Microsoft.Extensions.Logging;
 
     using Serilog.Context;
@@ -17,12 +18,15 @@ namespace DataAccumulator.WebAPI.Controllers
     {
         private readonly ILogger<DataAggregatorController> _logger;
         private readonly IDataAggregatorService<CollectedDataDto> _dataAggregatorService;
+        private readonly IDataAggregatorCore<CollectedDataDto> _dataAggregatorCore;
 
         public DataAggregatorController(ILogger<DataAggregatorController> logger,
-                                        IDataAggregatorService<CollectedDataDto> dataAggregatorService)
+                                        IDataAggregatorService<CollectedDataDto> dataAggregatorService,
+                                        IDataAggregatorCore<CollectedDataDto> dataAggregatorCore)
         {
             _logger = logger;
             _dataAggregatorService = dataAggregatorService;
+            _dataAggregatorCore = dataAggregatorCore;
         }
 
         // GET: api/v1/dataaccumulator
@@ -101,6 +105,28 @@ namespace DataAccumulator.WebAPI.Controllers
             catch (NotFoundException)
             {
                 return NotFound();
+            }
+            catch (Exception e)
+            {
+                LogError(e);
+                Console.WriteLine(e);
+                return StatusCode(500);
+            }
+        }
+
+        // PUT: api/v1/dataaccumulator/runaggregation
+        [HttpPut("RunHourlyAggregation")]
+        public async Task<IActionResult> RunHourlyAggregation()
+        {
+            try
+            {
+                var sourceType = CollectedDataType.Accumulation;
+                var destinationType = CollectedDataType.AggregationForHour;
+                var timeSpan = TimeSpan.FromHours(1);
+                var deleteSource = true;
+
+                await _dataAggregatorCore.AggregatingData(sourceType, destinationType, timeSpan, deleteSource);
+                return Ok();
             }
             catch (Exception e)
             {

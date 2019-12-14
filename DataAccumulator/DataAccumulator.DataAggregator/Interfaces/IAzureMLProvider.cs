@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
 using DataAccumulator.Shared.Models;
 
 namespace DataAccumulator.DataAggregator.Interfaces
 {
-    public interface IAzureMLProvider
+    public interface IMLProvider
     {
-        Task<AzureMLResponse> CheckAnomaly(List<Dictionary<string, string>> input);
+        List<MLAnalysisResponse> CheckAnomaly(IEnumerable<MLModel> data);
     }
 }

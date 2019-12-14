@@ -22,14 +22,16 @@
       <p-calendar #cf2 [(ngModel)]="dateTo" [readonlyInput]="true"></p-calendar>
     </div>
     <div class="ui-g-2 bottom-flex">
-      <button type="button" class="ui-button ui-state-default ui-corner-all ui-button-text-only ui-widget btn-inline-flex get-info-but"
-           (click)="getInfo()" [disabled]="!dateTo || !dateFrom || isGetting">
+      <button type="button"
+        class="ui-button ui-state-default ui-corner-all ui-button-text-only ui-widget btn-inline-flex get-info-but"
+        (click)="getInfo()" [disabled]="!dateTo || !dateFrom || isGetting">
         <p-progressSpinner class="btn-spinner" *ngIf="isGetting" strokeWidth="5"></p-progressSpinner>
         <span class="ui-button-text" *ngIf="!isGetting">Get info</span>
       </button>
     </div>
     <div class="ui-g-2 bottom-flex">
-        <button type="button" class="ui-button ui-state-default ui-button-danger ui-corner-all ui-button-text-only ui-widget btn-inline-flex get-info-but"
+      <button type="button"
+        class="ui-button ui-state-default ui-button-danger ui-corner-all ui-button-text-only ui-widget btn-inline-flex get-info-but"
         (click)="onDeleteAll()" [disabled]="!dateTo || !dateFrom || isDeleting">
         <p-progressSpinner class="btn-spinner" *ngIf="isDeleting" strokeWidth="5"></p-progressSpinner>
         <span class="ui-button-text" *ngIf="!isDeleting">Delete all</span>
@@ -42,7 +44,8 @@
     <p class="tutorial-item">2. Get anomaly information</p>
   </div>
 
-  <p-table #dt [value]="reports" *ngIf="reports && reports?.length > 0" [paginator]="true" [rows]="10" sortMode="single">
+  <p-table #dt [value]="reports" *ngIf="reports && reports?.length > 0" [paginator]="true" [rows]="10"
+    sortMode="single">
     <ng-template pTemplate="header" let-columns>
       <tr class="row-header">
         <th class="text-center t-name t-header">
@@ -60,18 +63,19 @@
         </td>
         <td class="ui-g text-center">
           <div class="ui-g-11 ui-fluid">
-              <div class="ui-inputgroup">
-            <input type="text" [ngModel]="rowData.htmlDocUrl" pInputText />
-            <button pButton type="button" (click)="onCopy(rowData.htmlDocUrl)" label="Copy"></button>
+            <div class="ui-inputgroup">
+              <input type="text" [ngModel]="rowData.htmlDocUrl" pInputText />
+              <button pButton type="button" (click)="onCopy(rowData.htmlDocUrl)" label="Copy"></button>
+            </div>
           </div>
-        </div><div class="ui-g-1">
-        <button type="button" class="ui-button ui-state-default ui-button-danger ui-corner-all ui-button-text-only ui-widget btn-inline-flex get-info-but"
-        style="float: left;"
-        (click)="onDelete(rowData)">
-        <span class="ui-button-text" >Delete</span>
-      </button>
-      </div>
-    </td>
+          <div class="ui-g-1">
+            <button type="button"
+              class="ui-button ui-state-default ui-button-danger ui-corner-all ui-button-text-only ui-widget btn-inline-flex get-info-but"
+              style="float: left;" (click)="onDelete(rowData)">
+              <span class="ui-button-text">Delete</span>
+            </button>
+          </div>
+        </td>
       </tr>
     </ng-template>
   </p-table>

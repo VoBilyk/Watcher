@@ -8,6 +8,7 @@ import { AnomalyReportRequest } from '../../shared/models/anomaly-report-request
 import { ToastrService } from '../../core/services/toastr.service';
 import { date_sort_asc } from '../charts/models';
 import { Calendar } from 'primeng/calendar';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-anomaly-report',
@@ -15,7 +16,6 @@ import { Calendar } from 'primeng/calendar';
   styleUrls: ['./anomaly-report.component.sass']
 })
 export class AnomalyReportComponent implements OnInit {
-
   @ViewChild('cf1', { static: true }) calendarFilter1: Calendar;
   @ViewChild('cf2', { static: true }) calendarFilter2: Calendar;
 
@@ -36,9 +36,10 @@ export class AnomalyReportComponent implements OnInit {
   isDeleting: boolean;
   isDeletingOne: boolean;
 
-  constructor(private anomalyReportService: AnomalyReportService,
-              private activateRoute: ActivatedRoute,
-              private toastrService: ToastrService) { }
+  constructor(
+    private anomalyReportService: AnomalyReportService,
+    private activateRoute: ActivatedRoute,
+    private toastrService: ToastrService) { }
 
   ngOnInit() {
     this.types = [
@@ -99,9 +100,7 @@ export class AnomalyReportComponent implements OnInit {
     this.anomalyReportService.getDataByInstanceIdAndTypeInTime(this.createRequest()).subscribe((data: InstanceAnomalyReport[]) => {
       data.forEach(item => {
         item.date = new Date(item.date);
-        if (!item.htmlDocUrl) {
-          item.htmlDocUrl = 'https://bsawatcherfiles.blob.core.windows.net/watcher/f736284e-9044-4d94-8a4d-3456154de6dd.html';
-        }
+        item.htmlDocUrl = `${environment.client_url}//${item.htmlDocUrl}`;
       });
       this.sortByDueDate(data);
       this.reports = data;
@@ -123,11 +122,11 @@ export class AnomalyReportComponent implements OnInit {
     this.isDeletingOne = true;
     if (await this.toastrService.confirm('You sure you want to delete report ?')) {
       this.anomalyReportService.deleteData(rowData).subscribe((value) => {
-      this.toastrService.success('Deleted report');
-      this.isDeletingOne = false;
-      this.reports.splice(this.reports.indexOf(rowData), 1);
-    },
-    (error) => this.toastrService.error('Report wasn`t deleted'));
+        this.toastrService.success('Deleted report');
+        this.isDeletingOne = false;
+        this.reports.splice(this.reports.indexOf(rowData), 1);
+      },
+        (error) => this.toastrService.error('Report wasn`t deleted'));
     }
   }
 
@@ -135,19 +134,14 @@ export class AnomalyReportComponent implements OnInit {
     this.isDeleting = true;
     if (await this.toastrService.confirm('You sure you want to delete ALL reports ?')) {
       this.anomalyReportService.deleteAllData(this.id).subscribe((value) => {
-      this.toastrService.success('Deleted reports');
-      this.isDeleting = false;
-    },
-    (error) => this.toastrService.error('Reports were not deleted'));
+        this.toastrService.success('Deleted reports');
+        this.isDeleting = false;
+      },
+        (error) => this.toastrService.error('Reports were not deleted'));
     }
   }
 
-  onSort() {
-    console.log('sorting');
-  }
-
   private sortByDueDate(value) {
-    // debugger;
     value.sort((a, b) => date_sort_asc(a, b));
   }
 

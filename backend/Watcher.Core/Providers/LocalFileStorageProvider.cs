@@ -42,7 +42,14 @@ namespace Watcher.Core.Providers
 
         public Task<string> UploadHtmlFileAsync(string htmlString, Guid reportId)
         {
-            return Task.FromResult(string.Empty);
+            var folderPath = GetFolderPath("Documents");
+
+            string filename = Guid.NewGuid().ToString() + ".html";
+
+            File.WriteAllText(Path.Combine(folderPath, filename), htmlString);
+            var file = new FileInfo(folderPath + @"\\" + filename);
+
+            return Task.FromResult(ConvertToUri(file.FullName));
         }
 
         public Task<string> UploadFileAsync(string path, string containerName = "watcher")
@@ -80,8 +87,7 @@ namespace Watcher.Core.Providers
         public Task<string> UploadFileFromStreamAsync(string url, string containerName = "watcher")
         {
             var imagePath = FileHelpers.DownloadImageFromUrl(url);
-            var imageUri = ConvertToUri(imagePath);
-            return Task.FromResult(imageUri);
+            return Task.FromResult(ConvertToUri(imagePath));
         }
 
         public Task DeleteFileAsync(string path)
@@ -105,7 +111,7 @@ namespace Watcher.Core.Providers
         private string ConvertToUri(string path)
         {
             Uri uri1 = new Uri(path);
-            Uri uri2 = new Uri(new FileInfo(path).Directory.Parent.FullName + @"\" + "frontend");
+            Uri uri2 = new Uri(new FileInfo(path).Directory.FullName);
             Uri relativeUri = uri2.MakeRelativeUri(uri1);
             return relativeUri.ToString();
         }
@@ -127,19 +133,13 @@ namespace Watcher.Core.Providers
             try
             {
                 string base64 = base64string.Split(',')[1];
-                string parent = Directory.GetCurrentDirectory();
-                while (new DirectoryInfo(parent).Name != "Watcher")
-                {
-                    parent = Directory.GetParent(parent).FullName;
-                }
 
-                var directory = new DirectoryInfo(Path.Combine(parent, "wwwroot", "images"));
-                if (!directory.Exists) directory.Create();
+                var imagesPath = GetImageFolderPath();
 
                 string filename = Guid.NewGuid().ToString() + ".png";
 
-                File.WriteAllBytes(Path.Combine(directory.FullName, filename), Convert.FromBase64String(base64));
-                var file = new FileInfo(directory + @"\\" + filename);
+                File.WriteAllBytes(Path.Combine(imagesPath, filename), Convert.FromBase64String(base64));
+                var file = new FileInfo(imagesPath + @"\\" + filename);
 
                 string filePath = file.FullName;
 
@@ -155,19 +155,7 @@ namespace Watcher.Core.Providers
         {
             try
             {
-                string parent = Directory.GetCurrentDirectory();
-                while (new DirectoryInfo(parent).Name != "Watcher")
-                {
-                    parent = Directory.GetParent(parent).FullName;
-                }
-
-                var directory = new DirectoryInfo(Path.Combine(parent, "wwwroot", "images"));
-                if (!directory.Exists) directory.Create();
-
-                string filename = path;
-
-                var file = new FileInfo(directory + @"\\" + filename);
-
+                var file = new FileInfo(GetImageFolderPath() + @"\\" + path);
                 return Task.FromResult(file.Exists);
             }
             catch (Exception ex)
@@ -178,7 +166,7 @@ namespace Watcher.Core.Providers
 
         public async Task<string> UploadFormFileWithNameAsync(IFormFile formFile)
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", formFile.FileName);
+            var path = Path.Combine(GetImageFolderPath(), formFile.FileName);
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
@@ -187,5 +175,21 @@ namespace Watcher.Core.Providers
 
             return path;
         }
+
+        private string GetFolderPath(string folder)
+        {
+            string parent = Directory.GetCurrentDirectory();
+            while (new DirectoryInfo(parent).Name != "Watcher")
+            {
+                parent = Directory.GetParent(parent).FullName;
+            }
+
+            var directory = new DirectoryInfo(Path.Combine(parent, "wwwroot", folder));
+            if (!directory.Exists) directory.Create();
+
+            return directory.FullName;
+        }
+
+        private string GetImageFolderPath() => GetFolderPath("images");
     }
 }
