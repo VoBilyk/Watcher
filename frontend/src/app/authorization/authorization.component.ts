@@ -171,9 +171,8 @@ export class AuthorizationComponent implements OnInit {
       invitedOrganizationid = this.invitedOrganization.id;
     }
 
-    await this.authService.signUpWithProvider(this.companyName, this.firstName, this.lastName,
-                                               this.userEmail, invitedOrganizationid)
-      .then(res => {
+    await this.authService.signUpWithProvider(this.companyName, this.firstName, this.lastName, this.userEmail, invitedOrganizationid)
+      .then(() => {
         this.isSaving = false;
         this.closeDialog();
         this.signInPostProcessing(true);
@@ -199,12 +198,10 @@ export class AuthorizationComponent implements OnInit {
     this.saveUserDetails();
   }
 
-  signInPostProcessing(result: boolean): Promise<boolean> {
-    if (result) {
-      return this.router.navigate(['/user/instances']);
-    } else {
-      return this.router.navigate(['/']);
-    }
+  signInPostProcessing(result: boolean) {
+    return result
+      ? this.router.navigate(['/user/instances'])
+      : this.router.navigate(['/']);
   }
 
   fetchExistingData() {

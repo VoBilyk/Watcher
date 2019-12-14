@@ -13,7 +13,7 @@ export class OrganizationInvitesHub {
   onUpdateInvite = new EventEmitter<OrganizationInvite>();
   onDeleteInvite = new EventEmitter<number>();
 
-  connectionEstablished = new EventEmitter<Boolean>();
+  connectionEstablished = new EventEmitter<boolean>();
 
   constructor(private authService: AuthService) {
     this.startInviteHubConnection();
@@ -25,7 +25,7 @@ export class OrganizationInvitesHub {
       .configureLogging(LogLevel.None)
       .build();
 
-      return this.hubConnection;
+    return this.hubConnection;
   }
 
   private startInviteHubConnection(): void {
@@ -77,6 +77,6 @@ export class OrganizationInvitesHub {
     this.onAddInvite = new EventEmitter<OrganizationInvite>();
     this.onUpdateInvite = new EventEmitter<OrganizationInvite>();
     this.onDeleteInvite = new EventEmitter<number>();
-    this.connectionEstablished = new EventEmitter<Boolean>();
+    this.connectionEstablished = new EventEmitter<boolean>();
   }
 }

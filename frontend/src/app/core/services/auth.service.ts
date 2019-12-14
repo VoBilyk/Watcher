@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { auth, User as FireUser } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject, Observable, ReplaySubject, forkJoin } from 'rxjs';
 import { UserRegisterRequest } from '../../shared/models/user-register-request';
 import { TokenService } from './token.service';
 import { UserLoginRequest } from '../../shared/models/user-login-request';
-import * as firebase from 'firebase';
 import { UserInfoProfile } from '../../shared/models/user-info-profile';
 import { User } from '../../shared/models/user.model';
 import { distinctUntilChanged, first } from 'rxjs/operators';
@@ -22,24 +22,25 @@ export class AuthService {
   private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
   public isAuthenticated: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
 
-  private userDetails: firebase.User = null;
+  private userDetails: FireUser = null;
   public userRegisterRequest: UserRegisterRequest = null;
 
   private tokenHelper: JwtHelperService = new JwtHelperService();
 
-  constructor(private _firebaseAuth: AngularFireAuth,
-              private tokenService: TokenService,
-              private themeService: ThemeService,
-              private router: Router,
-              ) {
-    _firebaseAuth.authState.subscribe((user) => {
+  constructor(
+    private firebaseAuth: AngularFireAuth,
+    private tokenService: TokenService,
+    private themeService: ThemeService,
+    private router: Router,
+  ) {
+    firebaseAuth.authState.subscribe((user) => {
       this.userDetails = user ? user : null;
     });
   }
 
   // Verify JWT in localstorage with server & load user's info.
   // This runs once on application startup.
-  async populate(): Promise<any> {
+  async populate() {
     // If JWT detected, attempt to get & store user's info
     const fToken = await this.getFirebaseToken();
     const wToken = await this.getWatcherToken();
@@ -81,10 +82,10 @@ export class AuthService {
     this.isAuthenticatedSubject.next(false);
   }
 
-  async login(credential: firebase.auth.UserCredential, provider: string): Promise<void> {
-    let firstName;
-    let lastName;
-    const profile: UserProfile = (<UserProfile>credential.additionalUserInfo.profile);
+  async login(credential: auth.UserCredential, provider: string) {
+    let firstName: string;
+    let lastName: string;
+    const profile = credential.additionalUserInfo.profile as UserProfile;
     switch (provider) {
       case 'Google': {
         firstName = profile.given_name;
@@ -112,12 +113,12 @@ export class AuthService {
       isNewUser: credential.additionalUserInfo.isNewUser,
       companyName: '',
       invitedOrganizationId: 0,
-      firstName: firstName,
-      lastName: lastName
+      firstName,
+      lastName
     };
 
     if (!this.userRegisterRequest.email) {
-      this.userRegisterRequest.email = (<UserInfoProfile>credential.additionalUserInfo.profile).email;
+      this.userRegisterRequest.email = (credential.additionalUserInfo.profile as UserInfoProfile).email;
     }
 
     const request: UserLoginRequest = {
@@ -133,9 +134,14 @@ export class AuthService {
         if (tokenDto.user.lastPickedOrganization) {
           this.themeService.applyThemeById(tokenDto.user.lastPickedOrganization.themeId);
         }
+        return true;
       })
       .catch(err => {
-        throw err;
+        if (err.status === 400) {
+          throw err;
+        }
+        console.error(err);
+        return false;
       });
   }
 
@@ -149,78 +155,36 @@ export class AuthService {
       });
   }
 
-  async signInWithGoogle(): Promise<boolean> {
-    const provider = new firebase.auth.GoogleAuthProvider();
+  async signInWithGoogle() {
+    const provider = new auth.GoogleAuthProvider();
     provider.addScope('email');
     provider.setCustomParameters({ prompt : 'select_account'});
 
-    return await this._firebaseAuth.auth.signInWithPopup(provider)
-      .then(res => {
-        return this.login(res, 'Google');
-      })
-      .then(() => {
-        return true;
-      })
-      .catch(err => {
-        if (err.status === 400) {
-          throw err;
-        }
-        console.error(err);
-        return false;
-      });
+    return this.firebaseAuth.auth.signInWithPopup(provider)
+      .then(res => this.login(res, 'Google'));
   }
 
-  async signInWithFacebook(): Promise<boolean> {
-    const provider = new firebase.auth.FacebookAuthProvider();
+  async signInWithFacebook(){
+    const provider = new auth.FacebookAuthProvider();
     provider.addScope('email');
     provider.setCustomParameters({ auth_type: 'reauthenticate'});
 
-    return await this._firebaseAuth.auth.signInWithPopup(provider)
-      .then(res => {
-        return this.login(res, 'Facebook');
-      })
-      .then(() => {
-        return true;
-      })
-      .catch(err => {
-        if (err.status === 400) {
-          throw err;
-        }
-        console.error(err);
-        return false;
-      });
+    return this.firebaseAuth.auth.signInWithPopup(provider)
+      .then(res => this.login(res, 'Facebook'));
   }
 
-  async signInWithGitHub(): Promise<boolean> {
-    return await this._firebaseAuth.auth.signInWithPopup(new firebase.auth.GithubAuthProvider().addScope('email'))
-      .then(res => {
-        return this.login(res, 'GitHub');
-      })
-      .then(() => {
-        return true;
-      })
-      .catch(err => {
-        if (err.status === 400) {
-          throw err;
-        }
-        console.error(err);
-        return false;
-      });
+  async signInWithGitHub() {
+    return this.firebaseAuth.auth.signInWithPopup(new auth.GithubAuthProvider().addScope('email'))
+      .then(res => this.login(res, 'GitHub'));
   }
 
-  async signUpWithProvider(companyName: string, firstName: string, lastName: string, email: string,
-                            invitedOrganizationId: number = 0): Promise<void> {
+  async signUpWithProvider(companyName: string, firstName: string, lastName: string, email: string, invitedOrganizationId: number = 0) {
     this.userRegisterRequest.companyName = companyName;
     this.userRegisterRequest.firstName = firstName;
     this.userRegisterRequest.lastName = lastName;
     this.userRegisterRequest.email = email;
     this.userRegisterRequest.invitedOrganizationId = invitedOrganizationId;
-    await this.register()
-      .then(() => {
-      })
-      .catch(err => {
-        throw err;
-      });
+    await this.register();
   }
 
   isLoggedIn() {
@@ -237,7 +201,7 @@ export class AuthService {
 
   getCurrentUserLS() {
     const userStr = localStorage.getItem('currentUser');
-    return (<User>JSON.parse(userStr));
+    return JSON.parse(userStr) as User;
   }
 
   updateCurrentUser(user: User) {
@@ -270,16 +234,16 @@ export class AuthService {
   }
 
   async refreshFirebaseToken() {
-    const firebaseToken = this._firebaseAuth.auth.currentUser
-                          ? await this._firebaseAuth.auth.currentUser.getIdToken(true)
-                          : await this._firebaseAuth.authState.pipe(first()).toPromise().then(user => user.getIdToken(true));
+    const firebaseToken = this.firebaseAuth.auth.currentUser
+      ? await this.firebaseAuth.auth.currentUser.getIdToken(true)
+      : await this.firebaseAuth.authState.pipe(first()).toPromise().then(user => user.getIdToken(true));
 
     localStorage.setItem('firebaseToken', firebaseToken);
   }
 
   async refreshWatcherToken() {
     const userInfo = this.getCurrentUserLS();
-     const req: UserLoginRequest = {
+    const req: UserLoginRequest = {
       uid: userInfo.id,
       email: userInfo.email
     };
@@ -292,8 +256,8 @@ export class AuthService {
     this.purgeAuth();
     localStorage.removeItem('firebaseToken');
 
-    this._firebaseAuth.auth.signOut()
-      .then((res) => this.router.navigate(['/']))
+    this.firebaseAuth.auth.signOut()
+      .then(() => this.router.navigate(['/']))
       .catch(err => console.error(err));
 
     return true;

@@ -3,15 +3,13 @@ import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class PathService {
-
-  constructor() { }
-
   public convertToUrl(filePath: string): string {
-
-    const firstSymbols = filePath.slice(0, 7);
-    if (firstSymbols === 'images/') {
-      filePath = `${environment.server_url}/${filePath}`;
+    if (!filePath) {
+      return '';
     }
-    return filePath;
+
+    return filePath.slice(0, 7) === 'images/'
+      ? `${environment.server_url}/${filePath}`
+      : filePath;
   }
 }

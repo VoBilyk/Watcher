@@ -1,5 +1,4 @@
-﻿
-import { Role } from './role.model';
+﻿import { Role } from './role.model';
 import { NotificationSetting } from './notification-setting.model';
 import { Notification } from './notification.model';
 import { Feedback } from './feedback.model';
