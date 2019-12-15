@@ -1,10 +1,8 @@
 ﻿namespace Watcher.DataAccess.Data
 {
+    using Microsoft.EntityFrameworkCore;
     using System.Linq;
     using System.Linq.Expressions;
-
-    using Microsoft.EntityFrameworkCore;
-
     using Watcher.Common.Interfaces.Entities;
     using Watcher.DataAccess.Entities;
 
@@ -51,7 +49,7 @@
                 .HasMany(u => u.Messages)
                 .WithOne(m => m.User)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Notifications)
                 .WithOne(n => n.User)
@@ -61,7 +59,7 @@
                 .HasMany(u => u.Responses)
                 .WithOne(u => u.User)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Feedbacks)
                 .WithOne(f => f.User)
@@ -119,7 +117,7 @@
 
                     modelBuilder.Entity(entity.ClrType).HasQueryFilter(lambda);
                 }
-            } 
+            }
 
             modelBuilder.Seed();
         }
@@ -133,13 +131,13 @@
         public DbSet<UserOrganization> UserOrganizations { get; set; }
 
         public DbSet<OrganizationRole> OrganizationRoles { get; set; }
-        
+
         public DbSet<Instance> Instances { get; set; }
 
         public DbSet<Dashboard> Dashboards { get; set; }
 
         public DbSet<Chart> Charts { get; set; }
-        
+
         public DbSet<Message> Messages { get; set; }
 
         public DbSet<Chat> Chats { get; set; }

@@ -1,14 +1,10 @@
-﻿using Watcher.DataAccess.Entities;
-
-namespace Watcher.Controllers
+﻿namespace Watcher.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -126,7 +122,7 @@ namespace Watcher.Controllers
         public virtual async Task<ActionResult> GetUserOrganizationRole(string uId, int oId)
         {
             var organizationRole = await _userOrganizationService.GetUserOrganizationRoleAsync(uId, oId);
-            if(organizationRole == null)
+            if (organizationRole == null)
             {
                 return NotFound();
             }

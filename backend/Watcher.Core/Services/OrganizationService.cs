@@ -2,11 +2,9 @@
 
 namespace Watcher.Core.Services
 {
+    using AutoMapper;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -68,7 +66,10 @@ namespace Watcher.Core.Services
                         .Include(o => o.Instances)
                         .Include(o => o.UserOrganizations));
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Organization, OrganizationDto>(entity);
 
@@ -111,7 +112,10 @@ namespace Watcher.Core.Services
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Organization, OrganizationDto>(entity);
 
@@ -149,7 +153,7 @@ namespace Watcher.Core.Services
 
         public async Task<bool> DeleteEntityByIdAsync(int id)
         {
-            await _uow.OrganizationRepository.DeleteAsync(id, include: org => 
+            await _uow.OrganizationRepository.DeleteAsync(id, include: org =>
                 org.Include(o => o.Instances)
                     .ThenInclude(i => i.Dashboards)
                         .ThenInclude(d => d.Charts)

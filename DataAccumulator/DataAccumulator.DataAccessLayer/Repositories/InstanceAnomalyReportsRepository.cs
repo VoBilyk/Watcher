@@ -1,16 +1,14 @@
 ﻿namespace DataAccumulator.DataAccessLayer.Repositories
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
     using DataAccumulator.DataAccessLayer.Data;
     using DataAccumulator.DataAccessLayer.Entities;
     using DataAccumulator.DataAccessLayer.Interfaces;
     using DataAccumulator.Shared.Models;
-
     using MongoDB.Bson;
     using MongoDB.Driver;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public class InstanceAnomalyReportsRepository : IInstanceAnomalyReportsRepository
     {
@@ -37,9 +35,9 @@
 
         public Task<List<InstanceAnomalyReport>> GetReportsByParametersAsync(Guid instanceId, CollectedDataType type, DateTime @from, DateTime to, int page = 1, int count = 10)
         {
-            var query = _context.AnomalyReportsCollection.Find(d => d.ClientId == instanceId 
-                                                                    && d.CollectedDataTypeOfReport == type 
-                                                                    && d.Date >= @from 
+            var query = _context.AnomalyReportsCollection.Find(d => d.ClientId == instanceId
+                                                                    && d.CollectedDataTypeOfReport == type
+                                                                    && d.Date >= @from
                                                                     && d.Date <= to);
 
             query.SortByDescending(report => report.Date).Skip(count * (page - 1)).Limit(count);

@@ -9,7 +9,7 @@ namespace Watcher.Common.Requests
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-    
+
         public string EmailForNotifications { get; set; }
 
         public bool IsActive { get; set; }
@@ -18,7 +18,7 @@ namespace Watcher.Common.Requests
         public string Bio { get; set; }
         public string PhotoURL { get; set; }
         public string PhotoType { get; set; }
-        
+
         public RoleDto Role { get; set; }
 
         public int? LastPickedOrganizationId { get; set; }

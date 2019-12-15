@@ -1,17 +1,13 @@
 ﻿namespace Watcher.Controllers
 {
+    using AutoMapper;
+    using DataAccumulator.DataAccessLayer.Entities;
+    using DataAccumulator.Shared.Models;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-
-    using DataAccumulator.DataAccessLayer.Entities;
-    using DataAccumulator.Shared.Models;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
     using Watcher.Core.Interfaces;
     using Watcher.Core.Services;
 
@@ -24,7 +20,7 @@
         private readonly IEmailProvider _emailProvider;
         private readonly IMapper _mapper;
 
-        public InstanceAnomalyReportsController(IInstanceAnomalyReportsService service, 
+        public InstanceAnomalyReportsController(IInstanceAnomalyReportsService service,
                                                 IEmailProvider provider,
                                                 IMapper mapper)
         {
@@ -36,9 +32,9 @@
         // /InstanceAnomalyReports/Report/774186a3-2850-4792-a648-53b07db62af2
 
         [HttpGet("{id}/{type}/{from}/{to}")]
-        public virtual async Task<ActionResult<IEnumerable<InstanceAnomalyReport>>> GetDataByInstance(Guid id, 
-                                                                                                 CollectedDataType type, 
-                                                                                                 DateTime from, 
+        public virtual async Task<ActionResult<IEnumerable<InstanceAnomalyReport>>> GetDataByInstance(Guid id,
+                                                                                                 CollectedDataType type,
+                                                                                                 DateTime from,
                                                                                                  DateTime to)
         {
             var dtos = await _service.GetReportsInTimeAsync(id, type, from, to, 1, int.MaxValue);
@@ -55,11 +51,11 @@
         }
 
         [HttpGet("{id}/{type}/{from}/{to}/{page}/{count}")]
-        public virtual async Task<ActionResult<IEnumerable<InstanceAnomalyReport>>> GetDataByInstancePagination(Guid id, 
+        public virtual async Task<ActionResult<IEnumerable<InstanceAnomalyReport>>> GetDataByInstancePagination(Guid id,
                                                                                                            CollectedDataType type,
-                                                                                                           DateTime from, 
+                                                                                                           DateTime from,
                                                                                                            DateTime to,
-                                                                                                           int page, 
+                                                                                                           int page,
                                                                                                            int count)
         {
             var dtos = await _service.GetReportsInTimeAsync(id, type, from, to, page, count);

@@ -18,7 +18,7 @@ namespace Watcher.Common.Requests
         public int HistoryTime { get; set; }
 
         public int DashboardId { get; set; }
-        
+
         public string SchemeType { get; set; } // = "ordinal";
 
         public bool ShowLegend { get; set; }

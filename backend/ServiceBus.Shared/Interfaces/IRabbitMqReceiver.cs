@@ -1,12 +1,10 @@
 ﻿namespace ServiceBus.Shared.Interfaces
 {
+    using RabbitMQ.Client;
+    using ServiceBus.Shared.Common;
+    using ServiceBus.Shared.Messages;
     using System;
     using System.Threading.Tasks;
-
-    using RabbitMQ.Client;
-
-    using ServiceBus.Shared.Messages;
-    using ServiceBus.Shared.Common;
 
     public interface IRabbitMqReceiver
     {

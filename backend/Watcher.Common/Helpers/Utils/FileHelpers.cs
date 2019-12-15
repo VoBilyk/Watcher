@@ -31,7 +31,10 @@ namespace Watcher.Common.Helpers.Utils
             {
                 var file = new FileInfo(path);
                 if (!file.Exists)
+                {
                     throw new ArgumentNullException("Invalid path");
+                }
+
                 file.Delete();
                 return Task.FromResult<object>(null);
             }

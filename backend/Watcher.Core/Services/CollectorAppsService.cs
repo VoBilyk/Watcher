@@ -1,15 +1,15 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
-using Watcher.Common.Enums;
 using Watcher.Common.Dtos;
+using Watcher.Common.Enums;
+using Watcher.Common.Extensions;
 using Watcher.Common.Requests;
 using Watcher.Core.Interfaces;
 using Watcher.DataAccess.Entities;
 using Watcher.DataAccess.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Watcher.Common.Extensions;
 
 namespace Watcher.Core.Services
 {
@@ -50,7 +50,10 @@ namespace Watcher.Core.Services
             var entity = await _uow.CollectorAppVersionRepository
                 .GetFirstOrDefaultAsync(x => x.IsActive);
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<CollectorAppVersion, CollectorAppVersionDto>(entity);
 
@@ -69,7 +72,8 @@ namespace Watcher.Core.Services
                 var items = await _uow.CollectorAppVersionRepository
                     .GetRangeAsync(1, int.MaxValue, x => x.Id != entity.Id && x.IsActive);
 
-                items.ForEach(x => {
+                items.ForEach(x =>
+                {
                     x.IsActive = false;
                     _uow.CollectorAppVersionRepository.Update(x);
                 });
@@ -77,9 +81,15 @@ namespace Watcher.Core.Services
 
             var result = await _uow.SaveAsync();
 
-            if (!result) return null;
+            if (!result)
+            {
+                return null;
+            }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<CollectorAppVersion, CollectorAppVersionDto>(entity);
             return dto;
@@ -89,7 +99,10 @@ namespace Watcher.Core.Services
         {
             var entity = await _uow.CollectorAppVersionRepository.GetFirstOrDefaultAsync(i => i.Id == id);
 
-            if (entity.IsActive) return false;
+            if (entity.IsActive)
+            {
+                return false;
+            }
 
             await _uow.CollectorAppVersionRepository.DeleteAsync(id);
 
@@ -109,12 +122,16 @@ namespace Watcher.Core.Services
         {
             var entity = await _uow.CollectorAppVersionRepository.GetFirstOrDefaultAsync(i => i.Id == id);
 
-            if (entity.IsActive) return _mapper.Map<CollectorAppVersion, CollectorAppVersionDto>(entity);
+            if (entity.IsActive)
+            {
+                return _mapper.Map<CollectorAppVersion, CollectorAppVersionDto>(entity);
+            }
 
             var items = await _uow.CollectorAppVersionRepository.
                 GetRangeAsync(1, int.MaxValue, x => x.Id != id && x.IsActive);
 
-            items.ForEach(x => {
+            items.ForEach(x =>
+            {
                 x.IsActive = false;
                 _uow.CollectorAppVersionRepository.Update(x);
             });

@@ -1,14 +1,8 @@
 ﻿using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
-
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Watcher.Common.Dtos;
-using Watcher.Common.Requests;
 using Watcher.Core.Interfaces;
 using Watcher.DataAccess.Entities;
 using Watcher.DataAccess.Interfaces;
@@ -29,7 +23,11 @@ namespace Watcher.Core.Services
         {
             var entities = await _uow.ThemeRepository.GetRangeAsync();
 
-            if (entities == null) return null;
+            if (entities == null)
+            {
+                return null;
+            }
+
             var dtos = _mapper.Map<List<Theme>, List<ThemeDto>>(entities);
 
             return dtos;
@@ -41,7 +39,10 @@ namespace Watcher.Core.Services
                 .GetFirstOrDefaultAsync(
                     predicate: t => t.Id == id);
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Theme, ThemeDto>(entity);
 
@@ -55,7 +56,7 @@ namespace Watcher.Core.Services
             entity = await _uow.ThemeRepository.CreateAsync(entity);
 
             var result = await _uow.SaveAsync();
-            if(!result || entity == null)
+            if (!result || entity == null)
             {
                 return null;
             }

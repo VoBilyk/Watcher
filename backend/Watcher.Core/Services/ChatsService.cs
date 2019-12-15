@@ -1,17 +1,16 @@
 ﻿namespace Watcher.Core.Services
 {
+    using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
-    using Microsoft.EntityFrameworkCore;
-
     using Watcher.Common.Dtos;
+    using Watcher.Common.Enums;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
-    using Watcher.DataAccess.Interfaces;
     using Watcher.DataAccess.Entities;
-    using Watcher.Common.Enums;
+    using Watcher.DataAccess.Interfaces;
 
     public class ChatsService : IChatsService
     {
@@ -47,7 +46,10 @@
                                                         .Include(c => c.UserChats)
                                                             .ThenInclude(uc => uc.User));
 
-            if (chat == null) return null;
+            if (chat == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Chat, ChatDto>(chat);
 
@@ -67,7 +69,9 @@
                         c.Messages = null;
 
                         if (c.UsersSettings.FirstOrDefault(x => x.UserId == id) == null)
+                        {
                             c.UsersSettings.Add(CreateDefaultSettings(id));
+                        }
                     })));
 
             return dtos;
@@ -144,7 +148,10 @@
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Chat, ChatDto>(entity);
 
@@ -181,9 +188,11 @@
                 .GetFirstOrDefaultAsync(c => c.Id == id, include: chat => chat.Include(c => c.UserChats));
 
             foreach (var userChat in entity.UserChats)
+            {
                 _uow.UserChatRepository.Delete(userChat.UserId, userChat.ChatId);
+            }
 
-            await _uow.ChatsRepository.DeleteAsync(id, 
+            await _uow.ChatsRepository.DeleteAsync(id,
                 include: chat => chat.Include(c => c.Messages));
 
             var result = await _uow.SaveAsync();

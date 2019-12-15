@@ -13,12 +13,12 @@ namespace Watcher.Controllers
     [Route("[controller]")]
     [ApiController]
     public class NotificationSettingsController : ControllerBase
-    {  
+    {
         /// <summary>
-       /// The service
-       /// </summary>
+        /// The service
+        /// </summary>
         private readonly INotificationSettingsService _service;
-        
+
         public NotificationSettingsController(INotificationSettingsService service)
         {
             _service = service;
@@ -61,7 +61,7 @@ namespace Watcher.Controllers
             {
                 return StatusCode(500);
             }
-            
+
             return Ok(dto);
         }
 

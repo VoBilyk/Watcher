@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watcher.Common.Interfaces.Entities;
+﻿using Watcher.Common.Interfaces.Entities;
 
 namespace Watcher.Common.Dtos
 {

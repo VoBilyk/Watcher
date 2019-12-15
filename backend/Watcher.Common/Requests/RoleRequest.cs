@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Watcher.Common.Dtos;
-using Watcher.Common.Enums;
-
-namespace Watcher.Common.Requests
+﻿namespace Watcher.Common.Requests
 {
     public class RoleRequest
     {

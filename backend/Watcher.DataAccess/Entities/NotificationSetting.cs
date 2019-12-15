@@ -37,8 +37,8 @@
 
         public void OnDelete()
         {
-            if(Notifications != null)
-            { 
+            if (Notifications != null)
+            {
                 foreach (var notification in Notifications)
                 {
                     notification.OnDelete();

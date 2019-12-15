@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using Watcher.Common.Dtos;
 using Watcher.Core.Interfaces;
 using Watcher.DataAccess.Entities;

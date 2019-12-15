@@ -26,7 +26,7 @@
         IResponseRepository ResponseRepository { get; }
 
         IRoleRepository RoleRepository { get; }
-        
+
         IOrganizationRoleRepository OrganizationRoleRepository { get; }
 
         INotificationSettingsRepository NotificationSettingsRepository { get; }
@@ -41,7 +41,7 @@
 
         INotificationsRepository NotificationsRepository { get; }
 
-        IChartsRepository ChartsRepository { get;  }
+        IChartsRepository ChartsRepository { get; }
 
         IThemeRepository ThemeRepository { get; }
 

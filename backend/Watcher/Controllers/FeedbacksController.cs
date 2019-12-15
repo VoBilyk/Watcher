@@ -1,12 +1,10 @@
 ﻿namespace Watcher.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -154,13 +152,13 @@
             {
                 return BadRequest(ModelState);
             }
-            
+
             var dto = await _feedbackService.CreateEntityAsync(request);
             if (dto == null)
             {
                 return StatusCode(500);
             }
-            
+
             if (!string.IsNullOrEmpty(request.Email))
             {
                 await _emailProvider.SendMessageOneToOne("watcher@net.com", "Thanks for feedback", request.Email,
@@ -168,7 +166,7 @@
                     ". Thank you for taking the time to type feedback. " +
                     "Best regards, Watcher.", "");
             }
-            
+
             return CreatedAtAction("GetById", new { id = dto.Id }, dto);
         }
     }

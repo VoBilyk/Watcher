@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using DataAccumulator.DataAccessLayer.Data;
+﻿using DataAccumulator.DataAccessLayer.Data;
 using DataAccumulator.DataAccessLayer.Entities;
 using DataAccumulator.DataAccessLayer.Interfaces;
 using DataAccumulator.Shared.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DataAccumulator.DataAccessLayer.Repositories
 {
@@ -86,7 +86,7 @@ namespace DataAccumulator.DataAccessLayer.Repositories
         }
 
         // Query by type in time
-        public async Task<IEnumerable<CollectedData>> GetEntitiesByTypeInTime(CollectedDataType collectedDataType, 
+        public async Task<IEnumerable<CollectedData>> GetEntitiesByTypeInTime(CollectedDataType collectedDataType,
             DateTime timeFrom, DateTime timeTo)
         {
             try

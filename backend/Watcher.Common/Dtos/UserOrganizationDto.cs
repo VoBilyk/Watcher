@@ -9,6 +9,6 @@ namespace Watcher.Common.Dtos
 
         public OrganizationDto Organization { get; set; }
 
-        public OrganizationRoleDto OrganizationRole { get; set;}
+        public OrganizationRoleDto OrganizationRole { get; set; }
     }
 }

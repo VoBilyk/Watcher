@@ -1,19 +1,16 @@
-﻿using System;
-using System.Linq;
-using Watcher.Common.Enums;
+﻿using System.Linq;
 
 namespace Watcher.Core.Services
 {
     using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using Watcher.Core.Interfaces;
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
-    using Watcher.DataAccess.Interfaces;
+    using Watcher.Core.Interfaces;
     using Watcher.DataAccess.Entities;
-    using Microsoft.EntityFrameworkCore;
+    using Watcher.DataAccess.Interfaces;
 
     public class MessagesService : IMessagesService
     {
@@ -55,7 +52,10 @@ namespace Watcher.Core.Services
                     .Include(m => m.User)
                     .Include(m => m.Chat));
 
-            if (chat == null) return null;
+            if (chat == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Message, MessageDto>(chat);
 
@@ -73,7 +73,11 @@ namespace Watcher.Core.Services
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
+
             var chat = await _uow.ChatsRepository.GetFirstOrDefaultAsync(c => c.Id == entity.ChatId);
 
             var dto = _mapper.Map<Message, MessageDto>(entity);

@@ -1,15 +1,12 @@
 ﻿namespace Watcher.Core.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
     using AutoMapper;
-
     using DataAccumulator.DataAccessLayer.Entities;
     using DataAccumulator.DataAccessLayer.Interfaces;
     using DataAccumulator.Shared.Models;
-
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Watcher.Core.Interfaces;
 
     public class InstanceAnomalyReportsService : IInstanceAnomalyReportsService
@@ -25,7 +22,7 @@
         }
 
         public static string GetHtml(InstanceAnomalyReportDto report) => GenerateWholeHtml.GenerateHtml(report);
-        
+
         public static string GetHtmlForLetter(string userName, string instanceName, string link) => GenerateWholeHtml.GenerateHtmlLetter(userName, instanceName, link);
 
         public static InstanceAnomalyReport GetAnomalyReport(Guid instanceId)

@@ -16,7 +16,7 @@
                 .ForMember(d => d.User, o => o.Ignore())
                 .ForMember(d => d.Type, o => o.Ignore())
                 .ForMember(d => d.Notifications, o => o.Ignore());
-            
+
             CreateMap<NotificationSettingDto, NotificationSetting>();
 
             CreateMap<NotificationSetting, NotificationSettingDto>();

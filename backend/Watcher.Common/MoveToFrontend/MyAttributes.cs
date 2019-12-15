@@ -19,7 +19,8 @@ namespace Watcher.Common.MoveToFrontend
     {
         // Doesn't need anything in it; just its presence is enough.
     }
-    class MyAttributes
+
+    internal class MyAttributes
     {
     }
 }

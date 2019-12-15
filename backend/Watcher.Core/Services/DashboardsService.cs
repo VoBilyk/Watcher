@@ -1,14 +1,11 @@
 ﻿namespace Watcher.Core.Services
 {
+    using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-
-    using Microsoft.EntityFrameworkCore;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -33,7 +30,10 @@
                                orderBy: d => d.OrderByDescending(x => x.CreatedAt),
                                include: d => d.Include(o => o.Charts));
 
-            if (entities == null) return null;
+            if (entities == null)
+            {
+                return null;
+            }
 
             var dtos = _mapper.Map<List<Dashboard>, List<DashboardDto>>(entities);
 
@@ -46,7 +46,10 @@
                 predicate: s => s.Id == id,
                 include: x => x.Include(o => o.Charts));
 
-            if (dashboard == null) return null;
+            if (dashboard == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Dashboard, DashboardDto>(dashboard);
 
@@ -66,7 +69,10 @@
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Dashboard, DashboardDto>(entity);
 

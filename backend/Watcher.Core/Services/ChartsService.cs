@@ -1,12 +1,8 @@
-﻿using System;
-
-namespace Watcher.Core.Services
+﻿namespace Watcher.Core.Services
 {
+    using AutoMapper;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -37,7 +33,10 @@ namespace Watcher.Core.Services
         {
             var chart = await _uow.ChartsRepository.GetFirstOrDefaultAsync(s => s.Id == id);
 
-            if (chart == null) return null;
+            if (chart == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Chart, ChartDto>(chart);
 
@@ -55,7 +54,10 @@ namespace Watcher.Core.Services
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Chart, ChartDto>(entity);
 

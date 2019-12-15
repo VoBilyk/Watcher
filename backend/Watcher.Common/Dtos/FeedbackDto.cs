@@ -5,7 +5,7 @@ using Watcher.Common.MoveToFrontend;
 
 namespace Watcher.Common.Dtos
 {
-    [ExportClassToTypescript] 
+    [ExportClassToTypescript]
     public class FeedbackDto : IEntity<int>
     {
         public int Id { get; set; }
@@ -25,7 +25,7 @@ namespace Watcher.Common.Dtos
         public string Email { get; set; }
 
         public DateTime CreatedAt { get; set; }
-        
+
         public UserDto User { get; set; }
 
         public ResponseDto Response { get; set; }

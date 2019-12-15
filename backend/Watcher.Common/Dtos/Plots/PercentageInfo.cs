@@ -6,7 +6,7 @@ namespace Watcher.Common.Dtos.Plots
     public class PercentageInfo : ICollectedData
     {
         public PercentageInfo() { }
-        
+
         public Guid Id { get; set; }
         public Guid ClientId { get; set; }
         public DateTime Time { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Watcher.Common.Interfaces.Entities
 {
-    interface ICollectedData
+    internal interface ICollectedData
     {
         Guid Id { get; set; }
         Guid ClientId { get; set; }

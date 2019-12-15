@@ -2,12 +2,10 @@
 
 namespace Watcher.Core.Services
 {
+    using AutoMapper;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -42,10 +40,14 @@ namespace Watcher.Core.Services
         public async Task<IEnumerable<UserOrganizationDto>> GetEntitiesByOrganizationId(int organizationId)
         {
             var entities = await _uow.UserOrganizationRepository.GetAllByOrganizationId(organizationId);
-            if (entities == null) return null; 
+            if (entities == null)
+            {
+                return null;
+            }
+
             var dtos = _mapper.Map<List<UserOrganization>, List<UserOrganizationDto>>(entities);
             return dtos;
-        } 
+        }
 
         public async Task<UserOrganizationDto> UpdateEntityAsync(UserOrganizationRequest request)
         {
@@ -53,9 +55,15 @@ namespace Watcher.Core.Services
 
             var res = await _uow.UserOrganizationRepository.UpdateAsync(entity);
             var result = await _uow.SaveAsync();
-            if(!result) return null;
- 
-            if (entity == null) return null;
+            if (!result)
+            {
+                return null;
+            }
+
+            if (entity == null)
+            {
+                return null;
+            }
 
             return _mapper.Map<UserOrganization, UserOrganizationDto>(res);
         }
@@ -67,19 +75,22 @@ namespace Watcher.Core.Services
 
             var CreatedEntity = await _uow.UserOrganizationRepository.CreateAsync(entity);
             result = await _uow.SaveAsync();
-            
+
             if (!result)
             {
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<UserOrganization, UserOrganizationDto>(entity);
 
             return dto;
         }
-        
+
         public async Task<bool> DeleteEntityAsync(int companyId, string userId)
         {
             _uow.UserOrganizationRepository.Delete(companyId, userId);
@@ -92,10 +103,16 @@ namespace Watcher.Core.Services
         public async Task<OrganizationRoleDto> GetUserOrganizationRoleAsync(string userId, int organizationId)
         {
             var entities = await _uow.UserOrganizationRepository.GetAllByOrganizationId(organizationId);
-            if (entities == null) return null;
+            if (entities == null)
+            {
+                return null;
+            }
 
             var userOrganization = entities.FirstOrDefault(u => u.UserId == userId);
-            if (userOrganization == null) return null;
+            if (userOrganization == null)
+            {
+                return null;
+            }
 
             var roleDto = _mapper.Map<OrganizationRole, OrganizationRoleDto>(userOrganization.OrganizationRole);
             return roleDto;

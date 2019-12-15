@@ -1,8 +1,7 @@
 ﻿namespace Watcher.Common.Options
 {
-    using System.Text;
-
     using Microsoft.IdentityModel.Tokens;
+    using System.Text;
 
     public class WatcherTokenOptions
     {

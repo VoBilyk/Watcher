@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using DataAccumulator.DataAccessLayer.Data;
+﻿using DataAccumulator.DataAccessLayer.Data;
 using DataAccumulator.DataAccessLayer.Entities;
 using DataAccumulator.DataAccessLayer.Interfaces;
 using DataAccumulator.Shared.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DataAccumulator.DataAccessLayer.Repositories
 {
@@ -148,8 +148,8 @@ namespace DataAccumulator.DataAccessLayer.Repositories
         {
             try
             {
-                var query = _context.Datasets.Find(d => d.ClientId == instanceId 
-                                                        && d.CollectedDataType == _collectedDataType 
+                var query = _context.Datasets.Find(d => d.ClientId == instanceId
+                                                        && d.CollectedDataType == _collectedDataType
                                                         && d.Time >= timeFrom && d.Time <= timeTo);
 
                 return await query.ToListAsync();
@@ -273,7 +273,9 @@ namespace DataAccumulator.DataAccessLayer.Repositories
         private ObjectId GetInternalId(Guid id)
         {
             if (!ObjectId.TryParse(id.ToString(), out ObjectId internalId))
+            {
                 internalId = ObjectId.Empty;
+            }
 
             return internalId;
         }

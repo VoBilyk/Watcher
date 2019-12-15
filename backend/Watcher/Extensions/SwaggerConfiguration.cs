@@ -1,13 +1,11 @@
-﻿using System;
-using System.IO;
-
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
-
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System;
+using System.IO;
 using Watcher.Utils;
 
 namespace Watcher.Extensions
@@ -42,7 +40,9 @@ namespace Watcher.Extensions
                 var xmlPath = Path.Combine(basePath, "Watcher.xml");
 
                 if (File.Exists(xmlPath))
+                {
                     options.IncludeXmlComments(xmlPath);
+                }
             });
 
             return services;

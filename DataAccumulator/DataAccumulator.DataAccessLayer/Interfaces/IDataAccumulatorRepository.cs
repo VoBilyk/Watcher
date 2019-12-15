@@ -1,7 +1,7 @@
-﻿using System;
+﻿using DataAccumulator.DataAccessLayer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DataAccumulator.DataAccessLayer.Entities;
 
 namespace DataAccumulator.DataAccessLayer.Interfaces
 {

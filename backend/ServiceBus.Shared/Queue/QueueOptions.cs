@@ -4,11 +4,11 @@
     {
         public QueueOptions() { }
 
-        public QueueOptions(string connectionString, 
-                             string dataQueueName, 
+        public QueueOptions(string connectionString,
+                             string dataQueueName,
                              string errorQueueName,
-                             string settingsQueueName, 
-                             string notificationQueueName, 
+                             string settingsQueueName,
+                             string notificationQueueName,
                              string anomalyReportQueueName)
         {
             ConnectionString = connectionString;

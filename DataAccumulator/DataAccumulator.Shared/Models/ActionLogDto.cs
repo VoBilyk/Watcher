@@ -1,5 +1,5 @@
-﻿using System;
-using DataAccumulator.Shared.Enums;
+﻿using DataAccumulator.Shared.Enums;
+using System;
 
 namespace DataAccumulator.Shared.Models
 {

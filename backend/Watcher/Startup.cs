@@ -1,30 +1,26 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-using AutoMapper;
-
+﻿using AutoMapper;
 using DataAccumulator.DataAccessLayer.Entities;
 using DataAccumulator.DataAccessLayer.Interfaces;
 using DataAccumulator.DataAccessLayer.Repositories;
-
+using DataAccumulator.Shared.Models;
 using FluentValidation.AspNetCore;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-
 using Newtonsoft.Json;
-
-using ServiceBus.Shared.Queue;
 using ServiceBus.Shared.Interfaces;
-using DataAccumulator.Shared.Models;
-
+using ServiceBus.Shared.Queue;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Watcher.Common.Options;
 using Watcher.Common.Validators;
 using Watcher.Core.Hubs;
@@ -37,9 +33,6 @@ using Watcher.DataAccess.Data;
 using Watcher.DataAccess.Interfaces;
 using Watcher.Extensions;
 using Watcher.Utils;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Features;
 
 namespace Watcher
 {
@@ -140,7 +133,9 @@ namespace Watcher
 
                                       || !context.Request.Query.ContainsKey("Authorization")
                                       || !context.Request.Query.ContainsKey("WatcherAuthorization"))
+                                  {
                                       return Task.CompletedTask;
+                                  }
 
                                   var watcherToken = context.Request.Query["WatcherAuthorization"];
                                   var firebaseToken = $"Bearer {context.Request.Query["Authorization"]}";
@@ -313,7 +308,7 @@ namespace Watcher
         public virtual void ConfigureDatabase(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString(_env.IsProduction() ? "AzureDbConnection" : "DefaultConnection");
-            
+
             services.AddDbContext<WatcherDbContext>(options =>
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Configuration["MigrationsAssembly"])));
         }

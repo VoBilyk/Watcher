@@ -1,12 +1,10 @@
 ﻿namespace Watcher.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -24,7 +22,7 @@
         /// The Charts Service
         /// </summary>
         private readonly IChartsService _chartsService;
-       
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ChartsController"/> class. 
         /// </summary>
@@ -110,7 +108,7 @@
             {
                 return StatusCode(500);
             }
-            
+
             return CreatedAtAction("GetById", new { id = dto.Id }, dto);
         }
 

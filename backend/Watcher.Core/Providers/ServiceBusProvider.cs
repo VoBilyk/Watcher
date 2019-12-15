@@ -1,30 +1,24 @@
 ﻿namespace Watcher.Core.Providers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     using AutoMapper;
-
     using DataAccumulator.DataAccessLayer.Entities;
     using DataAccumulator.DataAccessLayer.Interfaces;
     using DataAccumulator.Shared.Models;
-
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Azure.ServiceBus;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-
     using Serilog.Context;
-
     using ServiceBus.Shared.Common;
     using ServiceBus.Shared.Enums;
     using ServiceBus.Shared.Messages;
     using ServiceBus.Shared.Queue;
-
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Watcher.Common.Dtos;
     using Watcher.Common.Enums;
     using Watcher.Common.Requests;
@@ -117,11 +111,11 @@
                 var reportsService = scope.ServiceProvider.GetRequiredService<IInstanceAnomalyReportsService>();
                 var report = await reportsService.GetReportByIdAsync(arg.AnomalyReportId);
                 var notificationRequest = new NotificationRequest
-                                              {
-                                                  CreatedAt = report.Date,
-                                                  InstanceId = report.ClientId,
-                                                  Type = NotificationType.Info
-                                              };
+                {
+                    CreatedAt = report.Date,
+                    InstanceId = report.ClientId,
+                    Type = NotificationType.Info
+                };
 
                 var htmlFileUrl = await notificationService.CreateAnomalyReportNotificationAsync(notificationRequest, report);
 

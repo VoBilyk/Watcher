@@ -1,16 +1,13 @@
 namespace Watcher.Core.Hubs
 {
+    using Microsoft.AspNetCore.SignalR;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.SignalR;
-    using Microsoft.AspNetCore.Authorization;
-
-    using Watcher.Common.Requests;
     using Watcher.Common.Dtos;
-    using Watcher.Core.Interfaces;
     using Watcher.Common.Helpers.Extensions;
+    using Watcher.Common.Requests;
+    using Watcher.Core.Interfaces;
 
     public class ChatsHub : Hub
     {
@@ -33,7 +30,10 @@ namespace Watcher.Core.Hubs
         public async Task Send(MessageRequest messageRequest)
         {
             var message = await _messagesService.CreateEntityAsync(messageRequest);
-            if (message == null) return;
+            if (message == null)
+            {
+                return;
+            }
 
             var createdMessage = await _messagesService.GetEntityByIdAsync(message.Id);
             var usersInChat = await _chatsService.GetUsersByChatIdAsync(createdMessage.ChatId);
@@ -43,81 +43,128 @@ namespace Watcher.Core.Hubs
                 // Sending to email
                 await SendToEmailIfNeeded(userDto, createdMessage);
 
-                if (!UsersConnections.ContainsKey(userDto.Id)) continue;
+                if (!UsersConnections.ContainsKey(userDto.Id))
+                {
+                    continue;
+                }
+
                 foreach (string connectionId in UsersConnections[userDto.Id])
+                {
                     await Clients.Client(connectionId).SendAsync("ReceiveMessage", createdMessage);
+                }
             }
         }
 
         public async Task MarkMessageAsRead(int messageId)
         {
             var result = await _messagesService.UpdateEntityByIdAsync(new MessageUpdateRequest { WasRead = true }, messageId);
-            if (!result) return;
+            if (!result)
+            {
+                return;
+            }
         }
 
         public async Task InitializeChat(ChatRequest chatRequest)
         {
             var createdChat = await _chatsService.CreateEntityAsync(chatRequest);
-            if (createdChat == null) return;
+            if (createdChat == null)
+            {
+                return;
+            }
 
             var chat = await _chatsService.GetEntityByIdAsync(createdChat.Id);
 
             foreach (var user in chat.Users)
             {
-                if (!UsersConnections.ContainsKey(user.Id)) continue;
+                if (!UsersConnections.ContainsKey(user.Id))
+                {
+                    continue;
+                }
+
                 foreach (string connectionId in UsersConnections[user.Id])
+                {
                     await Clients.Client(connectionId).SendAsync("ChatCreated", chat);
+                }
             }
         }
 
         public async Task UpdateChat(ChatUpdateRequest chat, int chatId)
         {
             var result = await _chatsService.UpdateEntityByIdAsync(chat, chatId);
-            if (!result) return;
+            if (!result)
+            {
+                return;
+            }
 
             var changedChat = await _chatsService.GetEntityByIdAsync(chatId);
 
             foreach (var user in changedChat.Users)
             {
-                if (!UsersConnections.ContainsKey(user.Id)) continue;
+                if (!UsersConnections.ContainsKey(user.Id))
+                {
+                    continue;
+                }
+
                 foreach (string connectionId in UsersConnections[user.Id])
+                {
                     await Clients.Client(connectionId).SendAsync("ChatChanged", changedChat);
+                }
             }
         }
 
         public async Task AddUserToChat(int chatId, string userId)
         {
             var result = await _chatsService.AddUserToChat(chatId, userId);
-            if (!result) return;
+            if (!result)
+            {
+                return;
+            }
 
             var changedChat = await _chatsService.GetEntityByIdAsync(chatId);
 
             foreach (var user in changedChat.Users)
             {
-                if (!UsersConnections.ContainsKey(user.Id)) continue;
+                if (!UsersConnections.ContainsKey(user.Id))
+                {
+                    continue;
+                }
+
                 foreach (string connectionId in UsersConnections[user.Id])
+                {
                     await Clients.Client(connectionId).SendAsync("ChatChanged", changedChat);
+                }
             }
         }
 
         public async Task DeleteUserFromChat(int chatId, string userId)
         {
             var result = await _chatsService.DeleteUserFromChat(chatId, userId);
-            if (!result) return;
+            if (!result)
+            {
+                return;
+            }
 
             var changedChat = await _chatsService.GetEntityByIdAsync(chatId);
 
             if (UsersConnections.ContainsKey(userId))
             {
                 foreach (string connectionId in UsersConnections[userId])
+                {
                     await Clients.Client(connectionId).SendAsync("ChatDeleted", changedChat);
+                }
             }
 
             foreach (var user in changedChat.Users)
             {
-                if (!UsersConnections.ContainsKey(user.Id)) continue;
+                if (!UsersConnections.ContainsKey(user.Id))
+                {
+                    continue;
+                }
+
                 foreach (string connectionId in UsersConnections[user.Id])
+                {
                     await Clients.Client(connectionId).SendAsync("ChatChanged", changedChat);
+                }
             }
         }
 
@@ -130,9 +177,15 @@ namespace Watcher.Core.Hubs
             {
                 foreach (var user in deleteChat.Users)
                 {
-                    if (!UsersConnections.ContainsKey(user.Id)) continue;
+                    if (!UsersConnections.ContainsKey(user.Id))
+                    {
+                        continue;
+                    }
+
                     foreach (string connectionId in UsersConnections[user.Id])
+                    {
                         await Clients.Client(connectionId).SendAsync("ChatDeleted", deleteChat);
+                    }
                 }
             }
         }
@@ -140,21 +193,29 @@ namespace Watcher.Core.Hubs
         public override async Task OnConnectedAsync()
         {
             if (Context.User.GetUserId() != null)
+            {
                 AddUserConnection(Context.User.GetUserId(), Context.ConnectionId);
+            }
+
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             if (Context.User.GetUserId() != null)
+            {
                 RemoveUserConnection(Context.User.GetUserId(), Context.ConnectionId);
+            }
+
             await base.OnDisconnectedAsync(exception);
         }
 
         public void AddUserConnection(string userId, string connectionId)
         {
             if (UsersConnections.ContainsKey(userId))
+            {
                 UsersConnections[userId].Add(connectionId);
+            }
             else
             {
                 UsersConnections.Add(userId, new List<string> { connectionId });

@@ -56,23 +56,17 @@ namespace Watcher.Core.Providers
         {
             try
             {
-                string parent = Directory.GetCurrentDirectory();
-                while (new DirectoryInfo(parent).Name != "Watcher")
-                {
-                    parent = Directory.GetParent(parent).FullName;
-                }
-
-                var directory = new DirectoryInfo(Path.Combine(parent, "wwwroot", "images"));
-                if (!directory.Exists) directory.Create();
-
+                var folderPath = GetImageFolderPath();
                 var file = new FileInfo(path);
 
                 if (!file.Exists)
+                {
                     throw new ArgumentNullException("Invalid path");
+                }
 
                 string filename = Guid.NewGuid().ToString() + Path.GetExtension(path);
 
-                var fileInfo = file.CopyTo(directory + @"\\" + filename);
+                var fileInfo = file.CopyTo(folderPath + @"\\" + filename);
 
                 string newPath = fileInfo.FullName;
 
@@ -98,7 +92,10 @@ namespace Watcher.Core.Providers
 
                 var file = new FileInfo(path);
                 if (!file.Exists)
+                {
                     throw new ArgumentNullException("Invalid path");
+                }
+
                 file.Delete();
                 return Task.FromResult<object>(null);
             }
@@ -122,7 +119,10 @@ namespace Watcher.Core.Providers
             while (new DirectoryInfo(parent).Name != "Watcher")
             {
                 parent = Directory.GetParent(parent).FullName;
-                if (parent == Directory.GetDirectoryRoot(parent)) throw new ArgumentNullException("Wrong relative path");
+                if (parent == Directory.GetDirectoryRoot(parent))
+                {
+                    throw new ArgumentNullException("Wrong relative path");
+                }
             }
             parent += @"\wwwroot\" + relativePath;
             return parent;
@@ -185,7 +185,10 @@ namespace Watcher.Core.Providers
             }
 
             var directory = new DirectoryInfo(Path.Combine(parent, "wwwroot", folder));
-            if (!directory.Exists) directory.Create();
+            if (!directory.Exists)
+            {
+                directory.Create();
+            }
 
             return directory.FullName;
         }

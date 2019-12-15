@@ -2,10 +2,8 @@
 
 namespace Watcher.Core.Interfaces
 {
-    using System;
-
     using Microsoft.AspNetCore.Http;
-
+    using System;
     using Watcher.Common.Enums;
 
     public interface IFileStorageProvider

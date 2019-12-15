@@ -1,23 +1,20 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Watcher.Core.Interfaces;
 
 namespace Watcher.Core.Providers
 {
-    using System.Net.Http;
-    using System.Text;
-
     using Microsoft.AspNetCore.Http;
-
+    using System.Net.Http;
     using Watcher.Common.Enums;
     using Watcher.Common.Helpers.Utils;
 
     public class FileStorageProvider : IFileStorageProvider
     {
-        private CloudStorageAccount _storageAccount;
+        private readonly CloudStorageAccount _storageAccount;
 
         public FileStorageProvider(string connectionString)
         {
@@ -197,7 +194,7 @@ namespace Watcher.Core.Providers
         {
             var client = _storageAccount.CreateCloudBlobClient();
             var blob = await client.GetBlobReferenceFromServerAsync(new Uri(path));
-            
+
             return await blob.ExistsAsync();
         }
 

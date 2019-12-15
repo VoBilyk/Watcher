@@ -1,12 +1,10 @@
 ﻿namespace Watcher.Controllers
 {
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Data;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-
     using Watcher.Common.Enums;
     using Watcher.Core.Interfaces;
 
@@ -26,7 +24,9 @@
             DataTable dtPolicyDetails = new DataTable();
             dtPolicyDetails.Columns.Add("PaymentHead");
             if (file == null || file.Length == 0)
+            {
                 return Content("file not selected");
+            }
 
             try
             {

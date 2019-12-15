@@ -1,13 +1,11 @@
 ﻿namespace DataAccumulator.DataAccessLayer.Entities
 {
-    using System;
-    using System.Collections.Generic;
-
     using DataAccumulator.DataAccessLayer.Interfaces;
     using DataAccumulator.Shared.Models;
-
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;
+    using System;
+    using System.Collections.Generic;
 
     public class InstanceAnomalyReport : IEntity
     {

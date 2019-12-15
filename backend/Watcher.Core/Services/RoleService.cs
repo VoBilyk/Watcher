@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Watcher.Common.Dtos;
 using Watcher.Common.Requests;
 using Watcher.Core.Interfaces;
@@ -35,7 +34,10 @@ namespace Watcher.Core.Services
             var entity = await _uow.RoleRepository
                 .GetFirstOrDefaultAsync(predicate: o => o.Id == id);
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Role, RoleDto>(entity);
 
@@ -53,7 +55,10 @@ namespace Watcher.Core.Services
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Role, RoleDto>(entity);
 

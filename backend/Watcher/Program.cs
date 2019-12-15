@@ -1,13 +1,11 @@
-﻿using System;
-using System.IO;
-
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.WindowsAzure.Storage;
-
 using Serilog;
 using Serilog.Events;
+using System;
+using System.IO;
 
 namespace Watcher
 {

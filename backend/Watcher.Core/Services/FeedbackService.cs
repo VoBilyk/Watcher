@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Watcher.Common.Dtos;
 using Watcher.Common.Requests;
 using Watcher.Core.Interfaces;
@@ -59,7 +59,10 @@ namespace Watcher.Core.Services
                         .Include(o => o.User)
                         .Include(o => o.Response));
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Feedback, FeedbackDto>(entity);
 
@@ -77,7 +80,10 @@ namespace Watcher.Core.Services
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Feedback, FeedbackDto>(entity);
 

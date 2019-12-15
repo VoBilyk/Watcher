@@ -1,19 +1,18 @@
 ﻿namespace Watcher.DataAccess.Repositories
 {
     using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Query;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Query;
-
+    using Watcher.Common.Errors;
     using Watcher.Common.Interfaces.Entities;
     using Watcher.DataAccess.Data;
     using Watcher.DataAccess.Entities;
     using Watcher.DataAccess.Interfaces.Repositories;
-    using Watcher.Common.Errors;
-    using System.Net;
 
     public class UserOrganizationRepository : IUserOrganizationRepository
     {
@@ -61,9 +60,9 @@
         public void Delete(int companyId, string userId)
         {
             IQueryable<UserOrganization> query = DbSet.Include(c => c.User).Include(c => c.Organization);
-            
+
             var entityToDelete = query.FirstOrDefault(e => e.OrganizationId == companyId && e.UserId == userId);
-           
+
             if (Context.Entry(entityToDelete).State == EntityState.Detached)
             {
                 DbSet.Attach(entityToDelete);
@@ -77,8 +76,8 @@
             IQueryable<UserOrganization> query = DbSet;
 
 
-            var findEntity = await query.FirstOrDefaultAsync(e => 
-            e.OrganizationId.Equals(entity.OrganizationId) && 
+            var findEntity = await query.FirstOrDefaultAsync(e =>
+            e.OrganizationId.Equals(entity.OrganizationId) &&
             e.UserId.Equals(entity.UserId));
 
             if (findEntity == null)

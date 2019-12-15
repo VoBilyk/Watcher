@@ -13,11 +13,11 @@ namespace Watcher.Common.Dtos
         public string Name { get; set; }
 
         public int UnreadMessagesCount { get; set; }
-        
+
         public ChatType Type { get; set; }
 
         public string CreatedById { get; set; }
-        
+
         public OrganizationDto Organization { get; set; }
 
         public IList<MessageDto> Messages { get; set; }

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Watcher.Common.Dtos;
 using Watcher.Core.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Watcher.Controllers
 {
@@ -24,7 +24,7 @@ namespace Watcher.Controllers
         public async Task<ActionResult<IEnumerable<ThemeDto>>> GetAllThemes()
         {
             var dtos = await _themeService.GetAllEntitiesAsync();
-            if(!dtos.Any())
+            if (!dtos.Any())
             {
                 return NoContent();
             }
@@ -45,12 +45,12 @@ namespace Watcher.Controllers
 
             return Ok(dto);
         }
- 
+
 
         [HttpPost]
         public async Task<ActionResult<ThemeDto>> CreateTheme([FromBody] ThemeDto themeDto)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

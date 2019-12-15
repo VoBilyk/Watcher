@@ -1,18 +1,16 @@
 ﻿namespace Watcher.Middlewares
 {
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+    using Microsoft.IdentityModel.JsonWebTokens;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Security.Claims;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-    using Microsoft.IdentityModel.JsonWebTokens;
-
     using Watcher.Common.Helpers.Comparers;
     using Watcher.Common.Options;
     using Watcher.Core.Auth;

@@ -1,15 +1,13 @@
 ﻿namespace Watcher.Core.Auth
 {
+    using Microsoft.Extensions.Logging;
+    using Microsoft.IdentityModel.Tokens;
+    using Serilog;
+    using Serilog.Context;
     using System;
     using System.Collections.Generic;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
-
-    using Microsoft.Extensions.Logging;
-    using Microsoft.IdentityModel.Tokens;
-
-    using Serilog;
-    using Serilog.Context;
 
     public class TokenUtil
     {

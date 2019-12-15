@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Watcher.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
     using System.Linq;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Authorization;
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
-    
+
     /// <summary>   
     /// Controller to Manage Samples
     /// </summary>

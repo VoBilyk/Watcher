@@ -1,12 +1,10 @@
 ﻿namespace Watcher.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -104,13 +102,13 @@
             {
                 return BadRequest(ModelState);
             }
-            
+
             var dto = await _roleService.CreateEntityAsync(request);
             if (dto == null)
             {
                 return StatusCode(500);
             }
-           
+
             return CreatedAtAction("GetById", new { id = dto.Id }, dto);
         }
     }

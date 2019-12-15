@@ -6,9 +6,10 @@ namespace Watcher.DataAccess.Repositories
     using Watcher.DataAccess.Data;
     using Watcher.DataAccess.Entities;
     using Watcher.DataAccess.Interfaces.Repositories;
-    class OrganizationInvitesRepository : Repository<OrganizationInvite, int>, IOrganizationInvitesRepository
+
+    internal class OrganizationInvitesRepository : Repository<OrganizationInvite, int>, IOrganizationInvitesRepository
     {
-        public OrganizationInvitesRepository(WatcherDbContext context, IMapper mapper) 
+        public OrganizationInvitesRepository(WatcherDbContext context, IMapper mapper)
             : base(context, mapper)
         {
 

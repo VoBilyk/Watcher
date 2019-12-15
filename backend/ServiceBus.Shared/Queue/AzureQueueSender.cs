@@ -1,19 +1,16 @@
 ﻿namespace ServiceBus.Shared.Queue
 {
+    using Microsoft.Azure.ServiceBus;
+    using Newtonsoft.Json;
+    using ServiceBus.Shared.Messages;
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
 
-    using Microsoft.Azure.ServiceBus;
-
-    using Newtonsoft.Json;
-
-    using ServiceBus.Shared.Messages;
-
     public class AzureQueueSender : IAzureQueueSender
     {
         public AzureQueueSender() { }
-        
+
         public Task SendAsync<T>(QueueClient client, T item) where T : InstanceMessage
         {
             return SendAsync(client, item, null);

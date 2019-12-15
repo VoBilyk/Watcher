@@ -5,7 +5,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using Watcher.Common.Interfaces.Entities;
-    
+
     public class Instance : Entity<int>, ISoftDeletable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -38,7 +38,7 @@
 
         public int OrganizationId { get; set; }
         public Organization Organization { get; set; }
-        
+
         public IList<Dashboard> Dashboards { get; set; }
 
         [Required]

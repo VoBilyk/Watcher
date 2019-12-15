@@ -1,7 +1,5 @@
 ﻿namespace Watcher.Common.Requests
 {
-    using System;
-
     public class MessageUpdateRequest
     {
         public MessageUpdateRequest() { }

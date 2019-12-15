@@ -1,10 +1,8 @@
 ﻿namespace Watcher.DataAccess.Repositories
 {
+    using AutoMapper;
     using System;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-
     using Watcher.DataAccess.Data;
     using Watcher.DataAccess.Entities;
     using Watcher.DataAccess.Interfaces.Repositories;
@@ -18,7 +16,11 @@
         public async Task<Instance> UpateLastCheckedAsync(Guid instanceId, DateTime time)
         {
             var entity = await GetFirstOrDefaultAsync(i => i.GuidId == instanceId);
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
+
             entity.StatusCheckedAt = time;
             return entity;
         }

@@ -1,6 +1,5 @@
-﻿using System;
+﻿using DataAccumulator.Shared.Models;
 using System.Data;
-using DataAccumulator.Shared.Models;
 
 namespace Watcher.Core.Services
 {
@@ -8,7 +7,7 @@ namespace Watcher.Core.Services
     {
         public static string GenerateHtmlLetter(string userName, string instanceName, string link)
         {
-            var html = "<!DOCTYPE html><html xmlns = 'http://www.w3.org/1999/xhtml'><head><meta charset = 'utf-8'/><title>Analyze </title></head><body><br/><span style = 'font-family: Arial; font-size: 14pt'>Hello <b>" + 
+            var html = "<!DOCTYPE html><html xmlns = 'http://www.w3.org/1999/xhtml'><head><meta charset = 'utf-8'/><title>Analyze </title></head><body><br/><span style = 'font-family: Arial; font-size: 14pt'>Hello <b>" +
                 userName + ",</b><br/><br/> the anomaly report for instance: " + instanceName + " you can download <a style = 'color: #22BCE5' href = " + link + ">here</a><br/><br/>" +
                 "Best wishes,<br/><a style = 'color: #22BCE5' href = 'bsa-watcher.azurewebsites.net'><b> Watcher </b></a></span></body></html>";
             return html;

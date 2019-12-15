@@ -1,19 +1,15 @@
-﻿using System.Collections.Generic;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Watcher.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.Extensions.Logging;
+    using Serilog;
+    using Serilog.Context;
     using System;
     using System.Net;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.Extensions.Logging;
-
-    using Serilog;
-    using Serilog.Context;
-
     using Watcher.Common.Errors;
     using Watcher.Core.Interfaces;
 

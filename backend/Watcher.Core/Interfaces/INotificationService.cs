@@ -1,10 +1,8 @@
 ﻿namespace Watcher.Core.Interfaces
 {
+    using DataAccumulator.Shared.Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using DataAccumulator.Shared.Models;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
 

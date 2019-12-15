@@ -1,18 +1,14 @@
 ﻿namespace Watcher.DataAccess
 {
+    using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-
-    using Microsoft.EntityFrameworkCore;
-
     using Watcher.DataAccess.Data;
     using Watcher.DataAccess.Interfaces;
     using Watcher.DataAccess.Interfaces.Repositories;
-
     using Watcher.DataAccess.Repositories;
 
     public class UnitOfWork : IUnitOfWork
@@ -118,7 +114,7 @@
         }
 
         public IThemeRepository ThemeRepository => _themeRepository ?? (_themeRepository = new ThemeRepository(_context, _mapper));
-        
+
         public async Task<bool> SaveAsync()
         {
             try
@@ -126,7 +122,11 @@
                 var changes = _context.ChangeTracker.Entries().Count(
                     p => p.State == EntityState.Modified || p.State == EntityState.Deleted
                                                          || p.State == EntityState.Added);
-                if (changes == 0) return true;
+                if (changes == 0)
+                {
+                    return true;
+                }
+
                 return await _context.SaveChangesAsync() > 0;
             }
             catch (Exception ex)

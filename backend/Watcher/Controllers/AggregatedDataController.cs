@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-
-using DataAccumulator.Shared.Models;
-
+﻿using DataAccumulator.Shared.Models;
+using System.Collections.Generic;
 using Watcher.Core.Interfaces;
 
 namespace Watcher.Controllers
 {
+    using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Mvc;
 
     [Route("[controller]")]
     [Produces("application/json")]

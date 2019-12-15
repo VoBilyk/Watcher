@@ -4,7 +4,7 @@
 
     public class NotificationSettingRequest
     {
-        public NotificationSettingRequest() {}
+        public NotificationSettingRequest() { }
 
         public NotificationType Type { get; set; }
         public bool IsMute { get; set; }

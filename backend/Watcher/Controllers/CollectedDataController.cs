@@ -1,21 +1,17 @@
 ﻿namespace Watcher.Controllers
 {
+    using DataAccumulator.DataAccessLayer.Entities;
+    using DataAccumulator.Shared.Models;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using DataAccumulator.DataAccessLayer.Entities;
-    using DataAccumulator.Shared.Models;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Dtos.Plots;
     using Watcher.Core.Interfaces;
     using Watcher.Core.Services;
-
     using IMapper = AutoMapper.IMapper;
 
     /// <summary>   

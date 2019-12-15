@@ -1,8 +1,7 @@
 ﻿namespace ServiceBus.Shared.Messages
 {
-    using System;
-
     using ServiceBus.Shared.Enums;
+    using System;
 
     public class InstanceNotificationMessage : InstanceMessage
     {

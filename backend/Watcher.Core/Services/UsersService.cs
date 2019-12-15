@@ -1,13 +1,11 @@
 ﻿namespace Watcher.Core.Services
 {
+    using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-    using Microsoft.EntityFrameworkCore;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Enums;
     using Watcher.Common.Requests;
@@ -96,7 +94,10 @@
                                 .Include(u => u.UserChats)
                                     .ThenInclude(uc => uc.Chat));
 
-            if (user == null) return null;
+            if (user == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<User, UserDto>(user);
 
@@ -121,7 +122,10 @@
                                                 .Include(u => u.UserChats)
                                                     .ThenInclude(uc => uc.Chat));
 
-            if (user == null) return null;
+            if (user == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<User, UserDto>(user);
 
@@ -163,7 +167,7 @@
                         ThemeId = 1
                         //ImageURL = await _fileStorageProvider.UploadFileFromStreamAsync(
                         //    "https://bsawatcherfiles.blob.core.windows.net/watcher/9580e672-01f4-4429-9d04-4f8d1984b25b.png")
-                };
+                    };
                     createdUser.UserOrganizations.Add(
                         new UserOrganization
                         {
@@ -214,8 +218,10 @@
             }
             else if (!existingEntity.PhotoURL.Equals(entity.PhotoURL))
             {
-                if(await _fileStorageProvider.IsExist(existingEntity.PhotoURL))
+                if (await _fileStorageProvider.IsExist(existingEntity.PhotoURL))
+                {
                     await _fileStorageProvider.DeleteFileAsync(existingEntity.PhotoURL);
+                }
 
                 entity.PhotoURL = await _fileStorageProvider.UploadFileBase64Async(entity.PhotoURL, request.PhotoType); // TODO: change here for real image type
             }
@@ -247,7 +253,9 @@
             else if (!existingEntity.PhotoURL.Equals(request.PhotoURL))
             {
                 if (await _fileStorageProvider.IsExist(existingEntity.PhotoURL))
+                {
                     await _fileStorageProvider.DeleteFileAsync(existingEntity.PhotoURL);
+                }
 
                 entity.PhotoURL = await _fileStorageProvider.UploadFileBase64Async(request.PhotoURL, request.PhotoType); // TODO: change here for real image type
             }
@@ -304,14 +312,22 @@
             var organization = await _uow.OrganizationRepository.GetFirstOrDefaultAsync(x => x.Id == organizationId,
                 include: entity => entity.Include(u => u.UserOrganizations));
 
-            if (organization == null) return false;
+            if (organization == null)
+            {
+                return false;
+            }
 
             if (organization.UserOrganizations.Any(x => x.UserId == userId) == false)
+            {
                 return false;
+            }
 
             var user = await _uow.UsersRepository.GetFirstOrDefaultAsync(x => x.Id == userId);
 
-            if (user == null) return false;
+            if (user == null)
+            {
+                return false;
+            }
 
             user.LastPickedOrganizationId = organizationId;
 

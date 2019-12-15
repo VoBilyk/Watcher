@@ -1,12 +1,9 @@
-﻿using System;
+﻿using DataAccumulator.Shared.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using DataAccumulator.Shared.Models;
-
-using Microsoft.AspNetCore.Mvc;
-
 using Watcher.Core.Interfaces;
 
 namespace Watcher.Controllers

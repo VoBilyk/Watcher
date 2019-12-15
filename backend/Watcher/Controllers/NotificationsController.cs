@@ -1,13 +1,10 @@
 ﻿namespace Watcher.Controllers
 {
+    using DataAccumulator.Shared.Models;
+    using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using DataAccumulator.Shared.Models;
-
-    using Microsoft.AspNetCore.Mvc;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.Core.Interfaces;
@@ -164,7 +161,7 @@
             {
                 return BadRequest(ModelState);
             }
-            
+
             var result = await _notificationService.DeleteEntityByIdAsync(id);
             if (!result)
             {

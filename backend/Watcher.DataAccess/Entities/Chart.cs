@@ -1,10 +1,8 @@
 ﻿namespace Watcher.DataAccess.Entities
 {
+    using Common.Enums;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-
-    using Common.Enums;
-
     using Watcher.Common.Interfaces.Entities;
 
     public class Chart : Entity<int>, ISoftDeletable

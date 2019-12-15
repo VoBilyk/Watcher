@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using AutoMapper;
-
+﻿using AutoMapper;
 using DataAccumulator.DataAccessLayer.Entities;
 using DataAccumulator.DataAccessLayer.Interfaces;
 using DataAccumulator.Shared.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Watcher.Common.Dtos.Plots;
 using Watcher.Core.Interfaces;
 
@@ -14,8 +12,8 @@ namespace Watcher.Core.Services
 {
     public class CollectedDataService : ICollectedDataService
     {
-        private IDataAccumulatorRepository<CollectedData> _repository;
-        private IMapper _mapper;
+        private readonly IDataAccumulatorRepository<CollectedData> _repository;
+        private readonly IMapper _mapper;
 
         public CollectedDataService(IDataAccumulatorRepository<CollectedData> repo, IMapper mapper)
         {
@@ -68,7 +66,7 @@ namespace Watcher.Core.Services
 
         public async Task<List<CollectedDataDto>> GetCollectedDataByInstanceId(Guid id, CollectedDataType dataType)
         {
-           var entities = await _repository.GetCollectedDataByInstanceIdAsync(id, dataType);
+            var entities = await _repository.GetCollectedDataByInstanceIdAsync(id, dataType);
 
             if (entities == null)
             {

@@ -1,11 +1,10 @@
 ﻿namespace ServiceBus.Shared.Queue
 {
-    using System.Text;
     using Newtonsoft.Json;
     using RabbitMQ.Client;
-
     using ServiceBus.Shared.Interfaces;
     using ServiceBus.Shared.Messages;
+    using System.Text;
 
     public class RabbitMqSender : IRabbitMqSender
     {

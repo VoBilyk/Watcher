@@ -1,11 +1,11 @@
-﻿using System;
+﻿using AutoMapper;
+using DataAccumulator.DataAccessLayer.Entities;
+using DataAccumulator.DataAccessLayer.Interfaces;
+using DataAccumulator.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Watcher.Core.Interfaces;
-using DataAccumulator.Shared.Models;
-using AutoMapper;
-using DataAccumulator.DataAccessLayer.Interfaces;
-using DataAccumulator.DataAccessLayer.Entities;
 
 namespace Watcher.Core.Services
 {

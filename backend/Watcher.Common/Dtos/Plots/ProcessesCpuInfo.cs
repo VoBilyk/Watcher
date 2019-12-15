@@ -4,7 +4,7 @@ using Watcher.Common.Interfaces.Entities;
 
 namespace Watcher.Common.Dtos.Plots
 {
-    public class ProcessesCpuInfo: ICollectedData
+    public class ProcessesCpuInfo : ICollectedData
     {
         public Guid Id { get; set; }
         public Guid ClientId { get; set; }

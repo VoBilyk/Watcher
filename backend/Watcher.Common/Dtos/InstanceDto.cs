@@ -32,7 +32,7 @@ namespace Watcher.Common.Dtos
         public float DiskMaxPercent { get; set; }
 
         public OrganizationDto Organization { get; set; }
-        
+
         public IList<DashboardDto> Dashboards { get; set; }
     }
 }

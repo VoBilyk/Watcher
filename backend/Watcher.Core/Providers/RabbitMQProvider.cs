@@ -1,35 +1,29 @@
 ﻿namespace Watcher.Core.Providers
 {
-    using System;
-    using System.Threading.Tasks;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-
+    using AutoMapper;
+    using DataAccumulator.DataAccessLayer.Entities;
+    using DataAccumulator.DataAccessLayer.Interfaces;
+    using DataAccumulator.Shared.Models;
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-
-    using AutoMapper;
-
     using RabbitMQ.Client;
-
-    using Watcher.Common.Dtos;
-    using Watcher.Common.Enums;
-    using Watcher.Common.Requests;
-    using Watcher.Core.Interfaces;
-    using Watcher.Core.Hubs;
-    using Watcher.DataAccess.Interfaces;
-
-    using DataAccumulator.DataAccessLayer.Entities;
-    using DataAccumulator.DataAccessLayer.Interfaces;
-    using DataAccumulator.Shared.Models;
-
     using ServiceBus.Shared.Common;
     using ServiceBus.Shared.Enums;
     using ServiceBus.Shared.Interfaces;
     using ServiceBus.Shared.Messages;
     using ServiceBus.Shared.Queue;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+    using Watcher.Common.Dtos;
+    using Watcher.Common.Enums;
+    using Watcher.Common.Requests;
+    using Watcher.Core.Hubs;
+    using Watcher.Core.Interfaces;
+    using Watcher.DataAccess.Interfaces;
 
     public class RabbitMqProvider : IQueueProvider, IDisposable
     {

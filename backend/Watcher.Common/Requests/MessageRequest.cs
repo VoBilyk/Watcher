@@ -1,7 +1,6 @@
 ﻿namespace Watcher.Common.Requests
 {
     using System;
-    using Watcher.Common.Dtos;
 
     public class MessageRequest
     {

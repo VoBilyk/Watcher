@@ -6,7 +6,7 @@ namespace Watcher.Core.MappingProfiles
 {
     using DataAccumulator.Shared.Models;
 
-    public class CollectedDataProfile: Profile
+    public class CollectedDataProfile : Profile
     {
         public CollectedDataProfile()
         {

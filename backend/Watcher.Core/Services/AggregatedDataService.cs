@@ -1,22 +1,19 @@
 ﻿namespace Watcher.Core.Services
 {
+    using AutoMapper;
+    using DataAccumulator.DataAccessLayer.Entities;
+    using DataAccumulator.DataAccessLayer.Interfaces;
+    using DataAccumulator.Shared.Models;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using AutoMapper;
-
-    using DataAccumulator.Shared.Models;
-    using DataAccumulator.DataAccessLayer.Entities;
-    using DataAccumulator.DataAccessLayer.Interfaces;
-
     using Watcher.Core.Interfaces;
 
-    public class AggregatedDataService: IAggregateDataService
+    public class AggregatedDataService : IAggregateDataService
     {
 
-        private IDataAggregatorRepository<CollectedData> _repository;
-        private IMapper _mapper;
+        private readonly IDataAggregatorRepository<CollectedData> _repository;
+        private readonly IMapper _mapper;
 
         public AggregatedDataService(IDataAggregatorRepository<CollectedData> repo, IMapper mapper)
         {

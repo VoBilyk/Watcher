@@ -1,17 +1,14 @@
 ﻿namespace Watcher.DataAccess.Repositories
 {
+	using AutoMapper;
+	using Microsoft.EntityFrameworkCore;
+	using Microsoft.EntityFrameworkCore.Query;
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Net;
 	using System.Threading.Tasks;
-
-	using AutoMapper;
-
-	using Microsoft.EntityFrameworkCore;
-	using Microsoft.EntityFrameworkCore.Query;
-
 	using Watcher.Common.Errors;
 	using Watcher.Common.Interfaces.Entities;
 	using Watcher.DataAccess.Data;
@@ -85,8 +82,15 @@
 				query = orderBy(query);
 			}
 
-			if (index == 0) index = 1;
-			if (count == 0) count = 10;
+			if (index == 0)
+			{
+				index = 1;
+			}
+
+			if (count == 0)
+			{
+				count = 10;
+			}
 
 			return await query.Skip((index - 1) * count).Take(count).ToListAsync();
 		}
@@ -236,15 +240,15 @@
 				var e = ex;
 			}
 
-			
+
 		}
 
 		public async Task DeleteManyAsync(Expression<Func<TEntity, bool>> predicate = null,
 										  Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
 		{
-			var entitiesToDelete = await GetRangeAsync(count: int.MaxValue, 
-													   filter: predicate, 
-													   include: include, 
+			var entitiesToDelete = await GetRangeAsync(count: int.MaxValue,
+													   filter: predicate,
+													   include: include,
 													   disableTracking: false);
 
 			DbSet.RemoveRange(entitiesToDelete);

@@ -5,7 +5,7 @@ namespace Watcher.Common.Dtos
 {
 
     [ExportClassToTypescript]
-    public class OrganizationRoleDto: IEntity<int>
+    public class OrganizationRoleDto : IEntity<int>
     {
         public int Id { get; set; }
 

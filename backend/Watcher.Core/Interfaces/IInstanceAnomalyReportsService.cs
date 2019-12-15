@@ -1,11 +1,10 @@
 ﻿namespace Watcher.Core.Interfaces
 {
+    using DataAccumulator.DataAccessLayer.Entities;
+    using DataAccumulator.Shared.Models;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using DataAccumulator.DataAccessLayer.Entities;
-    using DataAccumulator.Shared.Models;
 
     public interface IInstanceAnomalyReportsService
     {

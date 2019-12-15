@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using AutoMapper;
-
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ServiceBus.Shared.Messages;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Watcher.Common.Dtos;
 using Watcher.Common.Requests;
 using Watcher.Core.Interfaces;
@@ -14,7 +12,7 @@ using Watcher.DataAccess.Interfaces;
 
 namespace Watcher.Core.Services
 {
-    public class InstanceService: IInstanceService
+    public class InstanceService : IInstanceService
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
@@ -34,7 +32,11 @@ namespace Watcher.Core.Services
                 .Include(o => o.Organization)
                 .Include(o => o.Dashboards));
 
-            if (entities == null) return null;
+            if (entities == null)
+            {
+                return null;
+            }
+
             var dtos = _mapper.Map<List<Instance>, List<InstanceDto>>(entities);
 
             return dtos;
@@ -45,19 +47,25 @@ namespace Watcher.Core.Services
             var entity = await _uow.InstanceRepository.GetFirstOrDefaultAsync(predicate: s => s.Id == id,
                 include: x => x.Include(o => o.Dashboards));
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             var dto = _mapper.Map<Instance, InstanceDto>(entity);
 
             return dto;
         }
- 
+
         public async Task<IEnumerable<InstanceDto>> GetEntitiesByOrganizationIdAsync(int id)
         {
             var entities = await _uow.InstanceRepository.GetRangeAsync(
                 filter: i => i.OrganizationId == id);
 
-            if (entities == null) return null;
+            if (entities == null)
+            {
+                return null;
+            }
 
             var dtos = _mapper.Map<List<Instance>, List<InstanceDto>>(entities);
 
@@ -77,7 +85,10 @@ namespace Watcher.Core.Services
                 return null;
             }
 
-            if (entity == null) return null;
+            if (entity == null)
+            {
+                return null;
+            }
 
             InstanceSettingsMessage message = new InstanceSettingsMessage()
             {

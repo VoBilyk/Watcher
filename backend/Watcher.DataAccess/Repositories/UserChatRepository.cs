@@ -1,11 +1,9 @@
 ﻿namespace Watcher.DataAccess.Repositories
 {
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
-    using Microsoft.EntityFrameworkCore;
-
     using Watcher.Common.Interfaces.Entities;
     using Watcher.DataAccess.Data;
     using Watcher.DataAccess.Entities;
@@ -66,7 +64,10 @@
 
             var entityToDelete = query.FirstOrDefault(e => e.ChatId == chatId && e.UserId == userId);
 
-            if (entityToDelete == null) return;
+            if (entityToDelete == null)
+            {
+                return;
+            }
 
             if (_context.Entry(entityToDelete).State == EntityState.Detached)
             {

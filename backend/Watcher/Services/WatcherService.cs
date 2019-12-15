@@ -1,24 +1,18 @@
 ﻿namespace Watcher.Services
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     using AutoMapper;
-
     using DataAccumulator.DataAccessLayer.Entities;
     using DataAccumulator.DataAccessLayer.Interfaces;
     using DataAccumulator.Shared.Models;
-
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-
     using Serilog.Context;
-
-    using Watcher.Common.Dtos.Plots;
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Watcher.Core.Hubs;
     using Watcher.Core.Interfaces;
     using Watcher.Core.Services;
@@ -65,7 +59,7 @@
             {
                 try
                 {
-                   // await GenerateAndSendCollectedData(id, stoppingToken);
+                    // await GenerateAndSendCollectedData(id, stoppingToken);
                 }
                 catch (Exception e)
                 {
@@ -76,7 +70,7 @@
                 // await Task.Delay(TimeSpan.FromMilliseconds(_options.Value.Period), stoppingToken);
                 await Task.Delay(10_000, stoppingToken);
             }
-            
+
             using (LogContext.PushProperty("ClassName", this.GetType().FullName))
             using (LogContext.PushProperty("Source", this.GetType().Name))
             {

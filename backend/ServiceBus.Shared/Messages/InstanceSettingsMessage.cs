@@ -8,7 +8,7 @@
         {
         }
 
-        public InstanceSettingsMessage(Guid instanceId, 
+        public InstanceSettingsMessage(Guid instanceId,
                                        bool isActive,
                                        bool hourAggregation,
                                        bool dayAggregation,
@@ -16,7 +16,7 @@
                                        bool monthAggregation,
                                        float cpuMax,
                                        float ramMax,
-                                       float diskMax): base(instanceId)
+                                       float diskMax) : base(instanceId)
         {
             IsActive = isActive;
             AggregationForHour = hourAggregation;

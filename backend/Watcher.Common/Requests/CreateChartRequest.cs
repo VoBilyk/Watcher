@@ -39,11 +39,11 @@
         public bool IsTooltipDisabled { get; set; }
 
         public bool IsShowSeriesOnHover { get; set; }
-        
+
         //public CurveType CurveType { get; set; }
 
         //public CurveClosedType CurveClosedType { get; set; }
-            
+
         public string Title { get; set; }
 
         public ChartType ChartType { get; set; }

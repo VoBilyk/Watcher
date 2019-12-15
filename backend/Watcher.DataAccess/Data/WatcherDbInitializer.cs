@@ -1,12 +1,9 @@
 ﻿namespace Watcher.DataAccess.Data
 {
+    using Bogus;
+    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Linq;
-
-    using Bogus;
-
-    using Microsoft.EntityFrameworkCore;
-
     using Watcher.Common.Enums;
     using Watcher.DataAccess.Entities;
 

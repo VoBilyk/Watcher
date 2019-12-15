@@ -1,18 +1,15 @@
 ﻿namespace Watcher.Core.Hubs
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.SignalR;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-
-    using Microsoft.AspNetCore.SignalR;
-    using Microsoft.AspNetCore.Authorization;
-
-    using Watcher.Core.Interfaces;
     using Watcher.Common.Dtos;
-    using Watcher.Common.Helpers.Extensions;
     using Watcher.Common.Enums;
+    using Watcher.Common.Helpers.Extensions;
     using Watcher.Common.Requests;
+    using Watcher.Core.Interfaces;
 
     public class NotificationsHub : Hub
     {
@@ -59,30 +56,43 @@
             if (result)
             {
                 foreach (string connectionId in UsersConnections[notificationDto.UserId])
+                {
                     await Clients.User(notificationDto.UserId).SendAsync("DeleteNotification", notificationDto.Id);
+                }
             }
         }
 
         public override Task OnConnectedAsync()
         {
             if (Context.User.GetUserId() != null)
+            {
                 AddUserConnection(Context.User.GetUserId(), Context.ConnectionId);
+            }
+
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
             if (Context.User.GetUserId() != null)
+            {
                 RemoveUserConnection(Context.User.GetUserId(), Context.ConnectionId);
+            }
+
             return base.OnDisconnectedAsync(exception ?? new Exception("Something went wrong"));
         }
 
         public void AddUserConnection(string userId, string connectionId)
         {
-            if(string.IsNullOrWhiteSpace(userId)) return;
-            
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return;
+            }
+
             if (UsersConnections.ContainsKey(userId))
+            {
                 UsersConnections[userId].Add(connectionId);
+            }
             else
             {
                 UsersConnections.Add(userId, new List<string> { connectionId });

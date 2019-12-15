@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DataAccumulator.Shared.Interfaces;
+using System;
 using System.Collections.Generic;
-using DataAccumulator.Shared.Interfaces;
 
 namespace DataAccumulator.Shared.Models
 {

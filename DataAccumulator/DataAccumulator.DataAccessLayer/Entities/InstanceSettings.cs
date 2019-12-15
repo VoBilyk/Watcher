@@ -1,8 +1,7 @@
-﻿using System;
-
-using DataAccumulator.DataAccessLayer.Interfaces;
+﻿using DataAccumulator.DataAccessLayer.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace DataAccumulator.DataAccessLayer.Entities
 {

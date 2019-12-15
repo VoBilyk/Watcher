@@ -1,12 +1,10 @@
 ﻿namespace Watcher.Core.MappingProfiles
 {
+    using AutoMapper;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
-
-    using AutoMapper;
-
     using Watcher.Common.Dtos;
     using Watcher.Common.Requests;
     using Watcher.DataAccess.Entities;

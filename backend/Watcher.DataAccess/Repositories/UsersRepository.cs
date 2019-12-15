@@ -1,8 +1,8 @@
 ﻿namespace Watcher.DataAccess.Repositories
 {
+    using AutoMapper;
     using System.Net;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Watcher.Common.Errors;
     using Watcher.DataAccess.Data;
     using Watcher.DataAccess.Entities;

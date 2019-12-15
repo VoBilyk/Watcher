@@ -9,7 +9,7 @@
     {
         public UserOrganizationProfile()
         {
-            CreateMap<UserOrganization, UserOrganization>(); 
+            CreateMap<UserOrganization, UserOrganization>();
 
             CreateMap<UserOrganizationDto, UserOrganization>();
 
