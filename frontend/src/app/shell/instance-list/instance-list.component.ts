@@ -180,7 +180,7 @@ export class InstanceListComponent implements OnInit {
       this.isDeleting = true;
       this.popupMessage = 'Deleting instance';
 
-      this.instanceService.delete(id).subscribe((res: Response) => {
+      this.instanceService.delete(id).subscribe(() => {
         this.instanceService.instanceRemoved.emit(id);
         this.toastrService.success('Deleted instance');
         this.menuItems.splice(index, 1);

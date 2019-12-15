@@ -141,7 +141,7 @@ export class HeaderComponent implements OnInit {
         label: element.name,
         id: element.id.toString(),
         icon: 'fa fa-fw fa-building',
-        command: (onclick) => {
+        command: () => {
           this.changeLastPicOrganizations(element);
           if (this.isInstancesRoute()) {
             this.router.navigate(['/user/instances']);
@@ -154,7 +154,7 @@ export class HeaderComponent implements OnInit {
     this.orgItems.push({
       label: 'Add new',
       icon: 'fa fa-fw fa-plus',
-      command: (onclick) => {
+      command: () => {
         this.addNewOrganization();
       },
     });
@@ -210,7 +210,7 @@ export class HeaderComponent implements OnInit {
         this.toastrService.success(`Organization by default was updated. Current organization: "${item.name}"`);
         this.isChangingOrganization = false;
       },
-        err => {
+        () => {
           this.toastrService.error('Organization by default was not updated.');
           this.isChangingOrganization = false;
         });

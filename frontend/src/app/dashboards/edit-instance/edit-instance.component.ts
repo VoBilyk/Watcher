@@ -1,12 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ToastrService} from '../../core/services/toastr.service';
-import {InstanceService} from '../../core/services/instance.service';
-import {AuthService} from '../../core/services/auth.service';
-import {Instance} from '../../shared/models/instance.model';
-import {InstanceRequest} from '../models/instance-request.model';
-import {SelectItem} from 'primeng/api';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { SelectItem } from 'primeng/api';
+import { AuthService, ToastrService, InstanceService } from '../../core/services';
+import { Instance } from '../../shared/models/instance.model';
+import { InstanceRequest } from '../models/instance-request.model';
 
 @Component({
   selector: 'app-edit-instance',
@@ -14,27 +12,26 @@ import {SelectItem} from 'primeng/api';
   styleUrls: ['./edit-instance.component.sass']
 })
 export class EditInstanceComponent implements OnInit {
-
   id: number;
   organizationId: number;
   instanceForm: FormGroup;
   instance: Instance;
   instanceTitle: string;
   platformsDropdown: SelectItem[];
-  isSaving: Boolean = false;
+  isSaving: boolean;
 
-  constructor(private activateRoute: ActivatedRoute,
-              private fb: FormBuilder,
-              private toastrService: ToastrService,
-              private instanceService: InstanceService,
-              private authService: AuthService,
-              private router: Router) {
-    this.platformsDropdown = [];
-  }
+  constructor(
+    private activateRoute: ActivatedRoute,
+    private fb: FormBuilder,
+    private toastrService: ToastrService,
+    private instanceService: InstanceService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     const x = this.activateRoute.params.subscribe(params => {
-      this.id = params['insId'];
+      this.id = params.insId;
       if (this.id) {
         this.instanceService.getOne(this.id).subscribe((data: Instance) => {
           if (data) {
@@ -53,11 +50,9 @@ export class EditInstanceComponent implements OnInit {
     }
     this.instanceForm = this.getInstanceForm(this.instance);
     this.fillPlatformsDropdown();
-    this.instanceForm.controls['platform'].setValue(this.platformsDropdown[0].value);
+    this.instanceForm.controls.platform.setValue(this.platformsDropdown[0].value);
   }
-
   getInstanceForm(instance: Instance) {
-    let form: FormGroup;
     if (instance) {
       this.instanceTitle = 'EDIT INSTANCE';
     } else {
@@ -79,38 +74,37 @@ export class EditInstanceComponent implements OnInit {
       this.instanceTitle = 'NEW INSTANCE';
     }
 
-    form = this.fb.group({
-      title: new FormControl({value: instance.title, disabled: false}, Validators.required),
-      platform: new FormControl({value: instance.platform, disabled: false}, Validators.required),
-      address: new FormControl({value: instance.address, disabled: false}), // , Validators.required
-      guid: new FormControl({value: instance.guidId, disabled: false}),
-      aggregationHour: new FormControl({value: instance.aggregationForHour, disabled: false}),
-      aggregationDay: new FormControl({value: instance.aggregationForDay, disabled: false}),
-      aggregationMonth: new FormControl({value: instance.aggregationForMonth, disabled: false}),
-      aggregationWeek: new FormControl({value: instance.aggregationForWeek, disabled: false}),
-      cpuMax: new FormControl({value: instance.cpuMaxPercent, disabled: false}),
-      ramMax: new FormControl({value: instance.ramMaxPercent, disabled: false}),
-      diskMax: new FormControl({value: instance.diskMaxPercent, disabled: false})
+    return this.fb.group({
+      title: new FormControl({ value: instance.title, disabled: false }, Validators.required),
+      platform: new FormControl({ value: instance.platform, disabled: false }, Validators.required),
+      address: new FormControl({ value: instance.address, disabled: false }), // , Validators.required
+      guid: new FormControl({ value: instance.guidId, disabled: false }),
+      aggregationHour: new FormControl({ value: instance.aggregationForHour, disabled: false }),
+      aggregationDay: new FormControl({ value: instance.aggregationForDay, disabled: false }),
+      aggregationMonth: new FormControl({ value: instance.aggregationForMonth, disabled: false }),
+      aggregationWeek: new FormControl({ value: instance.aggregationForWeek, disabled: false }),
+      cpuMax: new FormControl({ value: instance.cpuMaxPercent, disabled: false }),
+      ramMax: new FormControl({ value: instance.ramMaxPercent, disabled: false }),
+      diskMax: new FormControl({ value: instance.diskMaxPercent, disabled: false })
     });
-    return form;
   }
 
   onSubmit() {
     if (this.instanceForm.valid) {
       this.isSaving = true;
-      const request: InstanceRequest = this.getNewInstance();
+      const request = this.getNewInstance();
       if (this.id) {
         request.guidId = this.instance.guidId;
         this.instanceService.update(request, this.id).subscribe((res: Response) => {
           this.toastrService.success('updated instance');
 
-          const updatedInstance: Instance = Object.assign({}, request,
-            {
+          const updatedInstance: Instance = {
+              ...request,
               id: this.id,
               dashboards: this.instance.dashboards,
               organization: this.instance.organization,
               statusCheckedAt: this.instance.statusCheckedAt
-            });
+            };
 
           this.instanceService.instanceEdited.emit(updatedInstance);
           this.router.navigate([`/user/instances/${updatedInstance.id}/${this.instance.guidId}/dashboards`]);
@@ -147,13 +141,14 @@ export class EditInstanceComponent implements OnInit {
     };
   }
 
-  private fillPlatformsDropdown(): void {
-    this.platformsDropdown.push(
-      {label: 'Windows', value: 'Windows'},
-      {label: 'Linux', value: 'Linux'});
+  private fillPlatformsDropdown() {
+    this.platformsDropdown = [
+      { label: 'Windows', value: 'Windows' },
+      { label: 'Linux', value: 'Linux' }
+    ];
   }
 
-  copyToClipboard(message: string): void {
+  copyToClipboard(message: string) {
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';

@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 import { ImageCropperComponent, CropperSettings } from 'ngx-img-cropper';
 import { User } from '../../shared/models/user.model';
 import { UserOrganizationService } from '../../core/services/user-organization.service';
-import { SelectItem } from 'node_modules/primeng/api';
+import { SelectItem } from 'primeng/api';
 import { Theme } from '../../shared/models/theme.model';
 import { ThemeService } from '../../core/services/theme.service';
 
@@ -29,26 +29,29 @@ export class OrganizationProfileComponent implements OnInit {
     private userOrganizationService: UserOrganizationService,
     private toastrService: ToastrService,
     private themeService: ThemeService,
-    private router: Router) {
-      this.cropperSettings = new CropperSettings();
-      this.cropperSettings.width = 400;
-      this.cropperSettings.height = 200;
-      this.cropperSettings.minWidth = 200;
-      this.cropperSettings.minHeight = 100;
-      this.cropperSettings.croppedWidth = 150;
-      this.cropperSettings.croppedHeight = 75;
-      this.cropperSettings.canvasWidth = 800;
-      this.cropperSettings.canvasHeight = 400;
-      this.cropperSettings.noFileInput = true;
-      this.cropperSettings.preserveSize = true;
-      this.data = {};
+    private router: Router
+  ) {
+    this.cropperSettings = new CropperSettings({
+      width: 400,
+      height: 200,
+      minWidth: 200,
+      minHeight: 100,
+      croppedWidth: 150,
+      croppedHeight: 75,
+      canvasWidth: 800,
+      canvasHeight: 400,
+      noFileInput: true,
+      preserveSize: true
+    });
 
-      router.events.forEach((event) => {
-        if (event instanceof NavigationStart) {
-          this.currentThemeCheck();
-        }
-      });
-    }
+    this.data = {};
+
+    this.router.events.forEach((event) => {
+      if (event instanceof NavigationStart) {
+        this.currentThemeCheck();
+      }
+    });
+  }
 
   editable: boolean;
   organization: Organization;
@@ -76,35 +79,35 @@ export class OrganizationProfileComponent implements OnInit {
   isSending: Boolean = false;
 
   ngOnInit() {
-      if (this.themeDropdown.length === 0) {
-          this.fillDropdown();
+    if (this.themeDropdown.length === 0) {
+      this.fillDropdown();
+    }
+
+    this.authService.currentUser.subscribe(user => {
+      this.user = user;
+
+      if (!this.user.lastPickedOrganization) {
+        return;
       }
 
-      this.authService.currentUser.subscribe(user => {
-        this.user = user;
-
-        if (!this.user.lastPickedOrganization) {
-          return;
-        }
-
-        this.organizationService.get(this.user.lastPickedOrganizationId).subscribe(async (org) => {
-          this.organization = org;
-            this.name = this.organization.name;
-            this.selectedTheme = this.organization.theme;
-            this.selectedThemeName = this.selectedTheme.name;
-          this.imageUrl = org.imageURL;
-          const role = await this.userOrganizationService.getOrganizationRole();
-          this.editable = role.name === 'Manager' ? true : false;
-        });
+      this.organizationService.get(this.user.lastPickedOrganizationId).subscribe(async (org) => {
+        this.organization = org;
+        this.name = this.organization.name;
+        this.selectedTheme = this.organization.theme;
+        this.selectedThemeName = this.selectedTheme.name;
+        this.imageUrl = org.imageURL;
+        const role = await this.userOrganizationService.getOrganizationRole();
+        this.editable = role.name === 'Manager' ? true : false;
       });
+    });
 
-      this.themeService.getAll().subscribe(
-        (data) => {
-          if (data.length > 0) {
-            this.themes = data;
-          }
+    this.themeService.getAll().subscribe(
+      (data) => {
+        if (data.length > 0) {
+          this.themes = data;
         }
-      );
+      }
+    );
 
 
   }
@@ -177,14 +180,14 @@ export class OrganizationProfileComponent implements OnInit {
     this.invite.inviteEmail = this.inviteEmail;
     this.isSending = true;
     this.organizationInvitesService.update(this.invite.id, this.invite).subscribe(
-    value => {
-      this.toastrService.success('Organization Invite was updated and sends to email.');
-      this.isSending = false;
-    },
-    err => {
-      this.toastrService.error('Organization Invite was not updated');
-      this.isSending = false;
-    });
+      value => {
+        this.toastrService.success('Organization Invite was updated and sends to email.');
+        this.isSending = false;
+      },
+      err => {
+        this.toastrService.error('Organization Invite was not updated');
+        this.isSending = false;
+      });
   }
 
   onCopy() {
@@ -202,7 +205,7 @@ export class OrganizationProfileComponent implements OnInit {
     this.toastrService.info('Invitation link was copied to clipboard');
   }
 
-  onImageSelected(upload) {
+  onImageSelected(upload: File[]) {
     const image: any = new Image();
     const reader: FileReader = new FileReader();
     const that = this;

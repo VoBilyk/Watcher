@@ -18,7 +18,7 @@ export class EditDashboardComponent implements OnInit, OnChanges {
   title = '';
 
   @Output() edited = new EventEmitter<any>();
-  @Output() closed = new EventEmitter();
+  @Output() closed = new EventEmitter<void>();
   @Input() display: boolean;
   @Input() dashboardTitle: string;
 
