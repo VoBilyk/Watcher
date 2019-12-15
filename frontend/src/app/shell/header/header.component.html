@@ -1,11 +1,8 @@
 <div *ngIf="currentUser" class="header">
-
   <div class="logo-wr">
       <a routerLink="/user" class="logo">WATCHER | {{currentUser?.lastPickedOrganization?.name}}</a>
   </div>
-
   <div class="ui-toolbar-group-right">
-
     <p-tieredMenu #admin [model]="adminItems" [popup]="true"></p-tieredMenu>
     <button #btn type="button" *ngIf="isAdmin()" pButton icon="fa fa-fw fa-user" (click)="admin.toggle($event)"></button>
 

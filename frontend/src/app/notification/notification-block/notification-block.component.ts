@@ -9,7 +9,6 @@ import { SystemToastrService } from '../../core/services/system-toastr.service';
 import { NotificationType } from '../../shared/models/notification-type.enum';
 import { Notification } from '../../shared/models/notification.model';
 
-
 @Component({
   selector: 'app-notification-block',
   templateUrl: './notification-block.component.html',
@@ -26,8 +25,8 @@ export class NotificationBlockComponent implements OnInit {
 
   notifications: Notification[] = [];
   type = NotificationType;
-  isLoading: Boolean = false;
-  extendedNotification: Number = null;
+  isLoading: boolean;
+  extendedNotification: number;
 
   constructor(
     private notificationsHubService: NotificationsHubService,

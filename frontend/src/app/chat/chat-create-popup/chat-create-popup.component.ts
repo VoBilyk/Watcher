@@ -40,11 +40,11 @@ export class ChatCreatePopupComponent implements OnInit {
   currentUserId: string;
   ngOnInit() {
     this.chatSettingsForm = this.fb.group({
-      'name': ['', Validators.required]
+      name: ['', Validators.required]
     });
     this.notificationSettingsForm = this.fb.group({
-      'isMute': [false],
-      'isEmailable': [false]
+      isMute: [false],
+      isEmailable: [false]
     });
 
     this.currentUserId = this.authService.getCurrentUser().id;

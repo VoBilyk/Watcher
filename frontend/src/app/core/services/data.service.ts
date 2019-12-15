@@ -212,7 +212,7 @@ export class DataService {
     });
 
     const seriesItem: SeriesItem = {
-      value: 0, // data.processes[processIndex][DataProperty[property]],
+      value: 0,
       name: new Date(data.time)
     };
 
@@ -362,112 +362,4 @@ export class DataService {
 
     return array;
   }
-
-
-
-  // UPDATE
-  // updateChartWithLatestData(chartToUpdate: DashboardChart): boolean {
-  //   const latestData = this.getLastCollectedData(this._hourlyCollectedData);
-  //   if (!latestData) {
-  //     return false; // Update was unsuccessful
-  //     // return chartToUpdate.data ? chartToUpdate.data : [];
-  //   }
-  //
-  //   let chartData: CustomData[] = [];
-  //   if (chartToUpdate.showCommon) {
-  //     switch (chartToUpdate.type) {
-  //       case ChartType.LineChart:
-  //       case ChartType.BarHorizontal2D:
-  //       case ChartType.BarHorizontalNormalized:
-  //       case ChartType.BarHorizontalStacked:
-  //       case ChartType.BarVertical2D:
-  //       case ChartType.BarVerticalNormalized:
-  //       case ChartType.BarVerticalStacked:
-  //       case ChartType.PolarChart:
-  //       case ChartType.AreaChart:
-  //       case ChartType.AreaChartNormalized:
-  //       case ChartType.AreaChartStacked:
-  //       case ChartType.HeatMap:
-  //         chartData = this.mapToMultiData(this._hourlyCollectedData, chartToUpdate.dataSources);
-  //         break;
-  //       case ChartType.Pie:
-  //         chartData = this.mapToPieSeriesItem(latestData, this.getFirstSource(chartToUpdate.dataSources));
-  //         break;
-  //       default:
-  //         chartData = this.mapToSeriesItem(latestData, chartToUpdate.dataSources);
-  //         break;
-  //     }
-  //   } else {
-  //     const source = this.getFirstSource(chartToUpdate.dataSources);
-  //     switch (chartToUpdate.type) {
-  //       case ChartType.LineChart:
-  //       case ChartType.BarHorizontal2D:
-  //       case ChartType.BarHorizontalNormalized:
-  //       case ChartType.BarHorizontalStacked:
-  //       case ChartType.BarVertical2D:
-  //       case ChartType.BarVerticalNormalized:
-  //       case ChartType.BarVerticalStacked:
-  //       case ChartType.PolarChart:
-  //       case ChartType.AreaChart:
-  //       case ChartType.AreaChartNormalized:
-  //       case ChartType.AreaChartStacked:
-  //       case ChartType.HeatMap:
-  //
-  //         chartData = this.mapToProcessMultiData(chartToUpdate.data, source, chartToUpdate.mostLoaded);
-  //         // chartData = this.mapToProcessMultiDataOnUpdate(chartToUpdate.data, source, chartToUpdate.mostLoaded);
-  //         break;
-  //       case ChartType.Pie:
-  //         chartData = this.mapToProcessesSeriesItem(latestData, source, chartToUpdate.mostLoaded);
-  //         break;
-  //       default:
-  //         chartData = this.mapToProcessesSeriesItem(latestData, source, chartToUpdate.mostLoaded);
-  //         break;
-  //     }
-  //   }
-  //
-  //   chartToUpdate.data = chartData; // [...tempData];
-  // }
-
-  // mapToMultiDataOnUpdate(oldData: CustomData[], newData: CollectedData, properties: DataProperty[], minutes: number): CustomData[] {
-  //   const minutesAgo = new Date(Date.now() - minutes * 60000);
-  //   // const dataForLast10Minutes = dataArr.filter(value => value.time > fiveMinAgo);
-  //
-  //   if (oldData[0].series.length > 20) { // TODO: refactor
-  //     for (let i = 0; i < oldData.length; i++) {
-  //       // oldData.push(oldData.slice(1)); // Start from first element(removes oldest data el)
-  //       oldData[i].series.shift();
-  //     }
-  //     // TODO: remove oldest element from array - use order by or sort or smt coz data can be not ordered by date
-  //     // TODO: maybe depend on chart's setting get from old array specific amount of data or etc.
-  //   }
-  //   const newDataToPush = this.mapToMultiData([newData], properties);
-  //   for (let i = 0; i < properties.length; i++) {
-  //     oldData[i].series.push(...newDataToPush[i].series);
-  //   }
-  //
-  //   return oldData;
-  // }
-  //
-  // mapToProcessMultiDataOnUpdate(oldData: CustomData[],
-  //                               property: DataProperty,
-  //                               procAmount: number = 1): CustomData[] {
-  //   const prop = DataProperty[property];
-  //   if (oldData[0].series.length > 20) { // TODO: refactor
-  //     for (let i = 0; i < oldData.length; i++) {
-  //       // oldData.push(oldData.slice(1)); // Start from first element(removes oldest data el)
-  //       oldData[i].series.shift();
-  //     }
-  //     // TODO: remove oldest element from array - use order by or sort or smt coz data can be not ordered by date
-  //     // TODO: maybe depend on chart's setting get from old array specific amount of data or etc.
-  //   }
-  //
-  //   const processes = this.getMostLoadedProcesses(this.getLastCollectedData(this._hourlyCollectedData), prop, procAmount);
-  //
-  //   const newDataToPush = this.mapToProcessMultiData(this._hourlyCollectedData, property, procAmount);
-  //   for (let i = 0; i < procAmount; i++) {
-  //     oldData[i].series.push(...newDataToPush[i].series);
-  //   }
-  //
-  //   return oldData;
-  // }
 }

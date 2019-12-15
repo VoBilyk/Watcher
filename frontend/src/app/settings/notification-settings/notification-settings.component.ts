@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {NotificationSettingsService} from '../../core/services/notification-settings.service';
-import {NotificationType} from '../../shared/models/notification-type.enum';
-import {AuthService} from '../../core/services/auth.service';
-import {ToastrService} from '../../core/services/toastr.service';
-import {NotificationSetting} from '../../shared/models/notification-setting.model';
+import { Component, OnInit } from '@angular/core';
+import { NotificationSettingsService } from '../../core/services/notification-settings.service';
+import { NotificationType } from '../../shared/models/notification-type.enum';
+import { AuthService } from '../../core/services/auth.service';
+import { ToastrService } from '../../core/services/toastr.service';
+import { NotificationSetting } from '../../shared/models/notification-setting.model';
 
 @Component({
   selector: 'app-notification-settings',
@@ -15,12 +15,13 @@ export class NotificationSettingsComponent implements OnInit {
   userId: string;
   notificationSettings: NotificationSetting[];
   notificationTypes = NotificationType;
-  isSaving: Boolean = false;
+  isSaving: boolean;
 
-  constructor(private service: NotificationSettingsService,
-              private authService: AuthService,
-              private toastrService: ToastrService) {
-  }
+  constructor(
+    private service: NotificationSettingsService,
+    private authService: AuthService,
+    private toastrService: ToastrService
+  ) { }
 
   ngOnInit() {
     const user = this.authService.getCurrentUser();
@@ -35,7 +36,7 @@ export class NotificationSettingsComponent implements OnInit {
     });
   }
 
-  onDisable(id: number): void {
+  onDisable(id: number) {
     const disablingNotificationSettings = this.notificationSettings.find(item => item.id === id);
 
     disablingNotificationSettings.isMute = false;
@@ -46,14 +47,10 @@ export class NotificationSettingsComponent implements OnInit {
     this.isSaving = true;
 
     this.service.updateAll(this.notificationSettings)
-      .subscribe(() => {
-          this.toastrService.success('Notification setting was updated.');
-          this.isSaving = false;
-        },
-        err => {
-          this.toastrService.error('Notification setting was not updated.');
-          this.isSaving = false;
-        });
+      .subscribe(
+        () => this.toastrService.success('Notification setting was updated.'),
+        () => this.toastrService.error('Notification setting was not updated.'),
+        () => this.isSaving = false
+      );
   }
-
 }

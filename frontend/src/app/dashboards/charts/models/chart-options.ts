@@ -10,9 +10,6 @@ export const defaultOptions = {
   threshold: 0,
   mostLoaded: 1,
   historyTime: 5,
-  // colorScheme:  {
-  //   domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-  // },
   colorScheme: {...colorSets.find(s => s.name === 'cool')},
   schemeType: 'ordinal',
   showLegend: true,

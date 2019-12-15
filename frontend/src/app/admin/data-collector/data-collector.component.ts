@@ -17,8 +17,10 @@ export class DataCollectorComponent implements OnInit {
 
   displayAddWindow: boolean;
 
-  constructor(private toastrService: ToastrService,
-                 private collectorAppsService: CollectorAppsService ) {
+  constructor(
+    private toastrService: ToastrService,
+    private collectorAppsService: CollectorAppsService
+  ) {
     this.displayAddWindow = false;
     this.initData();
   }
@@ -43,10 +45,10 @@ export class DataCollectorComponent implements OnInit {
     this.collectorAppsService.getAll().subscribe(
       value => {
         this.collectorApps = value;
-        },
-        error => {
-          this.toastrService.error(`Error ocured status: ${error.message}`);
-        });
+      },
+      error => {
+        this.toastrService.error(`Error ocured status: ${error.message}`);
+      });
   }
   showAddWindow() {
     this.displayAddWindow = true;
@@ -92,20 +94,20 @@ export class DataCollectorComponent implements OnInit {
   onSubmit() {
     this.collectorAppsService.create(this.collectorApp).subscribe(
       value => {
-      this.updateData();
-      this.toastrService.success('CollectorApp was created.');
+        this.updateData();
+        this.toastrService.success('CollectorApp was created.');
       },
       error => {
         this.toastrService.error(`Error ocured status: ${error.message}`);
       });
-      this.displayAddWindow = false;
-      this.initData();
+    this.displayAddWindow = false;
+    this.initData();
   }
 
   onDelete(collectorAppToDel) {
     if (collectorAppToDel.isActive) {
       this.toastrService.notice('This version of the application is selected as the current version '
-      + 'and can not be deleted. Change the current version of the application and try again.');
+        + 'and can not be deleted. Change the current version of the application and try again.');
     } else {
       this.toastrService.confirm().then(
         confirm => {
@@ -120,10 +122,10 @@ export class DataCollectorComponent implements OnInit {
               },
               error => {
                 this.toastrService.error(`Error ocured status: ${error.message}`);
-            });
+              });
           }
         });
-        this.updateData();
+      this.updateData();
     }
   }
 
@@ -142,7 +144,7 @@ export class DataCollectorComponent implements OnInit {
             },
             error => {
               this.toastrService.error(`Error ocured status: ${error.message}`);
-          });
+            });
         }
       });
   }

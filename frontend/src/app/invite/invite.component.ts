@@ -21,7 +21,6 @@ export class InviteComponent implements OnInit {
   organizationName: string;
   organization: Organization;
 
-  isAuthenticated: boolean;
   user: User;
 
   showLoginForm = false;
@@ -103,7 +102,6 @@ export class InviteComponent implements OnInit {
       },
       err => {
         this.toastrService.error('Invite was not updated.');
-        console.log(err);
       }
     );
 
@@ -113,5 +111,4 @@ export class InviteComponent implements OnInit {
   successfulSignIn() {
     this.onAccept();
   }
-
 }

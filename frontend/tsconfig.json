@@ -1,5 +1,9 @@
 {
   "compileOnSave": false,
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",

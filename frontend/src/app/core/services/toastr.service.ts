@@ -34,10 +34,10 @@ export class ToastrService {
     return new Promise((resolve, reject) => {
       this.confirmationService.confirm({
         key: 'confirm',
-        header: header,
-        message: message,
-        acceptLabel: acceptLabel,
-        rejectLabel: rejectLabel,
+        header,
+        message,
+        acceptLabel,
+        rejectLabel,
         accept: () => {
           resolve(true);
         },
@@ -52,9 +52,9 @@ export class ToastrService {
     return new Promise((resolve, reject) => {
       this.confirmationService.confirm({
         key: 'notice',
-        header: header,
-        message: message,
-        acceptLabel: acceptLabel,
+        header,
+        message,
+        acceptLabel,
         accept: () => {
           resolve(true);
         },
@@ -69,10 +69,10 @@ export class ToastrService {
     return new Promise((resolve, reject) => {
       this.confirmationService.confirm({
         key: 'question',
-        header: header,
-        message: message,
-        rejectLabel: rejectLabel,
-        acceptLabel: acceptLabel,
+        header,
+        message,
+        rejectLabel,
+        acceptLabel,
         accept: () => {
           resolve(true);
         },

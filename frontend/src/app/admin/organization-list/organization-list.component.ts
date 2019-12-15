@@ -25,11 +25,11 @@ export class OrganizationListComponent implements OnInit {
   lstInstances: Instance[];
 
   constructor(
-              private fb: FormBuilder,
-              private authService: AuthService,
-              private organizationService: OrganizationService,
-              private instanceService: InstanceService,
-              private toastrService: ToastrService) {
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private organizationService: OrganizationService,
+    private instanceService: InstanceService,
+    private toastrService: ToastrService) {
     this.display = false;
   }
 
@@ -100,7 +100,9 @@ export class OrganizationListComponent implements OnInit {
     let flag = true;
     this.organizations.forEach(o => {
       if ((o.name === name || o.email === email) && o.id !== this.organization.id) {
-        flag = false; }});
+        flag = false;
+      }
+    });
     return flag;
   }
 
@@ -119,7 +121,7 @@ export class OrganizationListComponent implements OnInit {
       this.organization.theme = null;
       Object.keys(this.organizationForm.controls).forEach(field => {
         this.organization[field] = this.organizationForm.get(field).value;
-        });
+      });
       this.organization.instances = this.lstInstances;
       this.organizationService.update(this.organization.id, this.organization).subscribe(
         value => {
@@ -134,13 +136,14 @@ export class OrganizationListComponent implements OnInit {
     }
     this.lstInstances.forEach(instance => {
       const instanceNew: InstanceRequest = this.getNewInstance(instance);
-        this.instanceService.update(instanceNew, instance.id).subscribe(
+      this.instanceService.update(instanceNew, instance.id).subscribe(
         value => {
           this.toastrService.success(`Instance with id ${instance.id} was updated`);
         },
         error => {
           this.toastrService.error(`Error ocurred status: ${error.message}`);
         }
-      ); });
+      );
+    });
   }
 }

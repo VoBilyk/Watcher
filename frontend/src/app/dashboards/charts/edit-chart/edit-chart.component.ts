@@ -113,13 +113,6 @@ export class EditChartComponent implements OnInit {
         ]}
     ];
 
-    // Object.keys(ChartType).forEach(type => {
-    //   const number = Number(type);
-    //   if (!isNaN(number)) {
-    //     this.dropdownTypes.push({label: chartTypeLabels[number], value: number });
-    //   }
-    // });
-
     this.resetBuilderForm();
   }
 

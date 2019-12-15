@@ -52,7 +52,7 @@ export class OrganizationMembersComponent implements OnInit {
     this.currentOrganization = this.currentUser.lastPickedOrganization;
     this.downloadContent();
 
-    this.organizationService.organizationChanged.subscribe( () => {
+    this.organizationService.organizationChanged.subscribe(() => {
       this.currentUser = this.authService.getCurrentUser();
       this.currentOrganization = this.currentUser.lastPickedOrganization;
       this.downloadContent();
@@ -61,16 +61,16 @@ export class OrganizationMembersComponent implements OnInit {
 
   downloadContent() {
     this.userOrganizationService
-        .getByOrganizationId(this.currentUser.lastPickedOrganizationId)
-        .subscribe((value: UserOrganization[]) => {
-          this.userOrganizations = value;
-          this.toastrService.success('Get info from server');
-          const role = this.userOrganizations
-                        .find( usOrg => usOrg.user.id === this.currentUser.id )
-                        .organizationRole.name;
+      .getByOrganizationId(this.currentUser.lastPickedOrganizationId)
+      .subscribe((value: UserOrganization[]) => {
+        this.userOrganizations = value;
+        this.toastrService.success('Get info from server');
+        const role = this.userOrganizations
+          .find(usOrg => usOrg.user.id === this.currentUser.id)
+          .organizationRole.name;
 
-          this.isManager = role === 'Manager' ? true : false;
-        });
+        this.isManager = role === 'Manager' ? true : false;
+      });
 
     this.organizationRoleService.getAll()
       .subscribe((value: OrganizationRole[]) => {
@@ -81,7 +81,7 @@ export class OrganizationMembersComponent implements OnInit {
 
   private fillDropdownRole(): void {
     this.dropdownRole = this.lstRoles.map((item: OrganizationRole) =>
-                        this.toSelectItem(item));
+      this.toSelectItem(item));
   }
 
   toSelectItem(role: OrganizationRole): SelectItem {
@@ -92,20 +92,20 @@ export class OrganizationMembersComponent implements OnInit {
     return item;
   }
 
-  async changeRole(dropdown: any, userOrganization: UserOrganization ) {
+  async changeRole(dropdown: any, userOrganization: UserOrganization) {
     const selectedOption: OrganizationRole = dropdown.selectedOption.value;
     if (await this.toastrService.confirm(`You sure you want to make ${userOrganization.user.displayName} a ${selectedOption.name}`)) {
 
       const updating: UserOrganization = Object.assign({}, userOrganization);
-        updating.organizationRole = Object.assign({}, selectedOption);
+      updating.organizationRole = Object.assign({}, selectedOption);
 
-        this.isLoading = true;
-        this.popupMessage = 'Updating user permissions';
-        this.userOrganizationService.update(updating).subscribe( (value) => {
-          this.toastrService.success('User permissions was updated');
-          this.isLoading = false;
-        });
-      } else {
+      this.isLoading = true;
+      this.popupMessage = 'Updating user permissions';
+      this.userOrganizationService.update(updating).subscribe((value) => {
+        this.toastrService.success('User permissions was updated');
+        this.isLoading = false;
+      });
+    } else {
       dropdown.selectedOption = this.toSelectItem(userOrganization.organizationRole);
     }
   }
@@ -114,13 +114,13 @@ export class OrganizationMembersComponent implements OnInit {
   createChat(userOrganization: UserOrganization): void {
     const targetUser: User = userOrganization.user;
     const users = [targetUser];
-    const chatName =  this.currentUser.firstName && targetUser.firstName
-                      ? `${this.currentUser.firstName}, ${targetUser.firstName}`
-                      : `${this.currentUser.displayName}, ${targetUser.displayName}`;
+    const chatName = this.currentUser.firstName && targetUser.firstName
+      ? `${this.currentUser.firstName}, ${targetUser.firstName}`
+      : `${this.currentUser.displayName}, ${targetUser.displayName}`;
     const newChat: ChatRequest = {
       name: chatName,
       createdById: this.currentUser.id,
-      users: users,
+      users,
       organizationId: null,
       type: ChatType.BetweenUsers,
       usersSettings: [{
@@ -128,7 +128,7 @@ export class OrganizationMembersComponent implements OnInit {
         userId: this.currentUser.id,
         isMute: false,
         isEmailable: false
-        } as NotificationSetting
+      } as NotificationSetting
       ]
     };
     this.chatHub.createNewChat(newChat);

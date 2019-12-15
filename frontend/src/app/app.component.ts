@@ -17,13 +17,5 @@ export class AppComponent implements OnInit {
     if (!this.authService.isAuthorized()) {
       await this.authService.populate();
     }
-
-    // const user = this.authService.getCurrentUserLS();
-    // if (user) {
-    //   const themeId = user.lastPickedOrganization.themeId;
-    //   if (themeId) {
-    //     this.themeService.applyThemeById(themeId);
-    //   }
-    // }
   }
 }

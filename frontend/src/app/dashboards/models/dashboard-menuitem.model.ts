@@ -6,4 +6,3 @@ export interface DashboardMenuItem extends MenuItem  {
     createdAt?: Date;
     charts?: DashboardChart[];
 }
-

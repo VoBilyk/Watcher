@@ -69,13 +69,10 @@ export class InstanceService {
     const secondsDifference = (Date.now() - item.statusCheckedAt.getTime()) / 1000;
     if (secondsDifference <= 10) {
       item.styleClass = 'active-instance';
-      // item.icon = 'fa fa-check-circle-o';
     } else if (secondsDifference > 10 && secondsDifference < 20) {
       item.styleClass = 'semi-active-instance';
-      // item.icon = 'fa fa-exclamation-circle';
     } else if (secondsDifference >= 20) {
       item.styleClass = 'non-active-instance';
-      // item.icon = 'fa fa-ban';
     }
   }
 }

@@ -30,25 +30,25 @@ export class OrganizationProfileComponent implements OnInit {
     private toastrService: ToastrService,
     private themeService: ThemeService,
     private router: Router) {
-      this.cropperSettings = new CropperSettings();
-      this.cropperSettings.width = 400;
-      this.cropperSettings.height = 200;
-      this.cropperSettings.minWidth = 200;
-      this.cropperSettings.minHeight = 100;
-      this.cropperSettings.croppedWidth = 150;
-      this.cropperSettings.croppedHeight = 75;
-      this.cropperSettings.canvasWidth = 800;
-      this.cropperSettings.canvasHeight = 400;
-      this.cropperSettings.noFileInput = true;
-      this.cropperSettings.preserveSize = true;
-      this.data = {};
+    this.cropperSettings = new CropperSettings();
+    this.cropperSettings.width = 400;
+    this.cropperSettings.height = 200;
+    this.cropperSettings.minWidth = 200;
+    this.cropperSettings.minHeight = 100;
+    this.cropperSettings.croppedWidth = 150;
+    this.cropperSettings.croppedHeight = 75;
+    this.cropperSettings.canvasWidth = 800;
+    this.cropperSettings.canvasHeight = 400;
+    this.cropperSettings.noFileInput = true;
+    this.cropperSettings.preserveSize = true;
+    this.data = {};
 
-      router.events.forEach((event) => {
-        if (event instanceof NavigationStart) {
-          this.currentThemeCheck();
-        }
-      });
-    }
+    router.events.forEach((event) => {
+      if (event instanceof NavigationStart) {
+        this.currentThemeCheck();
+      }
+    });
+  }
 
   editable: boolean;
   organization: Organization;
@@ -60,7 +60,7 @@ export class OrganizationProfileComponent implements OnInit {
 
   @ViewChild('cropper') cropper: ImageCropperComponent;
   cropperSettings: CropperSettings;
-  display: Boolean = false;
+  display: boolean;
   imageUrl = '';
   imageType: string;
   data: any;
@@ -71,40 +71,40 @@ export class OrganizationProfileComponent implements OnInit {
 
   user: User;
 
-  isUpdating: Boolean = false;
-  isInviting: Boolean = false;
-  isSending: Boolean = false;
+  isUpdating: boolean;
+  isInviting: boolean;
+  isSending: boolean;
 
   ngOnInit() {
-      if (this.themeDropdown.length === 0) {
-          this.fillDropdown();
+    if (this.themeDropdown.length === 0) {
+      this.fillDropdown();
+    }
+
+    this.authService.currentUser.subscribe(user => {
+      this.user = user;
+
+      if (!this.user.lastPickedOrganization) {
+        return;
       }
 
-      this.authService.currentUser.subscribe(user => {
-        this.user = user;
-
-        if (!this.user.lastPickedOrganization) {
-          return;
-        }
-
-        this.organizationService.get(this.user.lastPickedOrganizationId).subscribe(async (org) => {
-          this.organization = org;
-            this.name = this.organization.name;
-            this.selectedTheme = this.organization.theme;
-            this.selectedThemeName = this.selectedTheme.name;
-          this.imageUrl = org.imageURL;
-          const role = await this.userOrganizationService.getOrganizationRole();
-          this.editable = role.name === 'Manager' ? true : false;
-        });
+      this.organizationService.get(this.user.lastPickedOrganizationId).subscribe(async (org) => {
+        this.organization = org;
+        this.name = this.organization.name;
+        this.selectedTheme = this.organization.theme;
+        this.selectedThemeName = this.selectedTheme.name;
+        this.imageUrl = org.imageURL;
+        const role = await this.userOrganizationService.getOrganizationRole();
+        this.editable = role.name === 'Manager' ? true : false;
       });
+    });
 
-      this.themeService.getAll().subscribe(
-        (data) => {
-          if (data.length > 0) {
-            this.themes = data;
-          }
+    this.themeService.getAll().subscribe(
+      (data) => {
+        if (data.length > 0) {
+          this.themes = data;
         }
-      );
+      }
+    );
 
 
   }
@@ -177,14 +177,14 @@ export class OrganizationProfileComponent implements OnInit {
     this.invite.inviteEmail = this.inviteEmail;
     this.isSending = true;
     this.organizationInvitesService.update(this.invite.id, this.invite).subscribe(
-    value => {
-      this.toastrService.success('Organization Invite was updated and sends to email.');
-      this.isSending = false;
-    },
-    err => {
-      this.toastrService.error('Organization Invite was not updated');
-      this.isSending = false;
-    });
+      value => {
+        this.toastrService.success('Organization Invite was updated and sends to email.');
+        this.isSending = false;
+      },
+      err => {
+        this.toastrService.error('Organization Invite was not updated');
+        this.isSending = false;
+      });
   }
 
   onCopy() {

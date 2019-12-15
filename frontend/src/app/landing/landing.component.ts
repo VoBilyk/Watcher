@@ -4,7 +4,7 @@ import { ToastrService } from '../core/services/toastr.service';
 import { LongAnswerType } from '../shared/models/long-answer-type.enum';
 import { ShortAnswerType } from '../shared/models/short-answer-type.enum';
 import { Feedback } from '../shared/models/feedback.model';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-landing',
@@ -15,7 +15,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class LandingComponent implements OnInit, OnDestroy {
 
-  isAbout: Boolean = false;
+  isAbout: boolean;
   name: string;
   email: string;
   text: string;
@@ -23,8 +23,8 @@ export class LandingComponent implements OnInit, OnDestroy {
   constructor(
     private feedbackService: FeedbackService,
     private activatedRoute: ActivatedRoute,
-    private toastrService: ToastrService,
-    private router: Router) { }
+    private toastrService: ToastrService
+  ) { }
 
   ngOnInit() {
     window.scrollTo(0, 0);

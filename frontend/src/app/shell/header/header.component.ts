@@ -26,7 +26,6 @@ import { NotificationsHubService } from '../../core/hubs/notifications.hub';
   styleUrls: ['./header.component.sass']
 })
 export class HeaderComponent implements OnInit {
-
   notificationCounter = 0;
 
   currentUser: User;
@@ -38,9 +37,9 @@ export class HeaderComponent implements OnInit {
   adminItems: MenuItem[];
   cogItems: MenuItem[];
   orgItems: MenuItem[];
-  displayAddNewOrganization = false;
-  isChangingOrganization: Boolean = false;
-  popupMessage: String = 'Loading';
+  displayAddNewOrganization: boolean;
+  isChangingOrganization: boolean;
+  popupMessage = 'Loading';
 
   constructor(
     private tokenService: TokenService,
@@ -56,12 +55,12 @@ export class HeaderComponent implements OnInit {
     private invitesHub: OrganizationInvitesHub,
     private notificationsHub: NotificationsHubService) { }
 
-  onFeedback(): void {
+  onFeedback() {
     this.router.navigate(['/user/feedback']);
   }
 
-  changeCounter(number) {
-    this.notificationCounter = number;
+  changeCounter(amount: number) {
+    this.notificationCounter = amount;
   }
 
   logout(): void {
@@ -160,25 +159,12 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  isInstancesRoute(): boolean {
-    console.log(this.router.url);
-    if (this.router.url.match(this.regexInstancesdUrl)) {
-      return true;
-    }
-    return false;
+  isInstancesRoute() {
+    return !!this.router.url.match(this.regexInstancesdUrl);
   }
 
   isAdmin() {
-    if (this.currentUser) {
-      return this.currentUser.role.name === 'Admin' ? true : false;
-    }
-  }
-
-  getUserClaims() {
-    this.tokenService.getUserClaims()
-      .subscribe(value => {
-        console.log(value);
-      });
+    return this.currentUser && this.currentUser.role.name === 'Admin';
   }
 
   onDisplayChange(event: boolean) {
@@ -188,7 +174,6 @@ export class HeaderComponent implements OnInit {
   addNewOrganization() {
     this.displayAddNewOrganization = true;
   }
-
 
   private changeLastPicOrganizations(item: Organization): void {
     this.popupMessage = 'Current organization is changing';

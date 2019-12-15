@@ -21,7 +21,7 @@ export class EditInstanceComponent implements OnInit {
   instance: Instance;
   instanceTitle: string;
   platformsDropdown: SelectItem[];
-  isSaving: Boolean = false;
+  isSaving: boolean;
 
   constructor(private activateRoute: ActivatedRoute,
               private fb: FormBuilder,

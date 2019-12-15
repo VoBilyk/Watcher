@@ -56,13 +56,15 @@ export class ResourceTableComponent {
 
   getColor(process: ProcessData, col: DataProperty) {
     switch (col) {
-      case DataProperty.ramMBytes:
+      case DataProperty.ramMBytes: {
         const percent = (process[DataProperty[col]] / this.data.totalRamMBytes) * 100;
         return this.calculateColor(percent);
+      }
       case DataProperty.pCpu:
-      case DataProperty.pRam:
-      const value = process[DataProperty[col]];
+      case DataProperty.pRam: {
+        const value = process[DataProperty[col]];
         return this.calculateColor(value);
+      }
     }
   }
 

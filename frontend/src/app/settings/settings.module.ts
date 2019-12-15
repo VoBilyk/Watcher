@@ -1,25 +1,21 @@
 import { NgModule } from '@angular/core';
+import { SettingsRoutingModule } from './settings-routing.module';
+import { ImageCropperModule } from 'ngx-img-cropper';
+import { SharedModule } from '../shared/shared.module';
+
 import { SettingsComponent } from './settings.component';
 import { NotificationSettingsComponent } from './notification-settings/notification-settings.component';
 import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
-
-import { ReactiveFormsModule } from '@angular/forms';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { SettingsRoutingModule } from './settings-routing.module';
-import { ImageCropperModule } from 'ngx-img-cropper';
 import { InvitesListComponent } from './organization-profile/invites-list.component';
 import { OrganizationMembersComponent } from './organization-members/organization-members.component';
 import { SpinnerPopupComponent } from './spinner-popup/spinner-popup.component';
-import { RouterModule } from '@angular/router';
-import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
     SharedModule,
-    RouterModule,
-    ReactiveFormsModule,
     SettingsRoutingModule,
-    ImageCropperModule,
+    ImageCropperModule
   ],
   declarations: [
     SettingsComponent,

@@ -353,11 +353,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     for (let j = 0; j < dashboardItem.charts.length; j++) {
       this.dataService.fulfillChart(this.dataService.hourlyCollectedData, dashboardItem.charts[j], false);
     }
-    // for (let i = 0; i < this.dashboardMenuItems.length - 1; i++) {
-    //   for (let j = 0; j < this.dashboardMenuItems[i].charts.length; j++) {
-    //     this.dataService.fulfillChart(this.dataService.hourlyCollectedData, this.dashboardMenuItems[i].charts[j]);
-    //   }
-    // }
   }
 
   onInstanceRemoved(id: number): void {

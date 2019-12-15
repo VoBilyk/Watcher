@@ -36,9 +36,9 @@ import { AboutComponent } from './about/about.component';
     AngularFireAuthModule,
 
     CoreModule,
+    SharedModule,
     AppRoutingModule,
     ShellModule,
-    SharedModule
   ],
   bootstrap: [AppComponent]
 })

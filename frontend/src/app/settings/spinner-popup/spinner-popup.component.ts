@@ -6,6 +6,6 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./spinner-popup.component.sass']
 })
 export class SpinnerPopupComponent {
-  @Input() header: String;
-  @Input() display: Boolean = false;
+  @Input() header: string;
+  @Input() display: boolean;
 }

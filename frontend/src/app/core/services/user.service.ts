@@ -34,7 +34,7 @@ export class UserService {
     return this.apiService.get(`/${this.ctrlUrl}`) as Observable<User[]>;
   }
 
-  public updateLastPickedOrganization(userId: string, organizationId: number): Observable<Object> {
+  public updateLastPickedOrganization(userId: string, organizationId: number): Observable<object> {
     return this.apiService.put(`/${this.ctrlUrl}/UpdateLastPickedOrganization/${userId}/${organizationId}`);
   }
 }

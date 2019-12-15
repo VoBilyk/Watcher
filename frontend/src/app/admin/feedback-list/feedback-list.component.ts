@@ -106,13 +106,12 @@ export class FeedbackListComponent implements OnInit {
       this.toastrService.warning('Field is empty.');
       return;
     }
-    const newResponse: Response = {
-      id: 0,
+    const newResponse = {
       createdAt: new Date(),
       user: this.user,
       feedback: this.feedback,
-      text: text
-    };
+      text
+    } as Response;
     this.responseService.create(newResponse).
       subscribe(
         value => {

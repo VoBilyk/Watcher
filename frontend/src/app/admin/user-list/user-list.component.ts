@@ -4,7 +4,6 @@ import { UserService } from '../../core/services/user.service';
 import { User } from '../../shared/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 import { Organization } from '../../shared/models/organization.model';
-import {  } from '../../core/services/role.service';
 import { SelectItem, LazyLoadEvent } from 'primeng/api';
 
 import { UserOrganizationService, OrganizationInvitesService, RoleService, OrganizationService, ToastrService } from '../../core/services';
@@ -22,7 +21,6 @@ import { PathService } from '../../core/services/path.service';
 })
 
 export class UserListComponent implements OnInit {
-
   users: User[];
   user: User;
   currentUser: User;
@@ -37,12 +35,12 @@ export class UserListComponent implements OnInit {
   dropdownRole: SelectItem[];
   dropdownCompany: SelectItem[];
   lastOrganization: Organization;
-  lstUnassign: Boolean[];
+  lstUnassign: boolean[];
 
   data: any;
   photoUrl: string;
   photoType: string;
-  display: Boolean = false;
+  display: boolean;
 
   @ViewChild('cropper') cropper: ImageCropperComponent;
 
@@ -57,25 +55,26 @@ export class UserListComponent implements OnInit {
     private roleService: RoleService,
     private pathService: PathService,
     private userOrganizationService: UserOrganizationService,
-    private toastrService: ToastrService) {
-
+    private toastrService: ToastrService
+  ) {
     this.displayPopup = false;
-    this.lstUserCompany = new Array<Organization>();
-    this.dropdownRole = new Array<SelectItem>();
-    this.dropdownCompany = new Array<SelectItem>();
-    this.lstUnassign = Array<Boolean>();
+    this.lstUserCompany = [];
+    this.dropdownRole = [];
+    this.dropdownCompany = [];
+    this.lstUnassign = [];
 
-    this.cropperSettings = new CropperSettings();
-    this.cropperSettings.width = 200;
-    this.cropperSettings.height = 200;
-    this.cropperSettings.minWidth = 100;
-    this.cropperSettings.minHeight = 100;
-    this.cropperSettings.croppedWidth = 70;
-    this.cropperSettings.croppedHeight = 70;
-    this.cropperSettings.canvasWidth = 500;
-    this.cropperSettings.canvasHeight = 500;
-    this.cropperSettings.noFileInput = true;
-    this.cropperSettings.preserveSize = true;
+    this.cropperSettings = new CropperSettings({
+      width: 200,
+      height: 200,
+      minWidth: 100,
+      minHeight: 100,
+      croppedWidth: 70,
+      croppedHeight: 70,
+      canvasWidth: 500,
+      canvasHeight: 500,
+      noFileInput: true,
+      preserveSize: true
+    });
 
     this.data = {};
   }
@@ -168,7 +167,6 @@ export class UserListComponent implements OnInit {
   }
 
   showPopup(user: User) {
-    // debugger;
     this.user = user;
     this.subscribeOrganizationFormToData();
     this.displayPopup = true;
@@ -240,7 +238,6 @@ export class UserListComponent implements OnInit {
   }
 
   onImageSelected(upload) {
-    // debugger;
     const image: any = new Image();
     const reader: FileReader = new FileReader();
     const that = this;
