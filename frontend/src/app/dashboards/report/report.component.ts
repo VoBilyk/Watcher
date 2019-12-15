@@ -1,20 +1,21 @@
 import { Component, OnInit, ViewChild, ElementRef, EventEmitter, QueryList, ViewChildren } from '@angular/core';
-import { AggregatedDataService } from '../../core/services/aggregated-data.service';
+import { formatDate } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { SelectItem, MenuItem } from 'primeng/api';
+import { Calendar } from 'primeng/calendar';
+
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+import { DataService } from '../../core/services/data.service';
+import { AggregatedDataService } from '../../core/services/aggregated-data.service';
 import { DataType } from '../../shared/models/data-type.enum';
 import { CollectedData } from '../../shared/models/collected-data.model';
 import { AggregateDataRequest } from '../../shared/models/aggregate-data-request.model';
-import { SelectItem, MenuItem } from 'primeng/api';
-import { Calendar } from 'primeng/calendar';
-import { formatDate } from '@angular/common';
-import * as jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import { Observable } from 'rxjs';
 import { ProcessData } from '../../shared/models/process-data.model';
 import { DashboardChart } from '../models/dashboard-chart';
 import { defaultOptions } from '../charts/models/chart-options';
-import { DataService } from '../../core/services/data.service';
-import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-report',
@@ -44,7 +45,7 @@ export class ReportComponent implements OnInit {
   recordsPerPage = 1;
   totalRecords: number;
 
-  chartToEdit = {...defaultOptions};
+  chartToEdit = { ...defaultOptions };
   charts: DashboardChart[];
 
   editChartIndex: number;
@@ -63,21 +64,25 @@ export class ReportComponent implements OnInit {
   isGetting: boolean;
   isConverting: boolean;
 
-  constructor(private aggregatedDateService: AggregatedDataService,
-              private activateRoute: ActivatedRoute,
-              private dataService: DataService) { }
+  constructor(
+    private aggregatedDateService: AggregatedDataService,
+    private activateRoute: ActivatedRoute,
+    private dataService: DataService
+  ) { }
 
   ngOnInit() {
     this.charts = [];
 
     this.tabs = [
-      { label: 'Table', command: () => {
-        this.activeTab = this.tabs[0];
-        this.collectedData = null;
-        this.collectedDataTable = null;
-        this.dateFrom = null;
-        this.dateTo = null;
-      }}, {
+      {
+        label: 'Table', command: () => {
+          this.activeTab = this.tabs[0];
+          this.collectedData = null;
+          this.collectedDataTable = null;
+          this.dateFrom = null;
+          this.dateTo = null;
+        }
+      }, {
         label: 'Chart', command: () => {
           this.activeTab = this.tabs[1];
           this.collectedData = null;
@@ -85,7 +90,8 @@ export class ReportComponent implements OnInit {
           this.dateFrom = null;
           this.dateTo = null;
           this.charts = [];
-      }}
+        }
+      }
     ];
 
     this.activeTab = this.tabs[0];
@@ -93,8 +99,7 @@ export class ReportComponent implements OnInit {
     this.cogItems = [{
       label: 'Add item',
       icon: 'fa fa-fw fa-plus',
-
-      command: (event?: any) => {
+      command: () => {
         this.close = false;
 
         this.decomposeChart(defaultOptions);
@@ -199,33 +204,25 @@ export class ReportComponent implements OnInit {
     };
   }
 
-  getInfo(): void {
+  getInfo() {
     this.isGetting = true;
-    const request: AggregateDataRequest = this.createRequest();
+    const request = this.createRequest();
 
-    this.getCollectedData(request).subscribe((data: CollectedData[]) => {
-      data.forEach(item => {
-        item.time = new Date(item.time);
-        item.processes = item.processes.map(p => this.roundProcess(p));
-
-        item.processes.sort((item1, item2) => {
-          return item2.pCpu - item1.pCpu;
-        });
-      });
-      this.collectedData = data;
+    this.getCollectedData(request).subscribe(data => {
+      this.collectedData = data.map(item => ({
+        ...item,
+        time: new Date(item.time),
+        processes: item.processes
+          .map(p => this.roundProcess(p))
+          .sort((item1, item2) => item2.pCpu - item1.pCpu)
+      }));
       this.collectedDataTable = data.slice(0, this.recordsPerPage);
       const hourDifference = (this.dateTo.getTime() - this.dateFrom.getTime()) / (60 * 60000);
       this.charts.forEach(item => {
         if (hourDifference > 23) {
-          item.dateTickFormatting = (value) => {
-            if (value instanceof Date) {
-              if (this.selectedType === DataType.AggregationForHour) {
-                return formatDate((<Date>value), 'MMM, d, h a', 'en-US');
-              } else {
-                return formatDate((<Date>value), 'MMM, d', 'en-US');
-              }
-            }
-          };
+          item.dateTickFormatting = (value) => this.selectedType === DataType.AggregationForHour
+            ? formatDate(value, 'MMM, d, h a', 'en-US')
+            : formatDate(value, 'MMM, d', 'en-US');
         }
 
         this.dataService.fulfillChart(this.collectedData, item, true);
@@ -242,7 +239,7 @@ export class ReportComponent implements OnInit {
     });
   }
 
-  private getCollectedData(request): Observable<CollectedData[]> {
+  private getCollectedData(request: AggregateDataRequest) {
     return this.aggregatedDateService.getDataByInstanceIdAndTypeInTime(request);
   }
 
@@ -252,8 +249,8 @@ export class ReportComponent implements OnInit {
     this.collectedDataTable = this.collectedData.slice(start, end);
   }
 
-  roundProcess(processData: ProcessData) {
-    const item: ProcessData = {
+  roundProcess(processData: ProcessData): ProcessData {
+    return {
       name: processData.name,
       pCpu: +processData.pCpu.toFixed(2),
       pCpuMax: +processData.pCpuMax.toFixed(2),
@@ -267,10 +264,9 @@ export class ReportComponent implements OnInit {
       ramMBytesMax: +processData.ramMBytesMax.toFixed(2),
       ramMBytesMin: +processData.ramMBytesMin.toFixed(2)
     };
-    return item;
   }
 
-  convertPDF(): void {
+  convertPDF() {
     this.isConverting = true;
     const doc = new jsPDF('p', 'pt', 'a4');
 
@@ -282,7 +278,7 @@ export class ReportComponent implements OnInit {
       doc.deletePage(1);
       tables.forEach(item => {
         doc.addPage();
-        doc.autoTable(item.cols, item.rows);
+        doc.autoTable(item.cols.map(col => col.header), item.rows);
         doc.text(`Time: ${item.time}`, 20, doc.autoTable.previous.finalY + 10);
       });
 
@@ -326,43 +322,28 @@ export class ReportComponent implements OnInit {
     }
   }
 
-  private createTables(data: CollectedData[]): any[] {
-    const tables = [];
-
-    const cols: string[] = [];
-    this.cols.forEach(item => {
-      cols.push(item.header);
-    });
-
-    data.forEach(item => {
-      const rows = [];
-
-      item.processes.forEach(p => rows.push(
-        [p.name,
-         p.pCpu.toString(),
-         p.pCpuMax.toString(),
-         p.pCpuMin.toString(),
-         p.pRam.toString(),
-         p.pRamMax.toString(),
-         p.pRamMin.toString(),
-         p.ramMBytes.toString(),
-         p.ramMBytesMax.toString(),
-         p.ramMBytesMin.toString(),
-        ]));
-
-      tables.push({
-        cols: cols,
-        rows: rows,
-        time: formatDate(item.time, 'dd/MM/yy HH:mm', 'en-US')
-      });
-    });
-
-    return tables;
+  private createTables(data: CollectedData[]): Array<{ cols, rows, time }> {
+    return data.map(item => ({
+      cols: this.cols,
+      time: formatDate(item.time, 'dd/MM/yy HH:mm', 'en-US'),
+      rows: item.processes.map(p => ([
+        p.name,
+        p.pCpu.toString(),
+        p.pCpuMax.toString(),
+        p.pCpuMin.toString(),
+        p.pRam.toString(),
+        p.pRamMax.toString(),
+        p.pRamMin.toString(),
+        p.ramMBytes.toString(),
+        p.ramMBytesMax.toString(),
+        p.ramMBytesMin.toString(),
+      ]))
+    }));
   }
 
   decomposeChart(chart: DashboardChart): void {
-    this.chartToEdit = {...chart};
-    this.chartToEdit.colorScheme = {...chart.colorScheme};
+    this.chartToEdit = { ...chart };
+    this.chartToEdit.colorScheme = { ...chart.colorScheme };
     this.chartToEdit.type = chart.type;
   }
 
@@ -370,48 +351,45 @@ export class ReportComponent implements OnInit {
     this.onDisplayChartEditing.emit(true);
   }
 
-  editChart(chart: DashboardChart): void {
+  editChart(chart: DashboardChart) {
     this.edit = true;
     this.editChartIndex = this.charts.indexOf(chart);
     this.decomposeChart(chart);
     this.showChartCreating();
   }
 
-  deleteChart(chart: DashboardChart): void {
+  deleteChart(chart: DashboardChart) {
     const indexDeleteChart = this.charts.indexOf(chart);
     this.charts.splice(indexDeleteChart, 1);
   }
 
-  onAddChart(event: DashboardChart): void {
+  onAddChart(event: DashboardChart) {
     if (this.dateTo && this.dateFrom) {
       const hourDifference = (this.dateTo.getTime() - this.dateFrom.getTime()) / (60 * 60000);
       if (hourDifference > 23) {
         event.dateTickFormatting = (value) => {
           if (value instanceof Date) {
-            if (this.selectedType === DataType.AggregationForHour) {
-              return formatDate((<Date>value), 'MMM, d, h a', 'en-US');
-            } else {
-              return formatDate((<Date>value), 'MMM, d', 'en-US');
-            }
+            return this.selectedType === DataType.AggregationForHour
+              ? formatDate(value, 'MMM, d, h a', 'en-US')
+              : formatDate(value, 'MMM, d', 'en-US');
           }
         };
       }
     }
 
-    this.charts.push({...event});
+    this.charts.push({ ...event });
     this.decomposeChart(defaultOptions);
   }
 
-  onEditChart(event: DashboardChart): void {
-    this.charts[this.editChartIndex] = {...event};
+  onEditChart(event: DashboardChart) {
+    this.charts[this.editChartIndex] = { ...event };
     this.edit = false;
     this.decomposeChart(defaultOptions);
   }
 
-  onClosed(): void {
+  onClosed() {
     this.close = true;
     this.edit = false;
     this.decomposeChart(defaultOptions);
   }
-
 }

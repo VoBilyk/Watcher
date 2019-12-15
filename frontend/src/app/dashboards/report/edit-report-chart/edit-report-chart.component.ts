@@ -1,8 +1,9 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { DashboardChart } from '../../models/dashboard-chart';
 import { SelectItem, SelectItemGroup } from 'primeng/api';
-import { ChartType, chartTypeLabels } from '../../../shared/models/chart-type.enum';
 import { colorSets } from '@swimlane/ngx-charts';
+
+import { DashboardChart } from '../../models/dashboard-chart';
+import { ChartType, chartTypeLabels } from '../../../shared/models/chart-type.enum';
 import { DataService } from '../../../core/services/data.service';
 import { dataPropertyLables, DataProperty } from '../../../shared/models/data-property.enum';
 import { CollectedData } from '../../../shared/models/collected-data.model';
@@ -25,13 +26,11 @@ export class EditReportChartComponent implements OnInit {
   @Input() collectedData: CollectedData[];
   @Input() edit: boolean;
 
-  dropdownTypes: SelectItem[] = [];
+  dropdownTypes: SelectItem[];
   dropdownGroupSources: SelectItemGroup[];
 
   type = ChartType;
   colorSchemes = colorSets;
-
-  // historyTime: number; // in minutes
   isPreviewAvailable: boolean;
   isTimeAvailable: boolean;
   isXAxisAvailable: boolean;
@@ -49,19 +48,22 @@ export class EditReportChartComponent implements OnInit {
     return !!this.dashboardChart.dataSources.length;
   }
 
-  constructor(private dataService: DataService,
-              private collectedDataService: CollectedDataService) {
+  constructor(
+    private dataService: DataService,
+    private collectedDataService: CollectedDataService
+    ) {
   }
 
   ngOnInit() {
     this.onDisplay.subscribe((isShow: boolean) => this.visible = isShow);
     this.dashboardChart.showCommon = true;
 
-    // Fill dropdown with sources
-      this.dropdownTypes.push({label: chartTypeLabels[0], value: 0 });
-      this.dropdownTypes.push({label: chartTypeLabels[1], value: 1 });
-      this.dropdownTypes.push({label: chartTypeLabels[2], value: 2 });
-      this.dropdownTypes.push({label: chartTypeLabels[7], value: 7 });
+    this.dropdownTypes = [
+      { label: chartTypeLabels[0], value: 0 },
+      { label: chartTypeLabels[1], value: 1 },
+      { label: chartTypeLabels[2], value: 2 },
+      { label: chartTypeLabels[7], value: 7 }
+    ];
 
     this.collectedDataService.getBuilderData().subscribe(data => {
       this.dataService.fakeCollectedData = data;
@@ -105,7 +107,7 @@ export class EditReportChartComponent implements OnInit {
         this.dashboardChart.yAxisLabel = 'Process';
         this.isXAxisAvailable = false;
         this.dashboardChart.xAxisLabel = '';
-      break;
+        break;
       default:
         this.isYAxisAvailable = false;
         this.isXAxisAvailable = false;
