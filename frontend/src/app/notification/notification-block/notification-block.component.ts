@@ -26,8 +26,8 @@ export class NotificationBlockComponent implements OnInit {
 
   notifications: Notification[] = [];
   type = NotificationType;
-  isLoading: Boolean = false;
-  extendedNotification: Number = null;
+  isLoading: boolean;
+  extendedNotification: number;
 
   constructor(
     private notificationsHubService: NotificationsHubService,

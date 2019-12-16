@@ -17,7 +17,7 @@ import { User } from '../../shared/models/user.model';
 export class AddNewOrganizationComponent implements OnInit {
 
   @Input() display = false;
-  @Output() displayChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() displayChange = new EventEmitter<boolean>();
 
   user: User;
   organization: Organization;
@@ -66,7 +66,7 @@ export class AddNewOrganizationComponent implements OnInit {
         this.user.lastPickedOrganizationId = value.id;
         this.authService.updateCurrentUser(this.user);
 
-        this.organizationService.organizationChanged.emit({from: previousOrganizationId, to: value.id});
+        this.organizationService.organizationChanged.next({from: previousOrganizationId, to: value.id});
         this.reloadRouteIfInstancesRoute();
 
         this.toastrService.success(`${value.name} organization Successfully established,

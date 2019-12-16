@@ -15,7 +15,7 @@ export class NotificationSettingsComponent implements OnInit {
   userId: string;
   notificationSettings: NotificationSetting[];
   notificationTypes = NotificationType;
-  isSaving: Boolean = false;
+  isSaving: boolean;
 
   constructor(private service: NotificationSettingsService,
               private authService: AuthService,

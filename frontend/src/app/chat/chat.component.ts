@@ -36,8 +36,8 @@ export class ChatComponent implements OnInit {
   selectedChat: Chat;
   currentUserId: string;
 
-  isLoading: Boolean = false;
-  isOpeningChat: Boolean = false;
+  isLoading: boolean;
+  isOpeningChat: boolean;
 
   ngOnInit() {
     this.calculateMaxSupportedOpenedWindows(window.innerWidth);

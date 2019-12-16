@@ -10,6 +10,9 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule,
     UserRoutingModule,
   ],
-  declarations: [ UserComponent, FeedbackComponent ]
+  declarations: [
+    UserComponent,
+    FeedbackComponent
+  ]
 })
 export class UserModule { }

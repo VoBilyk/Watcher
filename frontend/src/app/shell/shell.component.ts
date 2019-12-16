@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router, RouterEvent} from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-shell',
@@ -13,19 +13,16 @@ export class ShellComponent implements OnInit {
   private regexInstances: RegExp = /\/user\/instances/;
   showInstanceList: boolean;
 
-  ngOnInit(): void {
-
+  ngOnInit() {
     this.checkRoute();
     this.subscribeRouteChanges();
   }
 
-  private subscribeRouteChanges(): void {
-    this.router.events.subscribe((event: RouterEvent) => {
-      this.checkRoute();
-    });
+  private subscribeRouteChanges() {
+    this.router.events.subscribe(() => this.checkRoute());
   }
 
-  private checkRoute(): void {
-    this.showInstanceList = (this.router.url.match(this.regexInstances)) ? true : false;
+  private checkRoute() {
+    this.showInstanceList = !!(this.router.url.match(this.regexInstances));
   }
 }

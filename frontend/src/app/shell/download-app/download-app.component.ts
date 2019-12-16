@@ -8,8 +8,7 @@ import { CollectorAppsService } from '../../core/services/collector-apps.service
   styleUrls: ['./download-app.component.sass']
 })
 export class DownloadAppComponent implements OnInit {
-
-  @Output() closed: EventEmitter<void>;
+  @Output() closed = new EventEmitter<void>();
   @Input() display: boolean;
   @Input() guid: string;
 
@@ -19,10 +18,10 @@ export class DownloadAppComponent implements OnInit {
   tgzLink: string;
 
 
-  constructor(private toastrService: ToastrService,
-    private collectorAppsService: CollectorAppsService) {
-    this.closed = new EventEmitter();
-  }
+  constructor(
+    private toastrService: ToastrService,
+    private collectorAppsService: CollectorAppsService
+  ) { }
 
   closeDialog(): void {
     this.closed.emit();

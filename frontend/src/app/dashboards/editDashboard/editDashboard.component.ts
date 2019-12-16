@@ -26,8 +26,8 @@ export class EditDashboardComponent implements OnInit, OnChanges {
   dropdownSources: SelectItem[];
   dashboardCharts: DashboardChart[] = [];
 
-  isSource: Boolean = false;
-  isCustomize: Boolean = false;
+  isSource: boolean;
+  isCustomize: boolean;
   sources: DataProperty[];
   countToGenerate = 4;
 

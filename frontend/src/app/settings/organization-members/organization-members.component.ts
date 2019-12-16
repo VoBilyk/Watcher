@@ -52,7 +52,7 @@ export class OrganizationMembersComponent implements OnInit {
     this.currentOrganization = this.currentUser.lastPickedOrganization;
     this.downloadContent();
 
-    this.organizationService.organizationChanged.subscribe( () => {
+    this.organizationService.organizationChanged.subscribe(() => {
       this.currentUser = this.authService.getCurrentUser();
       this.currentOrganization = this.currentUser.lastPickedOrganization;
       this.downloadContent();

@@ -1,16 +1,16 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SelectItem, SelectItemGroup} from 'primeng/api';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SelectItem, SelectItemGroup } from 'primeng/api';
 
-import {DataService} from '../../../core/services/data.service';
-import {ChartService} from '../../../core/services/chart.service';
-import {ToastrService} from '../../../core/services/toastr.service';
+import { DataService } from '../../../core/services/data.service';
+import { ChartService } from '../../../core/services/chart.service';
+import { ToastrService } from '../../../core/services/toastr.service';
 
-import {Chart} from '../../../shared/models/chart.model';
-import {ChartRequest} from '../../../shared/requests/chart-request.model';
-import {ChartType, chartTypeLabels} from '../../../shared/models/chart-type.enum';
-import {DataProperty, dataPropertyLables} from '../../../shared/models/data-property.enum';
+import { Chart } from '../../../shared/models/chart.model';
+import { ChartRequest } from '../../../shared/requests/chart-request.model';
+import { ChartType, chartTypeLabels } from '../../../shared/models/chart-type.enum';
+import { DataProperty, dataPropertyLables } from '../../../shared/models/data-property.enum';
 
-import {DashboardChart} from '../../models/dashboard-chart';
+import { DashboardChart } from '../../models/dashboard-chart';
 import { colorSets } from '@swimlane/ngx-charts';
 
 
@@ -24,12 +24,11 @@ export class EditChartComponent implements OnInit {
   @Output() closed = new EventEmitter();
   @Output() dashboardChartChange = new EventEmitter();
 
-  visible: boolean;
-
   @Input() onDisplay: EventEmitter<boolean>;
   @Input() dashboardId: number;
   @Input() dashboardChart: DashboardChart;
 
+  visible: boolean;
   dropdownTypes: SelectItemGroup[] = [];
   dropdownSources: SelectItem[] = [];
   dropdownGroupSources: SelectItemGroup[] = [];
@@ -46,10 +45,10 @@ export class EditChartComponent implements OnInit {
     if (this.dashboardChart && this.dashboardChart.id) {
       this.isEditing = true;
       return 'Edit Chart';
-    } else {
-      this.isEditing = false;
-      return 'CreateChart';
     }
+
+    this.isEditing = false;
+    return 'CreateChart';
   }
 
   get spinnerDisabled() {
@@ -61,8 +60,8 @@ export class EditChartComponent implements OnInit {
   }
 
   constructor(private dataService: DataService,
-              private chartService: ChartService,
-              private toastrService: ToastrService) {
+    private chartService: ChartService,
+    private toastrService: ToastrService) {
   }
 
   ngOnInit() {
@@ -102,23 +101,17 @@ export class EditChartComponent implements OnInit {
         { label: chartTypeLabels[ChartType.AdvancedPie], value: ChartType.AdvancedPie },
       ]
     }, {
-        label: 'Other Charts',
-        items: [
-          { label: chartTypeLabels[ChartType.ResourcesTable], value: ChartType.ResourcesTable },
-          { label: chartTypeLabels[ChartType.NumberCards], value: ChartType.NumberCards },
-          { label: chartTypeLabels[ChartType.Gauge], value: ChartType.Gauge },
-          { label: chartTypeLabels[ChartType.PolarChart], value: ChartType.PolarChart },
-          { label: chartTypeLabels[ChartType.HeatMap], value: ChartType.HeatMap },
-          { label: chartTypeLabels[ChartType.TreeMap], value: ChartType.TreeMap },
-        ]}
+      label: 'Other Charts',
+      items: [
+        { label: chartTypeLabels[ChartType.ResourcesTable], value: ChartType.ResourcesTable },
+        { label: chartTypeLabels[ChartType.NumberCards], value: ChartType.NumberCards },
+        { label: chartTypeLabels[ChartType.Gauge], value: ChartType.Gauge },
+        { label: chartTypeLabels[ChartType.PolarChart], value: ChartType.PolarChart },
+        { label: chartTypeLabels[ChartType.HeatMap], value: ChartType.HeatMap },
+        { label: chartTypeLabels[ChartType.TreeMap], value: ChartType.TreeMap },
+      ]
+    }
     ];
-
-    // Object.keys(ChartType).forEach(type => {
-    //   const number = Number(type);
-    //   if (!isNaN(number)) {
-    //     this.dropdownTypes.push({label: chartTypeLabels[number], value: number });
-    //   }
-    // });
 
     this.resetBuilderForm();
   }
@@ -221,7 +214,7 @@ export class EditChartComponent implements OnInit {
         this.dashboardChart.showXAxis = false;
         this.dashboardChart.showLegend = false;
         this.dashboardChart.yAxisLabel = 'Process';
-      break;
+        break;
       case ChartType.HeatMap:
         this.dashboardChart.showLegend = false;
         this.dashboardChart.yAxisLabel = 'Intensivity';
@@ -243,10 +236,10 @@ export class EditChartComponent implements OnInit {
     switch (this.dashboardChart.type) {
       case ChartType.ResourcesTable: {
         this.dropdownSources = [
-          {label: dataPropertyLables[DataProperty.name], value: DataProperty.name},
-          {label: dataPropertyLables[DataProperty.pCpu], value: DataProperty.pCpu},
-          {label: dataPropertyLables[DataProperty.pRam], value: DataProperty.pRam},
-          {label: dataPropertyLables[DataProperty.ramMBytes], value: DataProperty.ramMBytes}
+          { label: dataPropertyLables[DataProperty.name], value: DataProperty.name },
+          { label: dataPropertyLables[DataProperty.pCpu], value: DataProperty.pCpu },
+          { label: dataPropertyLables[DataProperty.pRam], value: DataProperty.pRam },
+          { label: dataPropertyLables[DataProperty.ramMBytes], value: DataProperty.ramMBytes }
         ];
         return;
       }
@@ -288,13 +281,13 @@ export class EditChartComponent implements OnInit {
     }];
 
     this.dropdownSources = [
-      {label: dataPropertyLables[DataProperty.cpuUsagePercentage], value: DataProperty.cpuUsagePercentage},
-      {label: dataPropertyLables[DataProperty.ramUsagePercentage], value: DataProperty.ramUsagePercentage},
-      {label: dataPropertyLables[DataProperty.localDiskUsagePercentage], value: DataProperty.localDiskUsagePercentage},
-      {label: dataPropertyLables[DataProperty.processesCount], value: DataProperty.processesCount},
-      {label: dataPropertyLables[DataProperty.usageRamMBytes], value: DataProperty.usageRamMBytes},
-      {label: dataPropertyLables[DataProperty.interruptsPerSeconds], value: DataProperty.interruptsPerSeconds},
-      {label: dataPropertyLables[DataProperty.localDiskUsageMBytes], value: DataProperty.localDiskUsageMBytes}
+      { label: dataPropertyLables[DataProperty.cpuUsagePercentage], value: DataProperty.cpuUsagePercentage },
+      { label: dataPropertyLables[DataProperty.ramUsagePercentage], value: DataProperty.ramUsagePercentage },
+      { label: dataPropertyLables[DataProperty.localDiskUsagePercentage], value: DataProperty.localDiskUsagePercentage },
+      { label: dataPropertyLables[DataProperty.processesCount], value: DataProperty.processesCount },
+      { label: dataPropertyLables[DataProperty.usageRamMBytes], value: DataProperty.usageRamMBytes },
+      { label: dataPropertyLables[DataProperty.interruptsPerSeconds], value: DataProperty.interruptsPerSeconds },
+      { label: dataPropertyLables[DataProperty.localDiskUsageMBytes], value: DataProperty.localDiskUsageMBytes }
     ];
   }
 
@@ -311,7 +304,7 @@ export class EditChartComponent implements OnInit {
   processData(): void {
     if (this.dashboardChart.type === ChartType.ResourcesTable) {
       this.dashboardChart.colectedData = this.dataService.fakeCollectedData[0];
-      this.dashboardChart.data = [ {} ]; // If data undefine than it not appeared
+      this.dashboardChart.data = [{}]; // If data undefine than it not appeared
       this.isPreviewAvailable = true;
       return;
     }

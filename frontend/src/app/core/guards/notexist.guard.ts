@@ -4,7 +4,7 @@ import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class NotexistGuard implements CanActivate {
-  constructor(public authService: AuthService, public router: Router) {}
+  constructor(public authService: AuthService, public router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (this.authService.isAuthorized()) {
@@ -13,6 +13,5 @@ export class NotexistGuard implements CanActivate {
       this.router.navigate(['']);
       return false;
     }
-
-    }
+  }
 }

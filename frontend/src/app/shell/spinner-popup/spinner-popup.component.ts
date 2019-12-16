@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class SpinnerPopupComponent implements OnInit {
 
   @Input() header: String;
-  @Input() display: Boolean = false;
+  @Input() display: boolean;
 
   constructor() { }
 

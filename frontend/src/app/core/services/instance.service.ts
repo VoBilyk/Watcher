@@ -1,30 +1,20 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {ToastrService} from './toastr.service';
-import {InstanceRequest} from '../../dashboards/models/instance-request.model';
-import {EventEmitter} from '@angular/core';
-import {Instance} from '../../shared/models/instance.model';
-import {ApiService} from './api.service';
-import {map} from 'rxjs/operators';
-import {InstanceMenuItem} from '../../shell/models/instance-menu-item';
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { InstanceRequest } from '../../dashboards/models/instance-request.model';
+import { Instance } from '../../shared/models/instance.model';
+import { ApiService } from './api.service';
+import { InstanceMenuItem } from '../../shell/models/instance-menu-item';
 
 @Injectable()
 export class InstanceService {
   private ctrlUrl = 'instances';
-  public instanceAdded: EventEmitter<Instance>;
-  public instanceEdited: EventEmitter<Instance>;
-  public instanceRemoved: EventEmitter<number>;
-  public instanceChecked: EventEmitter<Instance>;
+  public instanceAdded = new Subject<Instance>();
+  public instanceEdited = new Subject<Instance>();
+  public instanceRemoved = new Subject<number>();
+  public instanceChecked = new Subject<Instance>();
 
-  constructor(private http: HttpClient,
-              private toastrService: ToastrService,
-              private apiService: ApiService) {
-    this.instanceAdded = new EventEmitter<Instance>();
-    this.instanceEdited = new EventEmitter<Instance>();
-    this.instanceRemoved = new EventEmitter<number>();
-    this.instanceChecked = new EventEmitter<Instance>();
-  }
+  constructor(private apiService: ApiService) { }
 
   getOne(id: number): Observable<Instance> {
     return this.apiService.get(`/${this.ctrlUrl}/single/${id}`)
@@ -41,11 +31,11 @@ export class InstanceService {
       .pipe(map(value => this.extractSingleData(value)));
   }
 
-  update(instance: InstanceRequest, id: number): Observable<Object> {
+  update(instance: InstanceRequest, id: number): Observable<object> {
     return this.apiService.put(`/${this.ctrlUrl}/${id}`, instance);
   }
 
-  delete(id: number): Observable<Object> {
+  delete(id: number): Observable<object> {
     return this.apiService.delete(`/${this.ctrlUrl}/${id}`);
   }
 
@@ -69,13 +59,10 @@ export class InstanceService {
     const secondsDifference = (Date.now() - item.statusCheckedAt.getTime()) / 1000;
     if (secondsDifference <= 10) {
       item.styleClass = 'active-instance';
-      // item.icon = 'fa fa-check-circle-o';
     } else if (secondsDifference > 10 && secondsDifference < 20) {
       item.styleClass = 'semi-active-instance';
-      // item.icon = 'fa fa-exclamation-circle';
     } else if (secondsDifference >= 20) {
       item.styleClass = 'non-active-instance';
-      // item.icon = 'fa fa-ban';
     }
   }
 }

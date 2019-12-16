@@ -29,7 +29,7 @@ export class AuthorizationComponent implements OnInit {
   isSuccessSignUp = false;
   isNotRegisteredSignIn = false;
   isFetching = false;
-  isSaving: Boolean = false;
+  isSaving: boolean;
   emailExists = false;
 
   companyName = '';

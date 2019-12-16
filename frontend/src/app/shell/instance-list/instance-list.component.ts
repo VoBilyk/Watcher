@@ -1,36 +1,41 @@
-import {Component, OnInit} from '@angular/core';
-import {InstanceService} from '../../core/services/instance.service';
-import {ToastrService} from '../../core/services/toastr.service';
-import {AuthService} from '../../core/services/auth.service';
-import {MenuItem} from 'primeng/api';
-import {User} from '../../shared/models/user.model';
-import {Instance} from '../../shared/models/instance.model';
-import {Router} from '@angular/router';
-import {UserOrganizationService} from '../../core/services/user-organization.service';
-import {CollectedDataService} from '../../core/services/collected-data.service';
-import {DataService} from '../../core/services/data.service';
-import {DashboardsHub} from '../../core/hubs/dashboards.hub';
-import {InstanceMenuItem} from '../models/instance-menu-item';
-import {timer} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { timer, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { MenuItem } from 'primeng/api';
+
+import { InstanceService, ToastrService, AuthService, DataService, CollectedDataService, UserOrganizationService } from '../../core/services';
+import { User } from '../../shared/models/user.model';
+import { Instance } from '../../shared/models/instance.model';
+import { DashboardsHub } from '../../core/hubs/dashboards.hub';
+import { InstanceMenuItem } from '../models/instance-menu-item';
+
 
 @Component({
   selector: 'app-instance-list',
   templateUrl: './instance-list.component.html',
   styleUrls: ['./instance-list.component.sass']
 })
-export class InstanceListComponent implements OnInit {
-  constructor(private instanceService: InstanceService,
-              private collectedDataService: CollectedDataService,
-              private dataService: DataService,
-              private toastrService: ToastrService,
-              private authService: AuthService,
-              private dashboardsHub: DashboardsHub,
-              private userOrganizationService: UserOrganizationService,
-              private router: Router) {
-    this.instanceService.instanceAdded.subscribe(instance => this.onInstanceAdded(instance));
-    this.instanceService.instanceEdited.subscribe(instance => this.onInstanceEdited(instance));
+export class InstanceListComponent implements OnInit, OnDestroy {
+  constructor(
+    private instanceService: InstanceService,
+    private collectedDataService: CollectedDataService,
+    private dataService: DataService,
+    private toastrService: ToastrService,
+    private authService: AuthService,
+    private dashboardsHub: DashboardsHub,
+    private userOrganizationService: UserOrganizationService,
+    private router: Router
+  ) {
+    this.instanceService.instanceAdded
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(instance => this.onInstanceAdded(instance));
+    this.instanceService.instanceEdited
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(instance => this.onInstanceEdited(instance));
   }
 
+  private destroyed$ = new Subject<void>();
   menuItems: InstanceMenuItem[];
   user: User;
   currentGuidId: string;
@@ -43,9 +48,8 @@ export class InstanceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.collectedDataService.getBuilderData()
-      .subscribe(value => {
-        this.dataService.fakeCollectedData = value;
-      });
+      .subscribe(value => this.dataService.fakeCollectedData = value);
+
     this.authService.currentUser.subscribe(
       async user => {
         // check to prevent queries while it`s not necessary
@@ -67,11 +71,18 @@ export class InstanceListComponent implements OnInit {
         if (this.authService.getCurrentUserLS()) { this.configureInstances(this.user.lastPickedOrganizationId); }
       });
 
-    this.dashboardsHub.instanceCheckedSubObservable.subscribe(value => {
-      const instanceMenuItem = this.menuItems.find(value1 => value1.guidId === value.instanceGuidId);
-      instanceMenuItem.statusCheckedAt = value.statusCheckedAt;
-      this.instanceService.calculateStyle(instanceMenuItem);
-    });
+    this.dashboardsHub.instanceCheckedSubObservable
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(value => {
+        const instanceMenuItem = this.menuItems.find(value1 => value1.guidId === value.instanceGuidId);
+        instanceMenuItem.statusCheckedAt = value.statusCheckedAt;
+        this.instanceService.calculateStyle(instanceMenuItem);
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next(null);
+    this.destroyed$.complete();
   }
 
   checkInstancesStatus() {
@@ -104,10 +115,9 @@ export class InstanceListComponent implements OnInit {
       /* timer takes a second argument, how often to emit subsequent values
       in this case we will emit first value after 10 seconds and subsequent
       values every 5 seconds after */
-      const source = timer(1, 5000);
-      const subscribe = source.subscribe(val => {
-        this.checkInstancesStatus();
-      });
+      timer(1, 5000)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(() => this.checkInstancesStatus());
     });
   }
 
@@ -121,7 +131,7 @@ export class InstanceListComponent implements OnInit {
       routerLink: [`/user/instances/${instance.id}/${instance.guidId}/dashboards`],
       command: () => {
         this.currentGuidId = instance.guidId;
-        this.instanceService.instanceChecked.emit(instance);
+        this.instanceService.instanceChecked.next(instance);
       },
       items: [{
         label: 'Edit',
@@ -181,7 +191,7 @@ export class InstanceListComponent implements OnInit {
       this.popupMessage = 'Deleting instance';
 
       this.instanceService.delete(id).subscribe(() => {
-        this.instanceService.instanceRemoved.emit(id);
+        this.instanceService.instanceRemoved.next(id);
         this.toastrService.success('Deleted instance');
         this.menuItems.splice(index, 1);
         this.router.navigate([`instances`]);

@@ -1,33 +1,29 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormControl, FormBuilder } from '@angular/forms';
-import { FeedbackService } from '../core/services/feedback.service';
-import { AuthService } from '../core/services/auth.service';
-import { ToastrService } from '../core/services/toastr.service';
+import { FeedbackService, ToastrService, AuthService } from '../core/services';
 import { Feedback } from '../shared/models/feedback.model';
 import { User } from '../shared/models/user.model';
 import { LongAnswerType } from '../shared/models/long-answer-type.enum';
 import { ShortAnswerType } from '../shared/models/short-answer-type.enum';
-import { Router, RouterEvent, ActivatedRoute } from '@angular/router';
-
 
 @Component({
   selector: 'app-feedback',
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.sass'],
 })
-
 export class FeedbackComponent implements OnInit {
-
   feedback: Feedback;
   user: User;
-  isSubmiting: Boolean = false;
+  isSubmiting: boolean;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private feedbackService: FeedbackService,
     private toastrService: ToastrService,
-    private router: Router) { }
+    private router: Router
+  ) { }
 
   feedbackForm = this.fb.group({
     suggestions: new FormControl({ value: ' ', disabled: false }),
@@ -66,23 +62,21 @@ export class FeedbackComponent implements OnInit {
       this.isSubmiting = false;
       return;
     }
-    const newFeedback: Feedback = {
-      id: 0,
+    const newFeedback = {
       createdAt: new Date(),
       user: this.user,
-      text: text,
-      willUse: willUse,
-      informatively: informatively,
-      friendliness: friendliness,
-      quickness: quickness,
-      response: null,
+      text,
+      willUse,
+      informatively,
+      friendliness,
+      quickness,
       name: this.user.displayName,
       email: this.user.email
-    };
+    } as Feedback;
 
     this.feedbackService.create(newFeedback).
       subscribe(
-        value => {
+        () => {
           this.toastrService.success('Added new feedback');
           if (!this.user.email) {
             this.toastrService.info('If you want to receive emails, fill out the email field in Settings.');

@@ -42,7 +42,7 @@ export class UserListComponent implements OnInit {
   data: any;
   photoUrl: string;
   photoType: string;
-  display: Boolean = false;
+  display: boolean;
 
   @ViewChild('cropper') cropper: ImageCropperComponent;
 
@@ -168,7 +168,6 @@ export class UserListComponent implements OnInit {
   }
 
   showPopup(user: User) {
-    // debugger;
     this.user = user;
     this.subscribeOrganizationFormToData();
     this.displayPopup = true;
@@ -240,7 +239,6 @@ export class UserListComponent implements OnInit {
   }
 
   onImageSelected(upload) {
-    // debugger;
     const image: any = new Image();
     const reader: FileReader = new FileReader();
     const that = this;

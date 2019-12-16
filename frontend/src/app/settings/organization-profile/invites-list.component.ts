@@ -14,7 +14,6 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./invites-list.component.sass']
 })
 export class InvitesListComponent implements OnInit {
-
   @ViewChild('dt', { static: true }) dataView: DataView;
 
   invites: ShowInvite[] = [];
@@ -26,10 +25,12 @@ export class InvitesListComponent implements OnInit {
   isUpdating: boolean;
   updatingItem: number;
 
-  constructor(private organizationInvitesService: OrganizationInvitesService,
-              private organizationInvitesHub: OrganizationInvitesHub,
-              private authService: AuthService,
-              private toastrService: ToastrService) { }
+  constructor(
+    private organizationInvitesService: OrganizationInvitesService,
+    private organizationInvitesHub: OrganizationInvitesHub,
+    private authService: AuthService,
+    private toastrService: ToastrService
+  ) { }
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();
@@ -93,9 +94,9 @@ export class InvitesListComponent implements OnInit {
   }
 
   setCurrentPage(index: number) {
-      const paging = {
-        first: index,
-        rows: this.rowsPerPage
+    const paging = {
+      first: index,
+      rows: this.rowsPerPage
     };
     this.dataView.paginate(paging);
   }
@@ -104,7 +105,7 @@ export class InvitesListComponent implements OnInit {
     this.organizationInvitesHub.onAddInvite.subscribe((invite: OrganizationInvite) => {
       invite.experationDate = new Date(invite.experationDate);
       this.invites.push({
-        invite: invite,
+        invite,
         showLink: this.fullLink(invite.link)
       });
     });

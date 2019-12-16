@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChatService } from '../../core/services/chat.service';
 import { NotificationType } from '../../shared/models/notification-type.enum';
 
@@ -7,14 +7,12 @@ import { NotificationType } from '../../shared/models/notification-type.enum';
   templateUrl: './system-notification.component.html',
   styleUrls: ['./system-notification.component.sass']
 })
-export class SystemNotificationComponent implements OnInit {
+export class SystemNotificationComponent {
 
   constructor(private chatService: ChatService) { }
   type = NotificationType;
 
-  ngOnInit() { }
-
-  openChat(id) {
-    this.chatService.openChatClick.emit(id);
+  openChat(id: number) {
+    this.chatService.openChatClick.next(id);
   }
 }

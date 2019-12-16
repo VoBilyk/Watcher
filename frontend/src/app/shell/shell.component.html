@@ -1,7 +1,7 @@
 <app-header></app-header>
 <app-left-side-menu *ngIf="!showInstanceList"></app-left-side-menu>
-<app-instance-list  *ngIf="showInstanceList"></app-instance-list>
+<app-instance-list *ngIf="showInstanceList"></app-instance-list>
 <div class="content">
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </div>
 <app-chat></app-chat>

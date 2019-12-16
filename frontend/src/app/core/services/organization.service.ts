@@ -1,5 +1,5 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { ApiService } from './api.service';
 import { Organization } from '../../shared/models/organization.model';
 
@@ -7,7 +7,7 @@ import { Organization } from '../../shared/models/organization.model';
 export class OrganizationService {
   private readonly ctrlUrl = 'organizations';
 
-  organizationChanged = new EventEmitter<object>();
+  organizationChanged = new Subject<{ from: number, to: number }>();
 
   constructor(private apiService: ApiService) {
   }

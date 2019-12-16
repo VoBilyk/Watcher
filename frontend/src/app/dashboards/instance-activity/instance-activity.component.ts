@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CollectorLog } from '../../shared/models/collector-log.model';
 import { CollectorLogService } from '../../core/services/collector-log.service';
 import { CollectorLogLevel } from '../../shared/models/log-level.enum';
@@ -14,9 +14,10 @@ export class InstanceActivityComponent implements OnInit {
   logs: CollectorLog[] = [];
   instanceId: string;
 
-  constructor(private activateRoute: ActivatedRoute,
-    private router: Router,
-    private collectorLogService: CollectorLogService) { }
+  constructor(
+    private activateRoute: ActivatedRoute,
+    private collectorLogService: CollectorLogService
+  ) { }
 
   ngOnInit() {
     this.activateRoute.params.subscribe(params => {
@@ -26,7 +27,7 @@ export class InstanceActivityComponent implements OnInit {
         this.collectorLogService.getAllLogs(this.instanceId).subscribe((data: CollectorLog[]) => {
           if (data && data.length) {
             this.logs = data.map(log =>
-            Object.assign({}, log, {logLevelName: CollectorLogLevel[log.logLevel]}));
+              Object.assign({}, log, { logLevelName: CollectorLogLevel[log.logLevel] }));
           }
         });
       }
@@ -37,12 +38,10 @@ export class InstanceActivityComponent implements OnInit {
     if (this.instanceId) {
       this.collectorLogService.getAllLogs(this.instanceId).subscribe((data: CollectorLog[]) => {
         if (data) {
-          console.log(data);
           this.logs = data.map(log =>
-          Object.assign({}, log, {logLevelName: CollectorLogLevel[log.logLevel]}));
+            Object.assign({}, log, { logLevelName: CollectorLogLevel[log.logLevel] }));
         }
       });
     }
   }
-
 }

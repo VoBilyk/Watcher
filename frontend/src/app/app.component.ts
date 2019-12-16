@@ -1,24 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './core/services/auth.service';
+import { ThemeService, AuthService } from './core/services';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private themeService: ThemeService) { }
 
   async ngOnInit() {
     if (!this.authService.isAuthorized()) {
       await this.authService.populate();
     }
 
-    // const user = this.authService.getCurrentUserLS();
-    // if (user) {
-    //   const themeId = user.lastPickedOrganization.themeId;
-    //   if (themeId) {
-    //     this.themeService.applyThemeById(themeId);
-    //   }
-    // }
+    const user = this.authService.getCurrentUserLS();
+    if (user && user.lastPickedOrganization && user.lastPickedOrganization.themeId) {
+      this.themeService.applyThemeById(user.lastPickedOrganization.themeId);
+    }
   }
 }

@@ -95,7 +95,7 @@ export class EditInstanceComponent implements OnInit {
       const request = this.getNewInstance();
       if (this.id) {
         request.guidId = this.instance.guidId;
-        this.instanceService.update(request, this.id).subscribe((res: Response) => {
+        this.instanceService.update(request, this.id).subscribe(() => {
           this.toastrService.success('updated instance');
 
           const updatedInstance: Instance = {
@@ -106,14 +106,14 @@ export class EditInstanceComponent implements OnInit {
               statusCheckedAt: this.instance.statusCheckedAt
             };
 
-          this.instanceService.instanceEdited.emit(updatedInstance);
+          this.instanceService.instanceEdited.next(updatedInstance);
           this.router.navigate([`/user/instances/${updatedInstance.id}/${this.instance.guidId}/dashboards`]);
           this.isSaving = false;
         });
       } else {
         this.instanceService.create(request).subscribe((res: Instance) => {
           this.toastrService.success('created instance');
-          this.instanceService.instanceAdded.emit(res);
+          this.instanceService.instanceAdded.next(res);
           this.router.navigate([`/user/instances/${res.id}/${res.guidId}/dashboards`]);
           this.isSaving = false;
         });

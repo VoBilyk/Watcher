@@ -1,8 +1,9 @@
-// hr
-//     border: 0
-//     height: 0
-//     border-top: 1px solid rgba(0, 0, 0, 0.1)
-//     border-bottom: 1px solid rgba(255, 255, 255, 0.3)
+\:host
+    width: 50vw
+    float: right
+    margin-right: 25vw
+    margin-top: 20px
+
 hr
     margin: 1px
     height: 1px
@@ -23,16 +24,10 @@ hr
     font-size: 22px
     font-weight: normal
 
-.center
-    width: 50vw
-    float: right
-    margin-right: 25vw
-    margin-top: 20px
-
 textarea
     width: 100%
 
 @media screen and (max-width: 700px)
-    .center
+    \:host
         width: 70vw
         margin-right: 15vw

@@ -38,9 +38,9 @@ export class HeaderComponent implements OnInit {
   adminItems: MenuItem[];
   cogItems: MenuItem[];
   orgItems: MenuItem[];
-  displayAddNewOrganization = false;
-  isChangingOrganization: Boolean = false;
-  popupMessage: String = 'Loading';
+  displayAddNewOrganization: boolean;
+  isChangingOrganization: boolean;
+  popupMessage = 'Loading';
 
   constructor(
     private tokenService: TokenService,
@@ -60,11 +60,11 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/user/feedback']);
   }
 
-  changeCounter(number) {
-    this.notificationCounter = number;
+  changeCounter(amount: number) {
+    this.notificationCounter = amount;
   }
 
-  logout(): void {
+  logout() {
     this.userSubscription.unsubscribe();
     this.currentUser = null;
     this.themeService.setDefaultTheme();
@@ -204,7 +204,7 @@ export class HeaderComponent implements OnInit {
         this.currentUser.lastPickedOrganization = item;
         this.authService.updateCurrentUser(this.currentUser); // update user in localStorage
 
-        this.organizationService.organizationChanged.emit({ from: previousOrganizationId, to: item.id });
+        this.organizationService.organizationChanged.next({ from: previousOrganizationId, to: item.id });
 
         // notify user about changes
         this.toastrService.success(`Organization by default was updated. Current organization: "${item.name}"`);

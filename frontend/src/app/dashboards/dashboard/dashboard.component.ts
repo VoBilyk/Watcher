@@ -1,29 +1,29 @@
-import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {MenuItem} from 'primeng/api';
+import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { MenuItem } from 'primeng/api';
 
-import {ToastrService} from '../../core/services/toastr.service';
-import {InstanceService} from '../../core/services/instance.service';
-import {DashboardService} from '../../core/services/dashboard.service';
-import {DataService} from '../../core/services/data.service';
-import {ChartService} from '../../core/services/chart.service';
-import {CollectedDataService} from '../../core/services/collected-data.service';
+import { ToastrService } from '../../core/services/toastr.service';
+import { InstanceService } from '../../core/services/instance.service';
+import { DashboardService } from '../../core/services/dashboard.service';
+import { DataService } from '../../core/services/data.service';
+import { ChartService } from '../../core/services/chart.service';
+import { CollectedDataService } from '../../core/services/collected-data.service';
 
-import {DashboardsHub} from '../../core/hubs/dashboards.hub';
+import { DashboardsHub } from '../../core/hubs/dashboards.hub';
 
-import {defaultOptions} from '../charts/models/chart-options';
-import {DashboardMenuItem} from '../models';
-import {DashboardChart} from '../models/dashboard-chart';
-import {Dashboard} from '../../shared/models/dashboard.model';
-import {DashboardRequest} from '../../shared/models/dashboard-request.model';
-import {CollectedData} from '../../shared/models/collected-data.model';
+import { defaultOptions } from '../charts/models/chart-options';
+import { DashboardMenuItem } from '../models';
+import { DashboardChart } from '../models/dashboard-chart';
+import { Dashboard } from '../../shared/models/dashboard.model';
+import { DashboardRequest } from '../../shared/models/dashboard-request.model';
+import { CollectedData } from '../../shared/models/collected-data.model';
 
-import {UserOrganizationService} from '../../core/services/user-organization.service';
-import {ChartType} from '../../shared/models/chart-type.enum';
-import {CollectedDataType} from '../../shared/models/collected-data-type.enum';
+import { UserOrganizationService } from '../../core/services/user-organization.service';
+import { ChartType } from '../../shared/models/chart-type.enum';
+import { CollectedDataType } from '../../shared/models/collected-data-type.enum';
 import { OrganizationService } from '../../core/services/organization.service';
-
 
 @Component({
   selector: 'app-dashboard',
@@ -31,9 +31,8 @@ import { OrganizationService } from '../../core/services/organization.service';
   styleUrls: ['./dashboard.component.sass']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  private paramsSubscription: Subscription;
   private instanceGuidId: string;
-
+  private destroyed$ = new Subject<void>();
   onDisplayChartEditing = new EventEmitter<boolean>();
 
   instanceId: number;
@@ -46,39 +45,49 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isLoading = false;
   displayEditDashboard = false;
   cogItems: MenuItem[];
-  chartToEdit = {...defaultOptions};
+  chartToEdit = { ...defaultOptions };
   isManager: boolean;
 
-  constructor(private dashboardsService: DashboardService,
-              private organizationService: OrganizationService,
-              private collectedDataService: CollectedDataService,
-              private instanceService: InstanceService,
-              private dashboardsHub: DashboardsHub,
-              private toastrService: ToastrService,
-              private activateRoute: ActivatedRoute,
-              private dataService: DataService,
-              private chartService: ChartService,
-              private userOrganizationService: UserOrganizationService) {
-  }
+  constructor(
+    private dashboardsService: DashboardService,
+    private organizationService: OrganizationService,
+    private collectedDataService: CollectedDataService,
+    private instanceService: InstanceService,
+    private dashboardsHub: DashboardsHub,
+    private toastrService: ToastrService,
+    private activateRoute: ActivatedRoute,
+    private dataService: DataService,
+    private chartService: ChartService,
+    private userOrganizationService: UserOrganizationService
+  ) { }
 
-  async ngOnInit(): Promise<void> {
-    this.instanceService.instanceRemoved.subscribe(instance => this.onInstanceRemoved(instance));
-    this.paramsSubscription = this.activateRoute.params.subscribe(par => this.onInstanceChanged(par));
+  ngOnInit() {
+    this.instanceService.instanceRemoved
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(instance => this.onInstanceRemoved(instance));
+
+    this.activateRoute.params
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(par => this.onInstanceChanged(par));
+
     this.createCogItems();
     this.subscribeToCollectedData();
 
-    this.organizationService.organizationChanged.subscribe( ({from, to}) => {
-      this.dashboardsHub.unSubscribeFromOrganizationById(from);
-      this.dashboardsHub.subscribeToOrganizationById(to);
-      this.instanceId = null;
-    });
+    this.organizationService.organizationChanged
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(({ from, to }) => {
+        this.dashboardsHub.unSubscribeFromOrganizationById(from);
+        this.dashboardsHub.subscribeToOrganizationById(to);
+        this.instanceId = null;
+      });
   }
 
   ngOnDestroy(): void {
-    this.paramsSubscription.unsubscribe();
+    this.destroyed$.next(null);
+    this.destroyed$.complete();
   }
 
-  onInstanceChanged(params) {
+  onInstanceChanged(params: Params) {
     this.isLoading = true;
 
     if (this.instanceGuidId) {
@@ -95,10 +104,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-
     this.getDashboardsByInstanceId(this.instanceId).then(value => {
       this.onDashboards(value);
       this.collectedDataService.getCollectedDataByInstanceId(this.instanceGuidId, CollectedDataType.Accumulation)
+        .pipe(takeUntil(this.destroyed$))
         .subscribe(data => {
           this.dataService.hourlyCollectedData = data;
           if (this.dataService.hourlyCollectedData && this.dataService.hourlyCollectedData.length > 0) {
@@ -113,8 +122,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.dashboardsHub.connectionEstablished$.subscribe(established => {
             if (established) {
               this.dashboardsHub.subscribeToInstanceById(this.instanceGuidId);
-            } else {
-
             }
           });
           this.isLoading = false;
@@ -131,22 +138,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   subscribeToCollectedData(): void {
-    this.dashboardsHub.infoSubObservable.subscribe((latestData: CollectedData) => {
-      this.dataService.pushLatestCollectedData(latestData);
-      if (!this.activeDashboardItem || !this.activeDashboardItem.charts || this.activeDashboardItem.charts.length < 1) {
-        return;
-      }
-      for (let i = 0; i < this.activeDashboardItem.charts.length; i++) {
-        switch (this.activeDashboardItem.charts[i].type) {
-          case ChartType.ResourcesTable:
-            this.activeDashboardItem.charts[i].colectedData = latestData;
-            break;
-          default:
-            this.dataService.fulfillChart(this.dataService.hourlyCollectedData, this.activeDashboardItem.charts[i], false);
-            break;
+    this.dashboardsHub.infoSubObservable
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((latestData: CollectedData) => {
+        this.dataService.pushLatestCollectedData(latestData);
+        if (!this.activeDashboardItem || !this.activeDashboardItem.charts || this.activeDashboardItem.charts.length < 1) {
+          return;
         }
-      }
-    });
+
+        this.activeDashboardItem.charts.forEach(chart => {
+          switch (chart.type) {
+            case ChartType.ResourcesTable:
+              chart.colectedData = latestData;
+              break;
+            default:
+              this.dataService.fulfillChart(this.dataService.hourlyCollectedData, chart, false);
+              break;
+          }
+        });
+      });
   }
 
   async getDashboardsByInstanceId(id: number): Promise<Dashboard[]> {
@@ -192,11 +202,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const createRequest = this.chartService.instantiateCreateDashboardRequest(title, instanceId, charts);
     this.dashboardsService.create(createRequest)
       .subscribe((dto) => {
-          const item: DashboardMenuItem = this.transformToMenuItem(dto);
-          this.dashboardMenuItems.unshift(item);
-          this.activeDashboardItem = this.dashboardMenuItems[0];
-          this.toastrService.success('Successfully added new dashboard!');
-        },
+        const item: DashboardMenuItem = this.transformToMenuItem(dto);
+        this.dashboardMenuItems.unshift(item);
+        this.activeDashboardItem = this.dashboardMenuItems[0];
+        this.toastrService.success('Successfully added new dashboard!');
+      },
         error => {
           this.toastrService.error(`Error occurred status: ${error}`);
         });
@@ -223,19 +233,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   deleteDashboard(dashboard: DashboardMenuItem): void {
     this.dashboardsService.delete(dashboard.dashId)
       .subscribe((res: Response) => {
-          // Search and delete selected Item
-          const index = this.dashboardMenuItems.findIndex(d => d === this.activeDashboardItem);
-          this.dashboardMenuItems.splice(index, 1);
+        // Search and delete selected Item
+        const index = this.dashboardMenuItems.findIndex(d => d === this.activeDashboardItem);
+        this.dashboardMenuItems.splice(index, 1);
 
-          // [0] - is + button
-          if (this.dashboardMenuItems.length > 1) {
-            this.activeDashboardItem = this.dashboardMenuItems[0];
-          } else {
-            this.activeDashboardItem = null;
-          }
+        // [0] - is + button
+        if (this.dashboardMenuItems.length > 1) {
+          this.activeDashboardItem = this.dashboardMenuItems[0];
+        } else {
+          this.activeDashboardItem = null;
+        }
 
-          this.toastrService.success('Successfully deleted dashboard!');
-        },
+        this.toastrService.success('Successfully deleted dashboard!');
+      },
         error => {
           this.toastrService.error(`Error occurred status: ${error}`);
         });
@@ -293,7 +303,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const label = this.dashboardMenuItems[index].label.slice();
 
         this.dashboardMenuItems[index] = {
-          label: label,
+          label,
           dashId: this.dashboardMenuItems[index].dashId,
           createdAt: this.dashboardMenuItems[index].createdAt,
           charts: this.dashboardMenuItems[index].charts,
@@ -330,8 +340,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   decomposeChart(chart: DashboardChart): void {
-    this.chartToEdit = {...chart};
-    this.chartToEdit.colorScheme = {...chart.colorScheme};
+    this.chartToEdit = { ...chart };
+    this.chartToEdit.colorScheme = { ...chart.colorScheme };
     this.chartToEdit.type = chart.type;
   }
 
@@ -350,14 +360,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fillDashboardChartsWithData(dashboardItem: DashboardMenuItem): void {
-    for (let j = 0; j < dashboardItem.charts.length; j++) {
-      this.dataService.fulfillChart(this.dataService.hourlyCollectedData, dashboardItem.charts[j], false);
-    }
-    // for (let i = 0; i < this.dashboardMenuItems.length - 1; i++) {
-    //   for (let j = 0; j < this.dashboardMenuItems[i].charts.length; j++) {
-    //     this.dataService.fulfillChart(this.dataService.hourlyCollectedData, this.dashboardMenuItems[i].charts[j]);
-    //   }
-    // }
+    dashboardItem.charts.forEach(chart => this.dataService.fulfillChart(this.dataService.hourlyCollectedData, chart, false));
   }
 
   onInstanceRemoved(id: number): void {
@@ -378,16 +381,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.showChartCreating();
       },
     },
-      {
-        label: 'Edit',
-        icon: 'fa fa-fw fa-edit',
-        command: () => this.showCreatePopup(false),
-      },
-      {
-        label: 'Delete',
-        icon: 'fa fa-fw fa-remove',
-        command: () => this.delete(),
-      }
+    {
+      label: 'Edit',
+      icon: 'fa fa-fw fa-edit',
+      command: () => this.showCreatePopup(false),
+    },
+    {
+      label: 'Delete',
+      icon: 'fa fa-fw fa-remove',
+      command: () => this.delete(),
+    }
     ];
   }
 }

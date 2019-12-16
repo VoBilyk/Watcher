@@ -15,7 +15,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class LandingComponent implements OnInit, OnDestroy {
 
-  isAbout: Boolean = false;
+  isAbout: boolean;
   name: string;
   email: string;
   text: string;

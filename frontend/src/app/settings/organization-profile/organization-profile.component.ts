@@ -63,7 +63,7 @@ export class OrganizationProfileComponent implements OnInit {
 
   @ViewChild('cropper') cropper: ImageCropperComponent;
   cropperSettings: CropperSettings;
-  display: Boolean = false;
+  display: boolean;
   imageUrl = '';
   imageType: string;
   data: any;
@@ -74,9 +74,9 @@ export class OrganizationProfileComponent implements OnInit {
 
   user: User;
 
-  isUpdating: Boolean = false;
-  isInviting: Boolean = false;
-  isSending: Boolean = false;
+  isUpdating: boolean;
+  isInviting: boolean;
+  isSending: boolean;
 
   ngOnInit() {
     if (this.themeDropdown.length === 0) {
@@ -167,16 +167,15 @@ export class OrganizationProfileComponent implements OnInit {
         this.toastrService.success('Organization Invite was created');
         this.invite = value;
         this.inviteLink = `${environment.client_url}/invite/${value.link}`;
-        this.isInviting = false;
       },
-      err => {
+      () => {
         this.toastrService.error('Organization Invite was not created');
-        this.isInviting = false;
-      });
+      },
+      () => this.isInviting = false);
   }
 
   onSentInviteToEmail() {
-    if (this.inviteEmail === null) { return; }
+    if (!this.inviteEmail) { return; }
     this.invite.inviteEmail = this.inviteEmail;
     this.isSending = true;
     this.organizationInvitesService.update(this.invite.id, this.invite).subscribe(
@@ -205,19 +204,18 @@ export class OrganizationProfileComponent implements OnInit {
     this.toastrService.info('Invitation link was copied to clipboard');
   }
 
-  onImageSelected(upload: File[]) {
-    const image: any = new Image();
-    const reader: FileReader = new FileReader();
-    const that = this;
-    this.imageType = upload[0].type;
-    reader.onloadend = (eventLoad: any) => {
-      image.src = eventLoad.target.result;
-      that.cropper.setImage(image);
+  onImageSelected(uploads: File[]) {
+    const image = new Image();
+    const reader = new FileReader();
+    this.imageType = uploads[0].type;
+    reader.onloadend = (eventLoad: ProgressEvent<FileReader>) => {
+      image.src = eventLoad.target.result as string;
+      this.cropper.setImage(image);
       this.display = true;
     };
 
-    reader.readAsDataURL(upload[0]);
-    upload.splice(0, upload.length);
+    reader.readAsDataURL(uploads[0]);
+    uploads.splice(0, uploads.length);
   }
 
   onCropCancel() {
@@ -250,6 +248,7 @@ export class OrganizationProfileComponent implements OnInit {
       { label: 'Default', value: 'Default' },
       { label: 'Orange', value: 'Darkness' },
       { label: 'Lightness', value: 'Lightness' },
-      { label: 'Voclain', value: 'Voclain' });
+      { label: 'Voclain', value: 'Voclain' }
+    );
   }
 }
