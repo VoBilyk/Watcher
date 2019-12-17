@@ -16,6 +16,8 @@ namespace DataAccumulator.Shared.Models
 
         public LogLevel LogLevel { get; set; }
 
+        public ActionLogDto() { }
+
         public ActionLogDto(string message, DateTime timestamp, LogLevel logLevel)
         {
             Message = message;

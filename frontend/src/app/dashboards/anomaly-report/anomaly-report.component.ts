@@ -6,9 +6,7 @@ import { InstanceAnomalyReport } from '../../shared/models/instance-anomaly-repo
 import { ActivatedRoute } from '@angular/router';
 import { AnomalyReportRequest } from '../../shared/models/anomaly-report-request.model';
 import { ToastrService } from '../../core/services/toastr.service';
-import { date_sort_asc } from '../charts/models';
 import { Calendar } from 'primeng/calendar';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-anomaly-report',
@@ -39,7 +37,8 @@ export class AnomalyReportComponent implements OnInit {
   constructor(
     private anomalyReportService: AnomalyReportService,
     private activateRoute: ActivatedRoute,
-    private toastrService: ToastrService) { }
+    private toastrService: ToastrService
+  ) { }
 
   ngOnInit() {
     this.types = [
@@ -52,7 +51,7 @@ export class AnomalyReportComponent implements OnInit {
     this.selectedType = this.types[0].value;
 
     this.activateRoute.params.subscribe(params => {
-      this.id = params['guidId'];
+      this.id = params.guidId;
     });
   }
 
@@ -97,16 +96,12 @@ export class AnomalyReportComponent implements OnInit {
 
   getInfo(): void {
     this.isGetting = true;
-    this.anomalyReportService.getDataByInstanceIdAndTypeInTime(this.createRequest()).subscribe((data: InstanceAnomalyReport[]) => {
-      data.forEach(item => {
-        item.date = new Date(item.date);
-        item.htmlDocUrl = `${environment.client_url}//${item.htmlDocUrl}`;
+    this.anomalyReportService.getDataByInstanceIdAndTypeInTime(this.createRequest())
+      .subscribe((data: InstanceAnomalyReport[]) => {
+        data.forEach(item => item.date = new Date(item.date));
+        this.reports = data;
+        this.isGetting = false;
       });
-      this.sortByDueDate(data);
-      this.reports = data;
-
-      this.isGetting = false;
-    });
   }
 
   private createRequest(): AnomalyReportRequest {
@@ -121,42 +116,29 @@ export class AnomalyReportComponent implements OnInit {
   async onDelete(rowData: InstanceAnomalyReport) {
     this.isDeletingOne = true;
     if (await this.toastrService.confirm('You sure you want to delete report ?')) {
-      this.anomalyReportService.deleteData(rowData).subscribe((value) => {
+      this.anomalyReportService.deleteData(rowData).subscribe(
+        () => {
         this.toastrService.success('Deleted report');
         this.isDeletingOne = false;
         this.reports.splice(this.reports.indexOf(rowData), 1);
       },
-        (error) => this.toastrService.error('Report wasn`t deleted'));
+        () => this.toastrService.error('Report wasn`t deleted'));
     }
   }
 
   async onDeleteAll() {
     this.isDeleting = true;
     if (await this.toastrService.confirm('You sure you want to delete ALL reports ?')) {
-      this.anomalyReportService.deleteAllData(this.id).subscribe((value) => {
-        this.toastrService.success('Deleted reports');
-        this.isDeleting = false;
-      },
-        (error) => this.toastrService.error('Reports were not deleted'));
+      this.anomalyReportService.deleteAllData(this.id).subscribe(
+        () => {
+          this.toastrService.success('Deleted reports');
+          this.isDeleting = false;
+        },
+        () => this.toastrService.error('Reports were not deleted'));
     }
   }
 
-  private sortByDueDate(value) {
-    value.sort((a, b) => date_sort_asc(a, b));
-  }
-
-  onCopy(link: string) {
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = link;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-    this.toastrService.info('Link was copied to clipboard');
+  openLink(url: string) {
+    window.open(url, '_blank').focus();
   }
 }

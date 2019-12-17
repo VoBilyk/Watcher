@@ -54,7 +54,7 @@ namespace Watcher
         {
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
                 {
-                    builder.WithOrigins("http://watcher.loc.com", "http://watcher.com")
+                    builder.WithOrigins(Configuration.GetValue<string>("ClientUrl"))
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -274,7 +274,7 @@ namespace Watcher
             else
             {
                 services.AddScoped<IFileStorageProvider, LocalFileStorageProvider>(
-                    prov => new LocalFileStorageProvider());
+                    prov => new LocalFileStorageProvider(Configuration));
             }
         }
 

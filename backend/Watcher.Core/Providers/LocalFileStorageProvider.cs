@@ -2,17 +2,21 @@
 using System.IO;
 using System.Threading.Tasks;
 using Watcher.Core.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Watcher.Common.Enums;
+using Watcher.Common.Helpers.Utils;
 
 namespace Watcher.Core.Providers
 {
-    using Microsoft.AspNetCore.Http;
-
-    using Watcher.Common.Enums;
-    using Watcher.Common.Helpers.Utils;
-
     public class LocalFileStorageProvider : IFileStorageProvider
     {
-        public LocalFileStorageProvider() { }
+        private readonly string rootUrl;
+
+        public LocalFileStorageProvider(IConfiguration configuration)
+        {
+            rootUrl = configuration.GetValue<string>("ClientUrl");
+        }
 
         public async Task<string> UploadFormFileAsync(IFormFile formFile)
         {
@@ -42,7 +46,7 @@ namespace Watcher.Core.Providers
 
         public Task<string> UploadHtmlFileAsync(string htmlString, Guid reportId)
         {
-            var folderPath = GetFolderPath("Documents");
+            var folderPath = GetFolderPath("documents");
 
             string filename = Guid.NewGuid().ToString() + ".html";
 
@@ -107,10 +111,10 @@ namespace Watcher.Core.Providers
 
         private string ConvertToUri(string path)
         {
-            Uri uri1 = new Uri(path);
-            Uri uri2 = new Uri(new FileInfo(path).Directory.FullName);
-            Uri relativeUri = uri2.MakeRelativeUri(uri1);
-            return relativeUri.ToString();
+            var uri1 = new Uri(path);
+            var uri2 = new Uri(new FileInfo(path).Directory.FullName);
+            var relativeUri = uri2.MakeRelativeUri(uri1);
+            return $"{rootUrl}/{relativeUri.ToString()}";
         }
 
         private string ConvertToAbsolutePath(string relativePath)
