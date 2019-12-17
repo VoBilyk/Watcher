@@ -144,12 +144,10 @@
             var entity = _mapper.Map<UserRegisterRequest, User>(request);
             entity.NotificationSettings = CreateNotificationSetting();
 
-            var newPhotoUrl = await _fileStorageProvider.UploadFileFromStreamAsync(
-                                  string.IsNullOrWhiteSpace(entity.PhotoURL)
-                                      ? "https://bsawatcherfiles.blob.core.windows.net/watcher/9c2c0291-728d-4e7b-bcb7-3b9432cb8733.png" // Standart photo path
-                                      : entity.PhotoURL);
-
-            entity.PhotoURL = newPhotoUrl;
+            if (!string.IsNullOrWhiteSpace(entity.PhotoURL))
+            {
+                entity.PhotoURL = await _fileStorageProvider.UploadFileFromStreamAsync(entity.PhotoURL);
+            }
 
             var createdUser = await _uow.UsersRepository.CreateAsync(entity);
             var result = await _uow.SaveAsync();
@@ -165,8 +163,6 @@
                         IsActive = true,
                         CreatedByUserId = entity.Id,
                         ThemeId = 1
-                        //ImageURL = await _fileStorageProvider.UploadFileFromStreamAsync(
-                        //    "https://bsawatcherfiles.blob.core.windows.net/watcher/9580e672-01f4-4429-9d04-4f8d1984b25b.png")
                     };
                     createdUser.UserOrganizations.Add(
                         new UserOrganization

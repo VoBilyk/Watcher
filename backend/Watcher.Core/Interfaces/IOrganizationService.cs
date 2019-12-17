@@ -21,7 +21,5 @@
         Task<bool> UpdateEntityByIdAsync(OrganizationUpdateRequest request, int id);
 
         Task<bool> DeleteEntityByIdAsync(int id);
-
-        Task Logo();
     }
 }

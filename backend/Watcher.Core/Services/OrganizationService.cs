@@ -1,27 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Watcher.Common.Dtos;
+using Watcher.Common.Requests;
+using Watcher.Core.Interfaces;
+using Watcher.DataAccess.Entities;
+using Watcher.DataAccess.Interfaces;
 
 namespace Watcher.Core.Services
 {
-    using AutoMapper;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Watcher.Common.Dtos;
-    using Watcher.Common.Requests;
-    using Watcher.Core.Interfaces;
-    using Watcher.DataAccess.Entities;
-    using Watcher.DataAccess.Interfaces;
-
     public class OrganizationService : IOrganizationService
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-        private readonly IFileStorageProvider _fileStorageProvider;
 
-        public OrganizationService(IUnitOfWork uow, IMapper mapper, IFileStorageProvider fileStorageProvider)
+        public OrganizationService(IUnitOfWork uow, IMapper mapper)
         {
             _uow = uow;
             _mapper = mapper;
-            _fileStorageProvider = fileStorageProvider;
         }
 
         public async Task<IEnumerable<OrganizationDto>> GetAllEntitiesAsync()
@@ -81,9 +78,6 @@ namespace Watcher.Core.Services
             var entity = _mapper.Map<OrganizationRequest, Organization>(request);
             entity.ThemeId = 1;
             var result = false;
-
-            entity.ImageURL = await _fileStorageProvider.UploadFileFromStreamAsync(
-                "https://bsawatcherfiles.blob.core.windows.net/watcher/9580e672-01f4-4429-9d04-4f8d1984b25b.png");
 
             var CreatedEntity = await _uow.OrganizationRepository.CreateAsync(entity);
             result = await _uow.SaveAsync();
@@ -162,21 +156,6 @@ namespace Watcher.Core.Services
             var result = await _uow.SaveAsync();
 
             return result;
-        }
-
-        public async Task Logo()
-        {
-            var organizations =
-                await _uow.OrganizationRepository.GetRangeAsync(1, int.MaxValue, o => o.ImageURL == null);
-
-            foreach (var organization in organizations)
-            {
-                organization.ImageURL = await _fileStorageProvider.UploadFileFromStreamAsync(
-                    "https://bsawatcherfiles.blob.core.windows.net/watcher/9580e672-01f4-4429-9d04-4f8d1984b25b.png");
-                await _uow.OrganizationRepository.UpdateAsync(organization);
-            }
-
-            await _uow.SaveAsync();
         }
     }
 }

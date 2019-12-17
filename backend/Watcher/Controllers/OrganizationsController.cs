@@ -215,13 +215,5 @@
 
             return NoContent();
         }
-
-        [HttpPost("logo")]
-        public virtual async Task<ActionResult> Logo()
-        {
-            await _organizationService.Logo();
-
-            return Ok();
-        }
     }
 }
