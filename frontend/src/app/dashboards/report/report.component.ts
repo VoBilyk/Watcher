@@ -46,7 +46,7 @@ export class ReportComponent implements OnInit {
   totalRecords: number;
 
   chartToEdit = { ...defaultOptions };
-  charts: DashboardChart[];
+  charts: DashboardChart[] = [];
 
   editChartIndex: number;
   edit: boolean;
@@ -136,7 +136,7 @@ export class ReportComponent implements OnInit {
     this.calendarFilter2.dateFormat = 'dd/mm/yy';
 
     const x = this.activateRoute.params.subscribe(params => {
-      this.id = params['guidId'];
+      this.id = params.guidId;
     });
   }
 

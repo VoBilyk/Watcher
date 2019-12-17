@@ -1,4 +1,5 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
@@ -8,13 +9,11 @@ import { NotificationType } from '../../shared/models/notification-type.enum';
 
 @Injectable()
 export class NotificationsHubService {
-  private hubConnection: HubConnection | undefined;
+  private hubConnection: HubConnection;
   private isConnect: boolean;
 
-  notificationReceived = new EventEmitter<Notification>();
-  notificationDeleted = new EventEmitter<number>();
-
-  connectionEstablished = new EventEmitter<Boolean>();
+  notificationReceived = new Subject<Notification>();
+  notificationDeleted = new Subject<number>();
 
   constructor(private authService: AuthService) {
     this.startNotificationsHubConnection();
@@ -30,8 +29,8 @@ export class NotificationsHubService {
   }
 
   private startNotificationsHubConnection(): void {
-    if (!this.authService.getCurrentUserLS()) { return; }
-    if (this.isConnect) { return; }
+    if (!this.authService.getCurrentUserLS() || this.isConnect) { return; }
+
     this.authService.getTokens().subscribe( ([firebaseToken, watcherToken]) => {
       this.createConnection(firebaseToken, watcherToken);
       console.log('NotificationsHub trying to connect');
@@ -46,14 +45,14 @@ export class NotificationsHubService {
 
   send(notification: Notification, type: NotificationType) {
     if (this.hubConnection) {
-      this.hubConnection.invoke('SendNotification', notification, type)
+      return this.hubConnection.invoke('SendNotification', notification, type)
         .catch(err => console.error(err));
     }
   }
 
   delete(notification: Notification) {
     if (this.hubConnection) {
-      this.hubConnection.invoke('DeleteNotification', notification)
+      return this.hubConnection.invoke('DeleteNotification', notification)
         .catch(err => console.error(err));
     }
   }
@@ -61,12 +60,12 @@ export class NotificationsHubService {
   private registerOnServerEvents(): void {
     this.hubConnection.on('AddNotification', (data: Notification) => {
       console.log('Notification added');
-      this.notificationReceived.emit(data);
+      this.notificationReceived.next(data);
     });
 
     this.hubConnection.on('DeleteNotification', (data: number) => {
       console.log('Notification deleted');
-      this.notificationDeleted.emit(data);
+      this.notificationDeleted.next(data);
     });
 
     this.hubConnection.onclose(err => {
@@ -78,8 +77,10 @@ export class NotificationsHubService {
   }
 
   public disconnect() {
-    this.notificationReceived = new EventEmitter<Notification>();
-    this.notificationDeleted = new EventEmitter<number>();
-    this.connectionEstablished = new EventEmitter<Boolean>();
+    this.notificationReceived.complete();
+    this.notificationReceived = new Subject<Notification>();
+
+    this.notificationDeleted.complete();
+    this.notificationDeleted = new Subject<number>();
   }
 }

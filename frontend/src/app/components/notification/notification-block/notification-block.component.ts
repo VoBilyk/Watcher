@@ -50,7 +50,7 @@ export class NotificationBlockComponent implements OnInit {
   }
 
   private subscribeToEvents(): void {
-    this.notificationsHubService.notificationReceived.subscribe((value: Notification) => {
+    this.notificationsHubService.notificationReceived.subscribe(value => {
       this.notificationCounter++;
       if (!value.notificationSetting.isMute) {
         this.systemToastrService.send(value);
@@ -58,8 +58,8 @@ export class NotificationBlockComponent implements OnInit {
       this.notifications.unshift(value);
     });
 
-    this.notificationsHubService.notificationDeleted.subscribe((value: Notification) => {
-      const index = this.notifications.findIndex(item => item.id === value.id);
+    this.notificationsHubService.notificationDeleted.subscribe(id => {
+      const index = this.notifications.findIndex(item => item.id === id);
       if (index !== -1) {
         if (!this.notifications[index].wasRead) {
           this.notificationCounter--;
@@ -71,9 +71,8 @@ export class NotificationBlockComponent implements OnInit {
 
   loadNotifications(): void {
     this.isLoading = true;
-    this.notificationsService.getAll(this.authService.getCurrentUser().id).subscribe((value: Notification[]) => {
-      value.reverse();
-      this.notifications = value;
+    this.notificationsService.getAll(this.authService.getCurrentUser().id).subscribe((value) => {
+      this.notifications = value.reverse();
       this.notificationCounter = this.calcNotReadNotifications(value);
       this.isLoading = false;
     });
@@ -84,9 +83,8 @@ export class NotificationBlockComponent implements OnInit {
   }
 
   markAsReadAll() {
-    const notReadNotifications = this.notifications
-      .filter(item => !item.wasRead)
-      .map(item => ({ ...item, wasRead: true }));
+    const notReadNotifications = this.notifications.filter(item => !item.wasRead);
+    this.notifications.forEach(x => x.wasRead = true);
 
     this.notificationsService.updateAll(notReadNotifications).subscribe(
       () => this.notificationCounter = 0
@@ -94,29 +92,27 @@ export class NotificationBlockComponent implements OnInit {
   }
 
   markAsRead(id: number): void {
-    this.notificationCounter--;
     const notify = this.notifications.find(item => item.id === id);
-
     notify.wasRead = true;
+    this.notificationCounter--;
+
     this.notificationsService.update(id, notify).subscribe();
   }
 
-  remove(id: number): void {
-    const notify = this.notifications.find(item => item.id === id);
-    if (!notify.wasRead) {
-      this.notificationCounter--;
-    }
-
+  remove(id: number) {
     const index = this.notifications.findIndex(item => item.id === id);
 
     if (index !== -1) {
+      const notification = this.notifications[index];
+      if (!notification.wasRead) {
+        this.notificationCounter--;
+      }
       this.notifications.splice(index, 1);
-      this.notificationsHubService.delete(notify);
+      this.notificationsHubService.delete(notification);
     }
   }
 
-  redirectToInstance(notification: Notification): void {
-    const url = [`/user/instances/${notification.instanceId}/${notification.instanceGuidId}/dashboards`];
-    this.router.navigate(url);
+  redirectToInstance({ instanceId, instanceGuidId }: Notification): void {
+    this.router.navigate([`/user/instances/${instanceId}/${instanceGuidId}/dashboards`]);
   }
 }
