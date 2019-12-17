@@ -71,6 +71,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(par => this.onInstanceChanged(par));
 
     this.createCogItems();
+    this.dashboardsHub.connect();
     this.subscribeToCollectedData();
 
     this.organizationService.organizationChanged
@@ -82,7 +83,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
+    this.dashboardsHub.disconnect();
+
     this.destroyed$.next(null);
     this.destroyed$.complete();
   }
@@ -116,9 +119,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.fillDashboardChartsWithData(this.activeDashboardItem);
             }
           }
-          if (this.dashboardsHub.isConnect) {
-            this.dashboardsHub.subscribeToInstanceById(this.instanceGuidId);
-          }
+
           this.dashboardsHub.connectionEstablished$.subscribe(established => {
             if (established) {
               this.dashboardsHub.subscribeToInstanceById(this.instanceGuidId);
@@ -137,10 +138,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  subscribeToCollectedData(): void {
-    this.dashboardsHub.infoSubObservable
+  subscribeToCollectedData() {
+    this.dashboardsHub.instanceDataTick$
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((latestData: CollectedData) => {
+      .subscribe(latestData => {
         this.dataService.pushLatestCollectedData(latestData);
         if (!this.activeDashboardItem || !this.activeDashboardItem.charts || this.activeDashboardItem.charts.length < 1) {
           return;

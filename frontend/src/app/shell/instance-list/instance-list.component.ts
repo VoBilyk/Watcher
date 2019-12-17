@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { timer, Subject } from 'rxjs';
+import { timer, Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
 
@@ -26,16 +26,10 @@ export class InstanceListComponent implements OnInit, OnDestroy {
     private dashboardsHub: DashboardsHub,
     private userOrganizationService: UserOrganizationService,
     private router: Router
-  ) {
-    this.instanceService.instanceAdded
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(instance => this.onInstanceAdded(instance));
-    this.instanceService.instanceEdited
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(instance => this.onInstanceEdited(instance));
-  }
+  ) { }
 
   private destroyed$ = new Subject<void>();
+
   menuItems: InstanceMenuItem[];
   user: User;
   currentGuidId: string;
@@ -46,32 +40,35 @@ export class InstanceListComponent implements OnInit, OnDestroy {
   isManager: boolean;
   currentQuery = '';
 
-  ngOnInit(): void {
+  ngOnInit() {
+    if (!this.router.url.match(/user\/instances/)) {
+      return;
+    }
+
+    this.user = this.authService.getCurrentUserLS();
+
     this.collectedDataService.getBuilderData()
       .subscribe(value => this.dataService.fakeCollectedData = value);
 
-    this.authService.currentUser.subscribe(
-      async user => {
-        // check to prevent queries while it`s not necessary
-        if (!this.router.url.match(/user\/instances/)) { return; }
-        this.user = user;
-        const role = await this.userOrganizationService.getOrganizationRole();
-        if (!role) { return; }
-        this.isManager = role.name === 'Manager';
+    this.configureInstances(this.user.lastPickedOrganizationId);
 
-        if (!this.authService.getCurrentUserLS()) { return; }
-        if (this.dashboardsHub.isConnect) {
+    this.dashboardsHub.connectionEstablished$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(established => {
+        if (established) {
           this.dashboardsHub.subscribeToOrganizationById(this.user.lastPickedOrganizationId);
         }
-        this.dashboardsHub.connectionEstablished$.subscribe(established => {
-          if (established) {
-            this.dashboardsHub.subscribeToOrganizationById(this.user.lastPickedOrganizationId);
-          }
-        });
-        if (this.authService.getCurrentUserLS()) { this.configureInstances(this.user.lastPickedOrganizationId); }
       });
 
-    this.dashboardsHub.instanceCheckedSubObservable
+    this.instanceService.instanceAdded
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(instance => this.onInstanceAdded(instance));
+
+    this.instanceService.instanceEdited
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(instance => this.onInstanceEdited(instance));
+
+    this.dashboardsHub.instanceStatusCheck$
       .pipe(takeUntil(this.destroyed$))
       .subscribe(value => {
         const instanceMenuItem = this.menuItems.find(value1 => value1.guidId === value.instanceGuidId);
@@ -105,16 +102,22 @@ export class InstanceListComponent implements OnInit, OnDestroy {
     }];
 
     this.isLoading = true;
-    this.instanceService.getAllByOrganization(organizationId).subscribe((data: Instance[]) => {
-      if (data) {
-        const items = data.map(inst => this.instanceToMenuItem(inst));
+    forkJoin([
+      this.instanceService.getAllByOrganization(organizationId),
+      this.userOrganizationService.getOrganizationRole()
+    ])
+    .subscribe(([instances, role]) => {
+      if (role) {
+        this.isManager = role.name === 'Manager';
+      }
+
+      if (instances) {
+        const items = instances.map(inst => this.instanceToMenuItem(inst));
         this.menuItems = this.menuItems.concat(items);
         this.toastrService.success('Get instances from server');
       }
       this.isLoading = false;
-      /* timer takes a second argument, how often to emit subsequent values
-      in this case we will emit first value after 10 seconds and subsequent
-      values every 5 seconds after */
+
       timer(1, 5000)
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => this.checkInstancesStatus());
@@ -234,10 +237,7 @@ export class InstanceListComponent implements OnInit, OnDestroy {
 
 
   highlightCurrent(menuitem: MenuItem) {
-    this.menuItems = this.menuItems.map(i => {
-      i.expanded = false;
-      return i;
-    });
+    this.menuItems.forEach(i => i.expanded = false);
     menuitem.expanded = true;
   }
 }

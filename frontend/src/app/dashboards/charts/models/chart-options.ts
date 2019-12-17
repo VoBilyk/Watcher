@@ -1,5 +1,5 @@
 import * as shape from 'd3-shape';
-import {DashboardChart} from '../../models/dashboard-chart';
+import { DashboardChart } from '../../models/dashboard-chart';
 import { ChartType } from '../../../shared/models/chart-type.enum';
 import { colorSets } from '@swimlane/ngx-charts';
 
@@ -10,7 +10,7 @@ export const defaultOptions = {
   threshold: 0,
   mostLoaded: 1,
   historyTime: 5,
-  colorScheme: {...colorSets.find(s => s.name === 'cool')},
+  colorScheme: { ...colorSets.find(s => s.name === 'cool') },
   schemeType: 'ordinal',
   showLegend: true,
   legendTitle: 'Legend',

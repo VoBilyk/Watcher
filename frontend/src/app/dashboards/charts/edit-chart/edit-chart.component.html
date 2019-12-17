@@ -64,13 +64,13 @@
                     [disabled]="dashboardChart.showCommon">
           </p-slider>
         </div>
-        <p class="field">Show data for (5-90 min): {{dashboardChart.historyTime}}</p>
+        <p class="field">Show data for (5-60 min): {{dashboardChart.historyTime}}</p>
         <div class="field">
           <p-slider class="chart-menu-slider"
                     [(ngModel)]="dashboardChart.historyTime"
                     [disabled]="!isTimeAvailable"
                     [min]="5"
-                    [max]="90">
+                    [max]="60">
           </p-slider>
         </div>
         <div class="chart-panel-menu-title field">Stylization:</div>
