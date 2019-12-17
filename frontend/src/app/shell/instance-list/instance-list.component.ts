@@ -4,7 +4,7 @@ import { timer, Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
 
-import { InstanceService, ToastrService, AuthService, DataService, CollectedDataService, UserOrganizationService } from '../../core/services';
+import { InstanceService, ToastrService, AuthService, DataService, CollectedDataService, UserOrganizationService, OrganizationService } from '../../core/services';
 import { User } from '../../shared/models/user.model';
 import { Instance } from '../../shared/models/instance.model';
 import { DashboardsHub } from '../../core/hubs/dashboards.hub';
@@ -25,6 +25,7 @@ export class InstanceListComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private dashboardsHub: DashboardsHub,
     private userOrganizationService: UserOrganizationService,
+    private organizationService: OrganizationService,
     private router: Router
   ) { }
 
@@ -60,6 +61,12 @@ export class InstanceListComponent implements OnInit, OnDestroy {
         }
       });
 
+    this.organizationService.organizationChanged
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(({ to }) => {
+        this.configureInstances(to);
+      });
+
     this.instanceService.instanceAdded
       .pipe(takeUntil(this.destroyed$))
       .subscribe(instance => this.onInstanceAdded(instance));
@@ -72,8 +79,10 @@ export class InstanceListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(value => {
         const instanceMenuItem = this.menuItems.find(value1 => value1.guidId === value.instanceGuidId);
-        instanceMenuItem.statusCheckedAt = value.statusCheckedAt;
-        this.instanceService.calculateStyle(instanceMenuItem);
+        if (instanceMenuItem) {
+          instanceMenuItem.statusCheckedAt = value.statusCheckedAt;
+          this.instanceService.calculateStyle(instanceMenuItem);
+        }
       });
   }
 

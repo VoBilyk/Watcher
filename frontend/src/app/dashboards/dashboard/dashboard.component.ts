@@ -18,7 +18,6 @@ import { DashboardMenuItem } from '../models';
 import { DashboardChart } from '../models/dashboard-chart';
 import { Dashboard } from '../../shared/models/dashboard.model';
 import { DashboardRequest } from '../../shared/models/dashboard-request.model';
-import { CollectedData } from '../../shared/models/collected-data.model';
 
 import { UserOrganizationService } from '../../core/services/user-organization.service';
 import { ChartType } from '../../shared/models/chart-type.enum';

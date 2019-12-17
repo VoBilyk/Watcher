@@ -10,6 +10,8 @@ import { InstanceChecked } from '../../shared/models/instance-checked';
 export class DashboardsHub {
   private hubName = 'dashboards';
   private hubConnection: HubConnection;
+  private closedManually: boolean;
+
   public connectionEstablished$ = new BehaviorSubject<boolean>(false);
 
   public instanceDataTick$ = new Subject<CollectedData>();
@@ -22,6 +24,7 @@ export class DashboardsHub {
       return;
     }
 
+    this.closedManually = false;
     this.authService.getTokens().subscribe(([firebaseToken, watcherToken]) => {
       this.buildConnection(firebaseToken, watcherToken);
       console.log('Dashboards Hub trying to connect');
@@ -58,9 +61,9 @@ export class DashboardsHub {
 
     this.hubConnection.onclose((error: Error) => {
       console.log('Dashboard Hub connection closed');
+      this.connectionEstablished$.next(false);
 
-      if (this.connectionEstablished$.value) {
-        this.connectionEstablished$.next(false);
+      if (!this.closedManually) {
         console.error(error);
         this.connect();
       }
@@ -85,7 +88,7 @@ export class DashboardsHub {
 
   disconnect() {
     if (this.connectionEstablished$.value) {
-      this.connectionEstablished$.next(false);
+      this.closedManually = true;
       this.hubConnection.stop();
     }
   }
