@@ -1,6 +1,5 @@
 <ng-container [ngSwitch]="chart.type">
   <app-resource-table
-    style="width:100%"
     *ngSwitchCase="type.ResourcesTable"
     [sources]="chart.dataSources"
     [data]="chart.colectedData">
@@ -32,7 +31,7 @@
   </ngx-charts-line-chart>
 
   <ngx-charts-bar-vertical
-    ngSwitchCase="type.BarVertical"
+    *ngSwitchCase="type.BarVertical"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -52,7 +51,7 @@
   </ngx-charts-bar-vertical>
 
   <ngx-charts-bar-horizontal
-    ngSwitchCase="type.BarHorizontal"
+    *ngSwitchCase="type.BarHorizontal"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -72,7 +71,7 @@
   </ngx-charts-bar-horizontal>
 
   <ngx-charts-bar-vertical-2d
-    ngSwitchCase="type.BarVertical2D"
+    *ngSwitchCase="type.BarVertical2D"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -95,7 +94,7 @@
   </ngx-charts-bar-vertical-2d>
 
   <ngx-charts-bar-horizontal-2d
-    ngSwitchCase="type.BarHorizontal2D"
+    *ngSwitchCase="type.BarHorizontal2D"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -116,7 +115,7 @@
   </ngx-charts-bar-horizontal-2d>
 
   <ngx-charts-bar-vertical-stacked
-    ngSwitchCase="type.BarVerticalStacked"
+    *ngSwitchCase="type.BarVerticalStacked"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -137,7 +136,7 @@
   </ngx-charts-bar-vertical-stacked>
 
   <ngx-charts-bar-horizontal-stacked
-    ngSwitchCase="type.BarHorizontalStacked"
+    *ngSwitchCase="type.BarHorizontalStacked"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -157,7 +156,7 @@
   </ngx-charts-bar-horizontal-stacked>
 
   <ngx-charts-bar-vertical-normalized
-    ngSwitchCase="type.BarVerticalNormalized"
+    *ngSwitchCase="type.BarVerticalNormalized"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -178,7 +177,7 @@
   </ngx-charts-bar-vertical-normalized>
 
   <ngx-charts-bar-horizontal-normalized
-    ngSwitchCase="type.BarHorizontalNormalized"
+    *ngSwitchCase="type.BarHorizontalNormalized"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -199,7 +198,7 @@
   </ngx-charts-bar-horizontal-normalized>
 
   <ngx-charts-polar-chart
-    ngSwitchCase="type.PolarChart"
+    *ngSwitchCase="type.PolarChart"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -223,7 +222,7 @@
   </ngx-charts-polar-chart>
 
   <ngx-charts-area-chart
-    ngSwitchCase="type.AreaChart"
+    *ngSwitchCase="type.AreaChart"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -246,7 +245,7 @@
   </ngx-charts-area-chart>
 
   <ngx-charts-area-chart-stacked
-    ngSwitchCase="type.AreaChartStacked"
+    *ngSwitchCase="type.AreaChartStacked"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -267,7 +266,7 @@
   </ngx-charts-area-chart-stacked>
 
   <ngx-charts-area-chart-normalized
-    ngSwitchCase="type.AreaChartNormalized"
+    *ngSwitchCase="type.AreaChartNormalized"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [schemeType]="chart.schemeType"
@@ -288,7 +287,7 @@
   </ngx-charts-area-chart-normalized>
 
   <ngx-charts-pie-chart
-    ngSwitchCase="type.Pie"
+    *ngSwitchCase="type.Pie"
     [scheme]="chart.colorScheme"
     [results]="data"
     [activeEntries]="activeEntries"
@@ -302,13 +301,13 @@
   </ngx-charts-pie-chart>
 
   <ngx-charts-pie-grid
-    ngSwitchCase="type.PieGrid"
+    *ngSwitchCase="type.PieGrid"
     [scheme]="chart.colorScheme"
     [results]="data">
   </ngx-charts-pie-grid>
 
   <ngx-charts-advanced-pie-chart
-    ngSwitchCase="type.AdvancedPie"
+    *ngSwitchCase="type.AdvancedPie"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [results]="data"
@@ -317,7 +316,7 @@
   </ngx-charts-advanced-pie-chart>
 
   <ngx-charts-gauge
-    ngSwitchCase="type.Gauge"
+    *ngSwitchCase="type.Gauge"
     [scheme]="chart.colorScheme"
     [results]="data"
     [activeEntries]="activeEntries"
@@ -327,7 +326,7 @@
   </ngx-charts-gauge>
 
   <ngx-charts-heat-map
-    ngSwitchCase="type.HeatMap"
+    *ngSwitchCase="type.HeatMap"
     class="chart-container"
     [scheme]="chart.colorScheme"
     [results]="data"
@@ -343,7 +342,7 @@
   </ngx-charts-heat-map>
 
   <ngx-charts-tree-map
-    ngSwitchCase="type.TreeMap"
+    *ngSwitchCase="type.TreeMap"
     [scheme]="chart.colorScheme"
     [results]="data"
     [gradient]="chart.gradient"
@@ -351,7 +350,7 @@
   </ngx-charts-tree-map>
 
   <ngx-charts-number-card
-    ngSwitchCase="type.NumberCards"
+    *ngSwitchCase="type.NumberCards"
     [scheme]="chart.colorScheme"
     cardColor="#232837"
     [results]="data">

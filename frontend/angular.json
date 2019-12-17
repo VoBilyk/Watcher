@@ -8,6 +8,11 @@
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
+      "i18n": {
+        "locales": {
+          "ua": "src/locale/messages.ua.xlf"
+        }
+      },
       "schematics": {
         "@schematics/angular:component": {
           "styleext": "sass"
@@ -62,6 +67,9 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "ua": {
+              "localize": ["ua"]
             }
           }
         },

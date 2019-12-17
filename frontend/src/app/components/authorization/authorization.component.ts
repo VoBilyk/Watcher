@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
-import { AuthService } from '../core/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
-import { Organization } from '../shared/models/organization.model';
+import { Organization } from '../../shared/models/organization.model';
 
 @Component({
   selector: 'app-authorization',
@@ -9,7 +9,6 @@ import { Organization } from '../shared/models/organization.model';
   styleUrls: ['./authorization.component.sass']
 })
 export class AuthorizationComponent implements OnInit {
-
   @ViewChild('signInTemplate', { static: true }) signInTemplate;
   @ViewChild('signUpTemplate', { static: true }) signUpTemplate;
   @ViewChild('userDetailsTemplate', { static: true }) userDetailsTemplate;

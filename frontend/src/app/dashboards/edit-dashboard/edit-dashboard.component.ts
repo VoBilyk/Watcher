@@ -11,8 +11,8 @@ import { defaultOptions } from '../charts/models/chart-options';
 
 @Component({
   selector: 'app-edit-dashboard',
-  templateUrl: './editDashboard.component.html',
-  styleUrls: ['./editDashboard.component.sass']
+  templateUrl: './edit-dashboard.component.html',
+  styleUrls: ['./edit-dashboard.component.sass']
 })
 export class EditDashboardComponent implements OnInit, OnChanges {
   title = '';

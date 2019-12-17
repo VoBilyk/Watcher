@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FeedbackService } from '../core/services/feedback.service';
-import { ToastrService } from '../core/services/toastr.service';
-import { LongAnswerType } from '../shared/models/long-answer-type.enum';
-import { ShortAnswerType } from '../shared/models/short-answer-type.enum';
-import { Feedback } from '../shared/models/feedback.model';
+import { FeedbackService } from '../../core/services/feedback.service';
+import { ToastrService } from '../../core/services/toastr.service';
+import { LongAnswerType } from '../../shared/models/long-answer-type.enum';
+import { ShortAnswerType } from '../../shared/models/short-answer-type.enum';
+import { Feedback } from '../../shared/models/feedback.model';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../core/services/auth.service';
-import { ToastrService } from '../core/services/toastr.service';
-import { OrganizationInvitesService } from '../core/services/organization-invites.service';
-import { OrganizationInvite } from '../shared/models/organization-invite.model';
-import { OrganizationInviteState } from '../shared/models/organization-invite-state.enum';
-import { User } from '../shared/models/user.model';
-import { Organization } from '../shared/models/organization.model';
+import { AuthService } from '../../core/services/auth.service';
+import { ToastrService } from '../../core/services/toastr.service';
+import { OrganizationInvitesService } from '../../core/services/organization-invites.service';
+import { OrganizationInvite } from '../../shared/models/organization-invite.model';
+import { OrganizationInviteState } from '../../shared/models/organization-invite-state.enum';
+import { User } from '../../shared/models/user.model';
+import { Organization } from '../../shared/models/organization.model';
 
 @Component({
   selector: 'app-invite',
@@ -35,7 +35,7 @@ export class InviteComponent implements OnInit {
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
-       this.link = params['invite'];
+       this.link = params.invite;
     });
 
     this.authService.currentUser.subscribe(

@@ -1,13 +1,13 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { NotificationsHubService } from '../../core/hubs/notifications.hub';
-import { NotificationService } from '../../core/services/notification.service';
-import { AuthService } from '../../core/services/auth.service';
-import { SystemToastrService } from '../../core/services/system-toastr.service';
+import { NotificationsHubService } from '../../../core/hubs/notifications.hub';
+import { NotificationService } from '../../../core/services/notification.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { SystemToastrService } from '../../../core/services/system-toastr.service';
 
-import { NotificationType } from '../../shared/models/notification-type.enum';
-import { Notification } from '../../shared/models/notification.model';
+import { NotificationType } from '../../../shared/models/notification-type.enum';
+import { Notification } from '../../../shared/models/notification.model';
 
 
 @Component({
@@ -19,10 +19,9 @@ import { Notification } from '../../shared/models/notification.model';
   ]
 })
 export class NotificationBlockComponent implements OnInit {
-
   @Output() counterChanged = new EventEmitter<number>();
 
-  private _unreadedNotifications = 0;
+  private unreadedNotifications = 0;
 
   notifications: Notification[] = [];
   type = NotificationType;
@@ -42,11 +41,11 @@ export class NotificationBlockComponent implements OnInit {
   }
 
   get notificationCounter() {
-    return this._unreadedNotifications;
+    return this.unreadedNotifications;
   }
 
   set notificationCounter(value: number) {
-    this._unreadedNotifications = value;
+    this.unreadedNotifications = value;
     this.counterChanged.emit(value);
   }
 
@@ -84,14 +83,14 @@ export class NotificationBlockComponent implements OnInit {
     return allNotifications.filter(item => !item.wasRead).length;
   }
 
-  markAsReadAll(): void {
-    this.notificationCounter = 0;
-    let notReadNotifications: Notification[];
+  markAsReadAll() {
+    const notReadNotifications = this.notifications
+      .filter(item => !item.wasRead)
+      .map(item => ({ ...item, wasRead: true }));
 
-    notReadNotifications = this.notifications.filter(item => !item.wasRead);
-    notReadNotifications.forEach(item => item.wasRead = true);
-
-    this.notificationsService.updateAll(notReadNotifications).subscribe();
+    this.notificationsService.updateAll(notReadNotifications).subscribe(
+      () => this.notificationCounter = 0
+    );
   }
 
   markAsRead(id: number): void {
@@ -116,7 +115,7 @@ export class NotificationBlockComponent implements OnInit {
     }
   }
 
-  redirectToInstance(notification): void {
+  redirectToInstance(notification: Notification): void {
     const url = [`/user/instances/${notification.instanceId}/${notification.instanceGuidId}/dashboards`];
     this.router.navigate(url);
   }

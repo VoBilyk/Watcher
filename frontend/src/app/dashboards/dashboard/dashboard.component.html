@@ -4,7 +4,7 @@
   [dashboardId]="activeDashboardItem.dashId || 0" [dashboardChart]="chartToEdit">
 </app-edit-chart>
 
-<p-progressSpinner class=spinner *ngIf="isLoading" strokeWidth="3"></p-progressSpinner>
+<p-progressSpinner class="spinner" *ngIf="isLoading" strokeWidth="3"></p-progressSpinner>
 <div class="dashboard-wrap" *ngIf="!isLoading">
   <div class="title">DASHBOARDS</div>
   <ng-container *ngIf="!instanceId">

@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
-
 import { DashboardRoutingModule } from './dashboards-routing.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SharedModule } from '../shared/shared.module';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { EditDashboardComponent } from './editDashboard/editDashboard.component';
+import { EditDashboardComponent } from './edit-dashboard/edit-dashboard.component';
 import { ChartDashboardComponent } from './charts/chart-dashboard/chart-dashboard.component';
 import { ChartComponent } from './charts/chart/chart.component';
 import { EditInstanceComponent } from './edit-instance/edit-instance.component';
@@ -19,14 +18,13 @@ import { AnomalyReportComponent } from './anomaly-report/anomaly-report.componen
 @NgModule({
   imports: [
     SharedModule,
-    NgxChartsModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    NgxChartsModule
   ],
   declarations: [
     DashboardComponent,
     EditDashboardComponent,
     EditInstanceComponent,
-
     ChartComponent,
     ChartDashboardComponent,
     EditChartComponent,

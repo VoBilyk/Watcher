@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormBuilder } from '@angular/forms';
-import { FeedbackService, ToastrService, AuthService } from '../core/services';
-import { Feedback } from '../shared/models/feedback.model';
-import { User } from '../shared/models/user.model';
-import { LongAnswerType } from '../shared/models/long-answer-type.enum';
-import { ShortAnswerType } from '../shared/models/short-answer-type.enum';
+import { FeedbackService, ToastrService, AuthService } from '../../core/services';
+import { Feedback } from '../../shared/models/feedback.model';
+import { User } from '../../shared/models/user.model';
+import { LongAnswerType } from '../../shared/models/long-answer-type.enum';
+import { ShortAnswerType } from '../../shared/models/short-answer-type.enum';
 
 @Component({
   selector: 'app-feedback',

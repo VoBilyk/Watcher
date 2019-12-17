@@ -11,12 +11,12 @@ import { SharedModule } from './shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { LandingComponent } from './landing/landing.component';
-import { InviteComponent } from './invite/invite.component';
-import { AuthorizationComponent } from './authorization/authorization.component';
-import { CustomConfirmDialogComponent } from './notification/custom-confirm-dialog/custom-confirm-dialog.component';
-import { SystemNotificationComponent } from './notification/system-notification/system-notification.component';
-import { AboutComponent } from './about/about.component';
+import { LandingComponent } from './components/landing/landing.component';
+import { InviteComponent } from './components/invite/invite.component';
+import { AuthorizationComponent } from './components/authorization/authorization.component';
+import { CustomConfirmDialogComponent } from './components/notification/custom-confirm-dialog/custom-confirm-dialog.component';
+import { SystemNotificationComponent } from './components/notification/system-notification/system-notification.component';
+import { AboutComponent } from './components/about/about.component';
 
 @NgModule({
   declarations: [

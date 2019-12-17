@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ChatService } from '../../core/services/chat.service';
-import { NotificationType } from '../../shared/models/notification-type.enum';
+import { ChatService } from '../../../core/services/chat.service';
+import { NotificationType } from '../../../shared/models/notification-type.enum';
 
 @Component({
   selector: 'app-system-notification',

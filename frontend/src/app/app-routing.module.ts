@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LandingComponent } from './landing/landing.component';
 import { HomeGuard } from './core/guards/home.guard';
 import { NotexistGuard } from './core/guards/notexist.guard';
 import { ShellComponent } from './shell/shell.component';
-import { InviteComponent } from './invite/invite.component';
-import { AboutComponent } from './about/about.component';
+import { LandingComponent } from './components/landing/landing.component';
+import { InviteComponent } from './components/invite/invite.component';
+import { AboutComponent } from './components/about/about.component';
 
 const routes: Routes = [{
   path: '',
