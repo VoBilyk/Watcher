@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   container_name: 'rabbitmq'
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: "guest"
+  #     RABBITMQ_DEFAULT_PASS: "guest"
+  #   ports:
+  #     - '15672:15672'
+  #     - '5672:5672'
+
+  frontend:
+    # hostname: localhost
+    hostname: watcher
+    domainname: watcher.loc.com
+    container_name: watcher-web-client
+    build: 
+      context: ./
+      dockerfile: WebClient.Dockerfile
+    ports:
+      - 8090:80
