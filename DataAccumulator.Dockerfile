@@ -8,11 +8,11 @@ WORKDIR /app/DataAccumulator
 RUN dotnet publish --configuration Debug --output out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime
 EXPOSE 80
 EXPOSE 443
 
-WORKDIR /app/DataAccumulator/out
+WORKDIR /app
+COPY --from=builder /app/DataAccumulator/out .
 
-COPY --from=builder . .
 ENTRYPOINT ["dotnet", "DataAccumulator.WebApi.dll"]

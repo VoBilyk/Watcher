@@ -5,7 +5,8 @@ WORKDIR /app
 COPY frontend .
 
 RUN npm i
-RUN npx ng build --prod
+RUN npm i -g @angular/cli
+RUN npm run build:prod
 
 FROM nginx:alpine
 
