@@ -1,24 +1,57 @@
 version: '3.7'
 
 services:
+  mongo:
+    image: mongo
+    container_name: 'mongodb'
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - 27017:27017
+    # restart: always
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: example
 
-  # rabbitmq:
-  #   image: rabbitmq:3-management
-  #   container_name: 'rabbitmq'
-  #   environment:
-  #     RABBITMQ_DEFAULT_USER: "guest"
-  #     RABBITMQ_DEFAULT_PASS: "guest"
-  #   ports:
-  #     - '15672:15672'
-  #     - '5672:5672'
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    container_name: 'rabbitmq'
+    hostname: rabbitmq
+    environment:
+      # RABBITMQ_ERLANG_COOKIE: 'SWQOKODSQALRPCLNMEQG'
+      RABBITMQ_DEFAULT_USER: 'rabbitmq'
+      RABBITMQ_DEFAULT_PASS: 'rabbitmq'
+      RABBITMQ_DEFAULT_VHOST: '/'
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    volumes:
+      - ./docker/rabbitmq:/var/lib/rabbitmq
 
-  frontend:
-    # hostname: localhost
-    hostname: watcher
-    domainname: watcher.loc.com
+  core-api:
+    container_name: watcher-core-api
+    build: 
+      context: .
+      dockerfile: Core.Dockerfile
+    ports:
+      - 8091:80
+
+  data-accumulator-api:
+    container_name: watcher-data-accumulator-api
+    build: 
+      context: .
+      dockerfile: DataAccumulator.Dockerfile
+    ports:
+      - 8091:80
+
+  web-client:
+    hostname: watcher.loc.com
     container_name: watcher-web-client
     build: 
-      context: ./
+      context: .
       dockerfile: WebClient.Dockerfile
     ports:
       - 8090:80
