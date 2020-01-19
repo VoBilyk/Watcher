@@ -1,0 +1,117 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Dtos\Plots\Temp\**" />
+    <EmbeddedResource Remove="Dtos\Plots\Temp\**" />
+    <None Remove="Dtos\Plots\Temp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="MoveToFrontend\collected-data-type.enum.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="8.5.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.6.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DataAccumulator\DataAccumulator.Shared\DataAccumulator.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MoveToFrontend\chart-request.model.ts">
+      <CustomToolNamespace>Requests\ChartRequest.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\chart-type.enum.ts">
+      <CustomToolNamespace>Enums\ChartType.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\chart.model.ts">
+      <CustomToolNamespace>Dtos\ChartDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\chat-type.enum.ts">
+      <CustomToolNamespace>Enums\ChatType.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\chat.model.ts">
+      <CustomToolNamespace>Dtos\ChatDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\collected-data.model.ts">
+      <CustomToolNamespace>Dtos\Plots\Temp\CollectedDataDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\collector-app-version.model.ts">
+      <CustomToolNamespace>Dtos\CollectorAppVersionDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\dashboard.model.ts">
+      <CustomToolNamespace>Dtos\DashboardDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\feedback.model.ts">
+      <CustomToolNamespace>Dtos\FeedbackDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\filter.model.ts">
+      <CustomToolNamespace>Dtos\Filter.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\instance-checked.model.ts">
+      <CustomToolNamespace>Dtos\InstanceCheckedDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\instance.model.ts">
+      <CustomToolNamespace>Dtos\InstanceDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\long-answer-type.enum.ts">
+      <CustomToolNamespace>Enums\LongAnswerType.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\message.model.ts">
+      <CustomToolNamespace>Dtos\MessageDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\notification-request.model.ts">
+      <CustomToolNamespace>Requests\NotificationRequest.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\notification-setting.model.ts">
+      <CustomToolNamespace>Dtos\NotificationSettingDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\notification-type.enum.ts">
+      <CustomToolNamespace>Enums\NotificationType.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\notification.model.ts">
+      <CustomToolNamespace>Dtos\NotificationDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\organization-invite-state.enum.ts">
+      <CustomToolNamespace>Enums\OrganizationInviteState.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\organization-invite.model.ts">
+      <CustomToolNamespace>Dtos\OrganizationInviteDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\organization-role.model.ts">
+      <CustomToolNamespace>Dtos\OrganizationRoleDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\organization.model.ts">
+      <CustomToolNamespace>Dtos\OrganizationDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\process-data.model.ts">
+      <CustomToolNamespace>Dtos\Plots\Temp\ProcessData.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\response.model.ts">
+      <CustomToolNamespace>Dtos\ResponseDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\role.model.ts">
+      <CustomToolNamespace>Dtos\RoleDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\short-answer-type.enum.ts">
+      <CustomToolNamespace>Enums\ShortAnswerType.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\theme.model.ts">
+      <CustomToolNamespace>Dtos\Theme.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\user-organization.model.ts">
+      <CustomToolNamespace>Dtos\UserOrganizationDto.cs</CustomToolNamespace>
+    </None>
+    <None Update="MoveToFrontend\user.model.ts">
+      <CustomToolNamespace>Dtos\UserDto.cs</CustomToolNamespace>
+    </None>
+  </ItemGroup>
+
+</Project>
