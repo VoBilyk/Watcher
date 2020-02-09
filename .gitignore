@@ -335,3 +335,5 @@ ASALocalRun/
 
 backend/Watcher/wwwroot/images/
 backend/Watcher/wwwroot/Documents/
+
+docker-volumes/

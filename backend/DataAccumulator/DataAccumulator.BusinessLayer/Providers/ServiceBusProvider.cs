@@ -139,8 +139,10 @@
             };
 
             var x = await _instanceSettingsService.AddEntityAsync(dto);
-            if (x == null) return MessageProcessResponse.Abandon;
-            return MessageProcessResponse.Complete;
+
+            return x is null
+                ? MessageProcessResponse.Abandon
+                : MessageProcessResponse.Complete;
         }
 
         #region Disposable Support

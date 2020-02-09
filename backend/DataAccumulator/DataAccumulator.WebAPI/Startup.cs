@@ -21,23 +21,27 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
 using Quartz.Spi;
+using Serilog;
+using Serilog.Events;
 using ServiceBus.Shared.Interfaces;
 using ServiceBus.Shared.Queue;
+using System;
 
 namespace DataAccumulator
 {
     public class Startup
     {
-        private readonly IWebHostEnvironment _env;
-
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
-            _env = env;
+            Env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Env { get; }
 
         public bool UserAzureServiceBus { get; private set; }
 
@@ -47,19 +51,11 @@ namespace DataAccumulator
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
+                    builder => builder
+                        .AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader());
-                        //.AllowCredentials());
             });
-
-
-            //var azureMLSection = Configuration.GetSection("AzureML");
-            //services.Configure<AzureMLOptions>(o =>
-            //{
-            //    o.ApiKey = azureMLSection["ApiKey"];
-            //    o.Url = azureMLSection["Url"];
-            //});
 
             services.AddTransient<IDataAccumulatorService<CollectedDataDto>, DataAccumulatorService>();
             services.AddTransient<IDataAggregatorService<CollectedDataDto>, DataAggregatorService>();
@@ -77,9 +73,6 @@ namespace DataAccumulator
 
             services.AddTransient<IJobFactory, JobFactory>(provider => new JobFactory(provider));
 
-            // repo initialization localhost while development env, azure in prod
-            ConfigureDataStorage(services, Configuration);
-
             //services.AddTransient<CollectedDataAggregatingByFiveMinutesJob>();
             services.AddTransient<CollectedDataAggregatingByHourJob>();
             services.AddTransient<CollectedDataAggregatingByDayJob>();
@@ -89,15 +82,16 @@ namespace DataAccumulator
             services.AddHealthChecks();
             services.AddRazorPages();
 
+            ConfigureLogger();
+            ConfigureDataStorage(services);
             ConfiguraAutomapper(services);
-
             ConfigureMessageQueue(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            if (_env.IsDevelopment())
+            if (Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -105,6 +99,8 @@ namespace DataAccumulator
             {
                 app.UseHsts();
             }
+
+            loggerFactory.AddSerilog();
 
             app.UseHttpStatusCodeExceptionMiddleware();
 
@@ -132,10 +128,11 @@ namespace DataAccumulator
                 endpoints.MapHealthChecks("/health");
             });
         }
-        public virtual void ConfigureDataStorage(IServiceCollection services, IConfiguration configuration)
+
+        public virtual void ConfigureDataStorage(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString(
-                _env.IsProduction() ? "AzureCosmosDbConnection" : "MongoDbConnection");
+                Env.IsProduction() ? "AzureCosmosDbConnection" : "MongoDbConnection");
 
             services.AddTransient<IDataAccumulatorRepository<CollectedData>, DataAccumulatorRepository>(
                 _ => new DataAccumulatorRepository(connectionString, "watcher-data-storage", CollectedDataType.Accumulation));
@@ -176,16 +173,48 @@ namespace DataAccumulator
                 services.AddTransient<IAzureQueueSender, AzureQueueSender>();
                 services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
                 services.AddSingleton<IQueueProvider, ServiceBusProvider>();
-                return;
             }
+            else
+            {
+                services
+                    .Configure<RabbitMqConnectionOptions>(Configuration.GetSection("RabbitMqConnection"))
+                    .Configure<QueueOptions>(Configuration.GetSection("RabbitMqQueues"));
 
-            services
-                .Configure<RabbitMqConnectionOptions>(Configuration.GetSection("RabbitMqConnection"))
-                .Configure<QueueOptions>(Configuration.GetSection("RabbitMqQueues"));
+                services.AddTransient<IRabbitMqSender, RabbitMqSender>();
+                services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
+                services.AddSingleton<IQueueProvider, RabbitMqProvider>();
+            }
+        }
 
-            services.AddTransient<IRabbitMqSender, RabbitMqSender>();
-            services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
-            services.AddSingleton<IQueueProvider, RabbitMqProvider>();
+        public virtual void ConfigureLogger()
+        {
+            var outputTemplate = "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{properties}{NewLine}";
+
+            if (Env.IsProduction())
+            {
+                var connectionString = Configuration.GetConnectionString("LogsConnection");
+                var storageAccount = CloudStorageAccount.Parse(connectionString);
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console(outputTemplate: outputTemplate)
+                    .WriteTo.AzureTableStorageWithProperties(storageAccount,
+                        LogEventLevel.Warning,
+                        storageTableName: "logs-table",
+                        writeInBatches: true,
+                        batchPostingLimit: 100,
+                        period: new TimeSpan(0, 0, 3),
+                        propertyColumns: new[] { "LogEventId", "ClassName", "Source" })
+                    .CreateLogger();
+            }
+            else
+            {
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console(outputTemplate: outputTemplate)
+                    .CreateLogger();
+            }
         }
     }
 }

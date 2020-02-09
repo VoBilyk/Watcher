@@ -64,25 +64,29 @@
                 );
         }
 
-        public async Task SendNotificationMessage(InstanceNotificationMessage message)
+        public Task SendNotificationMessage(InstanceNotificationMessage message)
         {
             _sender.Send(_channel, _queueOptions.Value.NotificationQueueName, message);
+            return Task.CompletedTask;
         }
 
-        public async Task SendErrorMessage(InstanceErrorMessage message)
+        public Task SendErrorMessage(InstanceErrorMessage message)
         {
             _logger.LogInformation($"Error message was of {message.InstanceId} instance was send to rabbitMq: {message.ErrorMessage}");
             _sender.Send(_channel, _queueOptions.Value.ErrorQueueName, message);
+            return Task.CompletedTask;
         }
 
-        public async Task SendDataMessage(InstanceCollectedDataMessage message)
+        public Task SendDataMessage(InstanceCollectedDataMessage message)
         {
             _sender.Send(_channel, _queueOptions.Value.DataQueueName, message);
+            return Task.CompletedTask;
         }
 
-        public async Task SendAnomalyReportMessage(InstanceAnomalyReportMessage message)
+        public Task SendAnomalyReportMessage(InstanceAnomalyReportMessage message)
         {
             _sender.Send(_channel, _queueOptions.Value.AnomalyReportQueueName, message);
+            return Task.CompletedTask;
         }
 
         private async Task<MessageProcessResponse> OnSettingsProcessAsync(InstanceSettingsMessage arg)

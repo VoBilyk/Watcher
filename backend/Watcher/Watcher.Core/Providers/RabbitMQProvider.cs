@@ -123,9 +123,10 @@
             return MessageProcessResponse.Complete;
         }
 
-        public async Task SendInstanceSettingsAsync(InstanceSettingsMessage message)
+        public Task SendInstanceSettingsAsync(InstanceSettingsMessage message)
         {
             _sender.Send(_channel, _queueOptions.Value.SettingsQueueName, message);
+            return Task.CompletedTask;
         }
 
         private async Task<MessageProcessResponse> OnErrorProcessAsync(InstanceErrorMessage arg)
@@ -145,21 +146,14 @@
                 {
                     Text = arg.Text,
                     CreatedAt = arg.CreatedAt,
-                    InstanceId = arg.InstanceId
+                    InstanceId = arg.InstanceId,
+                    Type = arg.Type switch
+                    {
+                        InstanceNotifyType.Critical => NotificationType.Error,
+                        InstanceNotifyType.Error => NotificationType.Warning,
+                        _ => NotificationType.Info,
+                    }
                 };
-
-                switch (arg.Type)
-                {
-                    case InstanceNotifyType.Critical:
-                        notificationRequest.Type = NotificationType.Error;
-                        break;
-                    case InstanceNotifyType.Error:
-                        notificationRequest.Type = NotificationType.Warning;
-                        break;
-                    default:
-                        notificationRequest.Type = NotificationType.Info;
-                        break;
-                }
 
                 var result = await notificationService.CreateEntityAsync(notificationRequest);
 

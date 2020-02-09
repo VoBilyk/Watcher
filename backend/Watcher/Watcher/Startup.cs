@@ -14,9 +14,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
+using Serilog;
+using Serilog.Events;
 using ServiceBus.Shared.Interfaces;
 using ServiceBus.Shared.Queue;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
@@ -38,27 +42,27 @@ namespace Watcher
 {
     public class Startup
     {
-        private readonly IWebHostEnvironment _env;
-
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
-            _env = env;
+            Env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Env { get; }
+
 
         public string ImagesPath => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
-                {
-                    builder.WithOrigins(Configuration.GetValue<string>("ClientUrl"))
-                           .AllowAnyMethod()
-                           .AllowAnyHeader()
-                           .AllowCredentials();
-                }));
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .WithOrigins(Configuration.GetValue<string[]>("AllowedOrigin"))
+                ));
 
             services.Configure<TimeServiceConfiguration>(Configuration.GetSection("TimeService"));
 
@@ -68,7 +72,6 @@ namespace Watcher
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // Add your services here
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITokensService, TokensService>();
             services.AddTransient<IDashboardsService, DashboardsService>();
@@ -96,6 +99,8 @@ namespace Watcher
             services.AddTransient<IRabbitMqReceiver, RabbitMqReceiver>();
             services.AddSingleton<IQueueProvider, RabbitMqProvider>();
 
+            ConfigureLogger();
+
             ConfigureRabbitMq(services);
 
             // It's Singleton so we can't consume Scoped services & Transient services that consume Scoped services
@@ -115,67 +120,13 @@ namespace Watcher
 
             ConfigureAutomapper(services);
 
-            services.AddAuthentication(o =>
-                    {
-                        o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    })
-                    .AddJwtBearer(options =>
-                    {
-                        options.Events = new JwtBearerEvents()
-                        {
-                            OnMessageReceived = context =>
-                              {
-                                  if ((!context.Request.Path.Value.Contains("/notifications")
-                                      && !context.Request.Path.Value.Contains("/dashboards")
-                                      && !context.Request.Path.Value.Contains("/chatsHub")
-                                      && !context.Request.Path.Value.Contains("/invites"))
-
-                                      || !context.Request.Query.ContainsKey("Authorization")
-                                      || !context.Request.Query.ContainsKey("WatcherAuthorization"))
-                                  {
-                                      return Task.CompletedTask;
-                                  }
-
-                                  var watcherToken = context.Request.Query["WatcherAuthorization"];
-                                  var firebaseToken = $"Bearer {context.Request.Query["Authorization"]}";
-                                  context.Request.Headers.TryAdd("Authorization", firebaseToken);
-                                  context.Request.Headers.TryAdd("WatcherAuthorization", watcherToken);
-
-                                  return Task.CompletedTask;
-                              }
-                        };
-
-                        options.Authority = "https://securetoken.google.com/watcher-e868a";
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidIssuer = "https://securetoken.google.com/watcher-e868a",
-                            ValidateAudience = true,
-                            ValidAudience = "watcher-e868a",
-                            ValidateLifetime = true
-                        };
-                    });
-
-            services.AddAuthorization(o =>
-                {
-                    o.AddPolicy("SomePolicy", b =>
-                        {
-                            b.RequireAuthenticatedUser();
-                        });
-                    o.AddPolicy("AdminPolicy", b =>
-                        {
-                            b.RequireAuthenticatedUser();
-                            b.RequireClaim(ClaimTypes.Role, "Admin");
-                            b.AuthenticationSchemes = new List<string> { JwtBearerDefaults.AuthenticationScheme };
-                        });
-                });
+            ConfigureAuth(services);
 
             var addSignalRBuilder = services
                 .AddSignalR(o => o.EnableDetailedErrors = true)
                 .AddNewtonsoftJsonProtocol(o => o.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
-            if (_env.IsProduction())
+            if (Env.IsProduction())
             {
                 addSignalRBuilder.AddAzureSignalR(Configuration.GetConnectionString("AzureSignalRConnection"));
             }
@@ -198,7 +149,7 @@ namespace Watcher
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            if (_env.IsDevelopment())
+            if (Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
@@ -252,7 +203,7 @@ namespace Watcher
         public virtual void ConfigureDataStorage(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString(
-                _env.IsProduction() ? "AzureCosmosDbConnection" : "MongoDbConnection");
+                Env.IsProduction() ? "AzureCosmosDbConnection" : "MongoDbConnection");
 
             services.AddScoped<IDataAccumulatorRepository<CollectedData>, DataAccumulatorRepository>(
                 options => new DataAccumulatorRepository(connectionString, "watcher-data-storage", CollectedDataType.Accumulation));
@@ -266,7 +217,7 @@ namespace Watcher
 
         public virtual void ConfigureFileStorage(IServiceCollection services)
         {
-            if (_env.IsProduction())
+            if (Env.IsProduction())
             {
                 services.AddScoped<IFileStorageProvider, FileStorageProvider>(
                     prov => new FileStorageProvider(Configuration.GetConnectionString("AzureFileStorageConnection")));
@@ -307,10 +258,100 @@ namespace Watcher
 
         public virtual void ConfigureDatabase(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString(_env.IsProduction() ? "AzureDbConnection" : "DefaultConnection");
+            var connectionString = Configuration.GetConnectionString(Env.IsProduction() ? "AzureDbConnection" : "DefaultConnection");
 
             services.AddDbContext<WatcherDbContext>(options =>
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Configuration["MigrationsAssembly"])));
+        }
+
+        public virtual void ConfigureLogger()
+        {
+            var outputTemplate = "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{properties}{NewLine}";
+
+            if (Env.IsDevelopment())
+            {
+                var connectionString = Configuration.GetConnectionString("LogsConnection");
+                var storageAccount = CloudStorageAccount.Parse(connectionString);
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console(outputTemplate: outputTemplate)
+                    .WriteTo.AzureTableStorageWithProperties(storageAccount,
+                        LogEventLevel.Warning,
+                        storageTableName: "logs-table",
+                        writeInBatches: true,
+                        batchPostingLimit: 100,
+                        period: new TimeSpan(0, 0, 3),
+                        propertyColumns: new[] { "LogEventId", "ClassName", "Source" })
+                    .CreateLogger();
+            }
+            else
+            {
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console(outputTemplate: outputTemplate)
+                    .CreateLogger();
+            }
+        }
+
+        public virtual void ConfigureAuth(IServiceCollection services)
+        {
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Events = new JwtBearerEvents()
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if ((!context.Request.Path.Value.Contains("/notifications")
+                            && !context.Request.Path.Value.Contains("/dashboards")
+                            && !context.Request.Path.Value.Contains("/chatsHub")
+                            && !context.Request.Path.Value.Contains("/invites"))
+
+                            || !context.Request.Query.ContainsKey("Authorization")
+                            || !context.Request.Query.ContainsKey("WatcherAuthorization"))
+                        {
+                            return Task.CompletedTask;
+                        }
+
+                        var watcherToken = context.Request.Query["WatcherAuthorization"];
+                        var firebaseToken = $"Bearer {context.Request.Query["Authorization"]}";
+                        context.Request.Headers.TryAdd("Authorization", firebaseToken);
+                        context.Request.Headers.TryAdd("WatcherAuthorization", watcherToken);
+
+                        return Task.CompletedTask;
+                    }
+                };
+
+                options.Authority = Configuration["FirebaseOptions:Authority"];
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration["FirebaseOptions:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["FirebaseOptions:Audience"],
+                    ValidateLifetime = true
+                };
+            });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("SomePolicy", b =>
+                {
+                    b.RequireAuthenticatedUser();
+                });
+                o.AddPolicy("AdminPolicy", b =>
+                {
+                    b.RequireAuthenticatedUser();
+                    b.RequireClaim(ClaimTypes.Role, "Admin");
+                    b.AuthenticationSchemes = new List<string> { JwtBearerDefaults.AuthenticationScheme };
+                });
+            });
         }
 
         private static void UpdateDatabase(IApplicationBuilder app)

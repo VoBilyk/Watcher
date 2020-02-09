@@ -39,23 +39,8 @@ namespace DataAccumulator.DataAggregator.Providers
 
             // Predict spikes in the data
             var transformed = model.Transform(productSales);
-            var predictions = mlContext.Data.CreateEnumerable<SpikePrediction>(transformed, reuseRowObject: false); //.ToArray();
 
-            //var anomalies = predictions.Where(p => p.Prediction[0] == 1).Select(p => p.Prediction[1]);
-            return predictions;
-
-            //foreach (var p in predictions)
-            //{
-            //    var results = $"{p.Prediction[0]}\t{p.Prediction[1]:f2}\t{p.Prediction[2]:F2}";
-
-            //    if (p.Prediction[0] == 1)
-            //    {
-            //        results += " <-- Spike detected";
-            //    }
-
-            //    Console.WriteLine(results);
-            //}
-            //Console.WriteLine("");
+            return mlContext.Data.CreateEnumerable<SpikePrediction>(transformed, reuseRowObject: false);
         }
 
         private IDataView CreateEmptyDataView(MLContext mlContext)

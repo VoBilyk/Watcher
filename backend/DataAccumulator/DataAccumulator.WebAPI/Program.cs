@@ -3,43 +3,25 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.WindowsAzure.Storage;
 
 using Serilog;
-using Serilog.Events;
 
 namespace DataAccumulator
 {
-    public class Program
+    public sealed class Program
     {
-        public static IConfiguration Configuration { get; } = GetConfigurationRoot();
-
-        private static IConfigurationRoot GetConfigurationRoot()
-        {
-            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{enviroment ?? Environments.Production}.json", optional: true)
-                .AddEnvironmentVariables();
-
-            if (enviroment == Environments.Development)
-            {
-                configurationBuilder.AddUserSecrets<Program>(false);
-            }
-
-            return configurationBuilder.Build();
-        }
-
+        public static bool UseIIS { get; set; }
+        
+        public static string EnvironmentName { get; } = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
         public static int Main(string[] args)
         {
-            ConfigureLogger();
+            var host = CreateHostBuilder(args).Build();
 
             try
             {
                 Log.Information("Starting Data Accumulator...");
-                CreateHostBuilder(args).Build().Run();
+                host.Run();
 
                 return 0;
             }
@@ -58,45 +40,37 @@ namespace DataAccumulator
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    //webBuilder.UseKestrel();
+                    if (UseIIS)
+                    {
+                        webBuilder.UseIISIntegration();
+                    }
+                    else
+                    {
+                        webBuilder.UseKestrel();
+                    }
+
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseSetting("detailedErrors", "true");
-                    webBuilder.UseConfiguration(Configuration);
-                    webBuilder.UseIISIntegration();
+                    webBuilder.UseConfiguration(GetConfigurationRoot());
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseSerilog();
                     webBuilder.CaptureStartupErrors(true);
                 });
 
-        public static void ConfigureLogger()
+        private static IConfigurationRoot GetConfigurationRoot()
         {
-            var outputTemplate = "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{properties}{NewLine}";
+            var configurationBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{EnvironmentName ?? Environments.Production}.json", optional: true)
+                .AddEnvironmentVariables();
 
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Production)
+            if (EnvironmentName == Environments.Development)
             {
-                var connectionString = Configuration.GetConnectionString("LogsConnection");
-                var storageAccount = CloudStorageAccount.Parse(connectionString);
-                Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console(outputTemplate: outputTemplate)
-                    .WriteTo.AzureTableStorageWithProperties(storageAccount,
-                        LogEventLevel.Warning,
-                        storageTableName: "logs-table",
-                        writeInBatches: true,
-                        batchPostingLimit: 100,
-                        period: new TimeSpan(0, 0, 3),
-                        propertyColumns: new[] { "LogEventId", "ClassName", "Source" })
-                    .CreateLogger();
-                
-                return;
+                configurationBuilder.AddUserSecrets<Program>(false);
             }
 
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .Enrich.FromLogContext()
-                .WriteTo.Console(outputTemplate: outputTemplate)
-                .CreateLogger();
+            return configurationBuilder.Build();
         }
     }
 }

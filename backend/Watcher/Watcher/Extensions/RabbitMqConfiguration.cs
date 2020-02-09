@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Watcher.Core.Interfaces;
 
 namespace Watcher.Extensions
@@ -7,7 +8,7 @@ namespace Watcher.Extensions
     {
         public static IApplicationBuilder UseRabbitListener(this IApplicationBuilder app)
         {
-            app.ApplicationServices.GetService(typeof(IQueueProvider));
+            app.ApplicationServices.GetRequiredService<IQueueProvider>();
             return app;
         }
     }

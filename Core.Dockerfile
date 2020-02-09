@@ -11,8 +11,8 @@ RUN dotnet publish --configuration Debug --output out
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
 
 WORKDIR /app
-COPY --from=builder ./Watcher/out .
+COPY --from=builder /app/Watcher/out .
 
 EXPOSE 80
 EXPOSE 443
-ENTRYPOINT ["dotnet", "Watcher.Core.dll"]
+ENTRYPOINT ["dotnet", "Watcher.dll"]

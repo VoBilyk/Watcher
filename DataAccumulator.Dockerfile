@@ -15,4 +15,4 @@ EXPOSE 443
 WORKDIR /app
 COPY --from=builder /app/DataAccumulator/out .
 
-ENTRYPOINT ["dotnet", "DataAccumulator.WebApi.dll"]
+ENTRYPOINT ["dotnet", "DataAccumulator.WebAPI.dll"]
