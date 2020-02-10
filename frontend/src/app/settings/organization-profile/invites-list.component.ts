@@ -6,7 +6,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../shared/models/user.model';
 import { ToastrService } from '../../core/services/toastr.service';
 import { DataView } from 'primeng/dataview';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-invites-list',
@@ -48,7 +47,7 @@ export class InvitesListComponent implements OnInit {
   }
 
   fullLink(link: string): string {
-    return `${environment.client_url}/invite/${link}`;
+    return `${window.location.origin}/invite/${link}`;
   }
 
   onUpdate(id: number): void {

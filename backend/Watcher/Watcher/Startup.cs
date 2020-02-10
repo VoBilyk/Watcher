@@ -56,12 +56,13 @@ namespace Watcher
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var origins = Configuration.GetSection("AllowedOrigin").Get<string[]>();
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
                 builder
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins(Configuration.GetValue<string[]>("AllowedOrigin"))
+                    .WithOrigins(origins)
                 ));
 
             services.Configure<TimeServiceConfiguration>(Configuration.GetSection("TimeService"));
@@ -268,7 +269,7 @@ namespace Watcher
         {
             var outputTemplate = "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{properties}{NewLine}";
 
-            if (Env.IsDevelopment())
+            if (Env.IsProduction())
             {
                 var connectionString = Configuration.GetConnectionString("LogsConnection");
                 var storageAccount = CloudStorageAccount.Parse(connectionString);

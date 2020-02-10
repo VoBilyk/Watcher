@@ -23,8 +23,8 @@ services:
       MONGO_INITDB_DATABASE: 'watcher-data-storage'
     ports:
       - '27017:27017'
-    volumes:
-      - ./docker-volumes/db/mongo:/data/db
+    # volumes:
+    #   - ./docker-volumes/db/mongo:/data/db
     # environment:
     #   MONGO_INITDB_ROOT_USERNAME: username
     #   MONGO_INITDB_ROOT_PASSWORD: password
@@ -40,8 +40,8 @@ services:
     ports:
       - '15672:15672'
       - '5672:5672'
-    volumes:
-      - ./docker-volumes/rabbitmq:/var/lib/rabbitmq
+    # volumes:
+    #   - ./docker-volumes/rabbitmq:/var/lib/rabbitmq
 
   core-api:
     container_name: watcher-core-api

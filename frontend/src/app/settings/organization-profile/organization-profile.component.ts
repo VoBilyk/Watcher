@@ -166,7 +166,7 @@ export class OrganizationProfileComponent implements OnInit {
       value => {
         this.toastrService.success('Organization Invite was created');
         this.invite = value;
-        this.inviteLink = `${environment.client_url}/invite/${value.link}`;
+        this.inviteLink =  `${window.location.origin}/invite/${value.link}`;
       },
       () => {
         this.toastrService.error('Organization Invite was not created');
