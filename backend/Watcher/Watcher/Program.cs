@@ -11,7 +11,7 @@ namespace Watcher
     {
         public static IConfiguration Configuration { get; } = GetConfigurationRoot();
         public static string EnviromentName { get; } = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        public static bool UseIIS { get; };
+        public static bool UseIIS { get; }
 
         public static int Main(string[] args)
         {
